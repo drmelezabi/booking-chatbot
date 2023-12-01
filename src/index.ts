@@ -1,6 +1,6 @@
 import { add, firebaseApp, firestoreDb, getAll } from "./config/firebase";
 import { getDayRange } from "./controllers/date/getDayRange";
-import { getRoomsAvailable } from "./controllers/rooms/getRooms";
+import { getRoomsBookedByDay } from "./controllers/rooms/getRoomsBookedByDay";
 
 (async () => {
   // const initializeFirebaseApp = () => {
@@ -16,5 +16,5 @@ import { getRoomsAvailable } from "./controllers/rooms/getRooms";
 
   // console.log(await add("rooms", data));
   // console.log(await getRoomsAvailable());
-  console.log(getDayRange("Sat"));
+  console.log(await getRoomsBookedByDay("Mon"));
 })();
