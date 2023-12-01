@@ -8,10 +8,10 @@ import {
 import { firestoreDb } from "../../config/firebase";
 import { caseType } from "../../config/rules";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
-import { geRestOfWeek } from "../date/getRestOfWeek";
+import { geRestOfToday } from "../date/getRestOfToday";
 
-export const getRoomsBookedNowToEndOfWeek = async () => {
-  const range = geRestOfWeek();
+export const getRoomsBookedRestOfToday = async () => {
+  const range = geRestOfToday();
   if (!range) return [];
 
   try {

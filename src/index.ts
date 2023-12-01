@@ -1,6 +1,12 @@
-import { geRestOfWeek } from "./controllers/date/geRestOfWeek";
+import { geRestOfToday } from "./controllers/date/getRestOfToday";
+import { geRestOfWeek } from "./controllers/date/getRestOfWeek";
+import { getTodayRange } from "./controllers/date/getTodayRange";
+import { getWeekRange } from "./controllers/date/getWeekRange";
 import { getRoomsBookedByDay } from "./controllers/rooms/getRoomsBookedByDay";
 import { getRoomsBookedNowToEndOfWeek } from "./controllers/rooms/getRoomsBookedNowToEndOfWeek";
+import { getRoomsBookedRestOfToday } from "./controllers/rooms/getRoomsBookedRestOfToday";
+import { getStudentTodayBooked } from "./controllers/rooms/getStudentTodayBooked";
+import { getStudentWeekBooked } from "./controllers/rooms/getStudentWeekBooked";
 
 (async () => {
   // const initializeFirebaseApp = () => {
@@ -15,5 +21,5 @@ import { getRoomsBookedNowToEndOfWeek } from "./controllers/rooms/getRoomsBooked
   // initializeFirebaseApp();
   // console.log(await add("rooms", data));
   // console.log(await getRoomsAvailable());
-  // console.log(await getRoomsBookedNowToEndOfWeek());
+  console.log(await getStudentTodayBooked("1020205252"));
 })();

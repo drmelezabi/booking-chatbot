@@ -8,10 +8,11 @@ import {
 import { firestoreDb } from "../../config/firebase";
 import { caseType } from "../../config/rules";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
-import { geRestOfWeek } from "../date/getRestOfWeek";
+import { getTodayRange } from "../date/getTodayRange";
 
-export const getRoomsBookedNowToEndOfWeek = async () => {
-  const range = geRestOfWeek();
+export const getStudentTodayBooked = async (studentId: string) => {
+  const range = getTodayRange();
+  console.log(range);
   if (!range) return [];
 
   try {
@@ -28,7 +29,7 @@ export const getRoomsBookedNowToEndOfWeek = async () => {
       finalData.push(doc.data());
     });
     return finalData
-      .filter((filter) => filter.case != 0)
+      .filter((filter) => filter.stdId === studentId)
       .map((booked) => {
         return {
           Date: formatTimestamp(booked.start).Date,
