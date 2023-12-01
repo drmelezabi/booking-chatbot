@@ -1,0 +1,106 @@
+{
+    "extends": [
+       "eslint:recommended",
+       "plugin:@typescript-eslint/eslint-recommended",
+       "plugin:@typescript-eslint/recommended",
+       "prettier"
+    ],
+    "ignorePatterns": ["build/", "deploy/", "node_modules/"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+       "project": ["./tsconfig.json"],
+       "schema": "./src/graphql/schema/types/**/*.graphql"
+    },
+    "plugins": ["@typescript-eslint", "import"],
+    "rules": {
+       // Turn off prettier rules to avoid conflicts
+       "prettier/prettier": "off",
+ 
+       // Ensure object curly braces have spaces inside
+       "object-curly-spacing": ["error", "always"],
+ 
+       // Sort import declarations
+       "sort-imports": ["error", { "ignoreDeclarationSort": true }],
+ 
+       // Set a high maximum line length to prevent enforcing line length
+       "max-len": ["error", { "code": 99999, "comments": 120 }],
+ 
+       // Always include trailing commas in multiline type literals and array literals
+       "@typescript-eslint/comma-dangle": ["error", "always-multiline"],
+ 
+       // Disable some TypeScript-specific rules that might conflict with project-specific needs
+       "@typescript-eslint/no-namespace": "off",
+       "@typescript-eslint/no-empty-interface": "off",
+ 
+       // Enforce using semicolons for multi-line and disallow for single-line in interfaces, types, etc.
+       "@typescript-eslint/member-delimiter-style": [
+          "error",
+          {
+             "multiline": { "delimiter": "semi", "requireLast": true },
+             "singleline": { "delimiter": "semi", "requireLast": false }
+          }
+       ],
+ 
+       // Enforce no extraneous dependencies in import statements
+       "import/no-extraneous-dependencies": "error",
+ 
+       // Order imports in a specific way
+       "import/order": [
+          "error",
+          {
+             "pathGroups": [
+                {
+                   "pattern": "@src/**",
+                   "group": "unknown",
+                   "position": "before"
+                },
+                {
+                   "pattern": "@tests/**",
+                   "group": "unknown",
+                   "position": "before"
+                }
+             ],
+             "pathGroupsExcludedImportTypes": ["builtin"],
+             "groups": ["builtin", "external", "unknown", "internal", ["sibling", "parent"], "index", "object", "type"],
+             "newlines-between": "always",
+             "alphabetize": {
+                "order": "asc", "caseInsensitive": true
+             }
+          }
+       ]
+    },
+    "overrides": [
+       {
+          "files": ["tests/**"],
+          "rules": {
+             // Disable unbound method check for test files
+             "@typescript-eslint/unbound-method": "off",
+ 
+             // Disable unused variables check for test files
+             "@typescript-eslint/no-unused-vars": "off",
+ 
+             // "no-console": "error",
+ 
+             // Allow ts-ignore with descriptions in test files
+             "@typescript-eslint/ban-ts-comment": [
+                "error",
+                {
+                   "ts-ignore": "allow-with-description"
+                }
+             ]
+          }
+       },
+       {
+          "files": ["*.ts"],
+          "processor": "@graphql-eslint/graphql"
+        },
+       {
+          "files": ["*.graphql"],
+          "extends": "plugin:@graphql-eslint/schema-recommended",
+          "rules": {
+            "@graphql-eslint/known-type-names": "error"
+          }
+        }
+    ]
+ }
+ 
