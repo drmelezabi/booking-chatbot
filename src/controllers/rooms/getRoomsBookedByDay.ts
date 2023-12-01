@@ -14,7 +14,6 @@ export const getRoomsBookedByDay = async (day: string) => {
   const range = getDayRange(day);
   if (!range) return [];
 
-  console.log({ range });
   try {
     const finalData: DocumentData[] = [];
 
