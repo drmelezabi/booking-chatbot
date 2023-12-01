@@ -4,7 +4,7 @@ function getDaySchedule(dayName: string): { start: Date; end: Date } | null {
   const currentHour = now.getHours();
   const nextWeek = now.setDate(now.getDate() + ((6 - today + 1) % 7));
 
-  const daysOfWeek = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const requestedDayIndex = daysOfWeek.indexOf(dayName);
 
   if (requestedDayIndex === -1 || requestedDayIndex >= 5) {
