@@ -10,7 +10,6 @@ export const getDayRange = (day: string) => {
     if (day === "Fri") {
       return null;
     }
-    // If it's today and after 7 am, adjust start time to now
     const start = new Date();
     start.setDate(start.getDate() + dayNumber);
     start.setHours(7, 0, 0, 0);
