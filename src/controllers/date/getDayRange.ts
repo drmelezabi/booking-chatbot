@@ -2,7 +2,7 @@ export const getDayRange = (day: string) => {
   const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const number = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
-  const now = new Date("December 7, 2023  19:00:00"); //"December 7, 2023  19:00:00"
+  const now = new Date(); //"December 7, 2023  19:00:00"
   const dayName = names[now.getDay()];
   const currentHour = now.getHours();
   const sRange = 7;

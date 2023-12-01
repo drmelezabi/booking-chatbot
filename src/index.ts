@@ -16,5 +16,5 @@ import { getRoomsAvailable } from "./controllers/rooms/getRooms";
 
   // console.log(await add("rooms", data));
   // console.log(await getRoomsAvailable());
-  console.log(getDayRange("Thu"));
+  console.log(getDayRange("Sat"));
 })();
