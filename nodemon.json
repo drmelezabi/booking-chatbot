@@ -1,4 +1,4 @@
 {
   "watch": ["src"],
-  "exec": "rimraf dist && node devReset.mjs && swc src --out-dir dist --copy-files && node dist/index.js"
+  "exec": "rimraf dist && swc src --out-dir dist --copy-files && node dist/index.js"
 }
