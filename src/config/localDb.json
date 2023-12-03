@@ -1,1 +1,14 @@
-{"rules":{"BookingAvailability":{"SuspendedIndefinitely":false,"SuspendedUntilDate":false,"BookingAvailabilityDate":"2023-12-02T21:12:37.789Z"},"maxTimeBeforeDelete":2},"registeredPhone":[],"suspendedStudent":[],"reservation":[{"studentId":"xxxccc","Date":"2023-12-01T21:12:37.789Z"},{"studentId":"0MhBqZSgiZVIT19k","reservationId":"6IdXz_8HhmPaAb_n","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"aXu82RRc6iCxdRbG","reservationId":"a7XA6TTWJNLeLpzz","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"GxUvuA_vfR12EmAZgQ","reservationId":"z_yeAjN27_siYPtgOV","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"B6VyS6DQTgssapqDquOc","reservationId":"PgoLfiBT7T2bByTVeXhw","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"uHOSRa_ojkJQK6Fx_2Py","reservationId":"9Py6QPG_dGi_hAB_sUPx","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"HIbo-VYCnXJHMzRK0RCr","reservationId":"YeD1-4VhRk-w_rqymocl","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"VRlEJ4_C8SXgEwRkZPG_","reservationId":"jt3IUUrlRz1n","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"SLl5HSjgytacNf_MwN5k","reservationId":"IExG6d7cLGZU","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"JP2h-YbDCsphO6Eax8CH","reservationId":"RImYjT5@Ww#s","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"G9UD9BKelPR16pUVXwXG","reservationId":"A5kR5DwNbVeB","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"ImJp3rBpDE1O1eFHbzUx","reservationId":"Sk8oyaIl8QDcTLrcrY8S","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"EivrzA2-wwvOj9M5lLaJ","reservationId":"FHqjMNF3zszPbQTTnE8N","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"0I8ilSLqPuRSz8vtdDvP","reservationId":"nBboa1uPOcLzClRrOKfU","Date":"2023-12-12T11:00:00.000Z"},{"studentId":"VyNCkgR5-b78BqvuojUN","reservationId":"IuUunvOMctPCv3i71HsR","Date":"2023-12-12T11:00:00.000Z"}],"punishmentUnit":3}
+{
+  "rules": {
+    "BookingAvailability": {
+      "SuspendedIndefinitely": false,
+      "SuspendedUntilDate": false,
+      "BookingAvailabilityDate": "2023-12-02T21:12:37.789Z"
+    },
+    "maxTimeBeforeDelete": 2
+  },
+  "registeredPhone": [],
+  "suspendedStudent": [],
+  "reservation": [],
+  "punishmentUnit": 3
+}
