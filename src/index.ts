@@ -42,14 +42,14 @@ import genId from "./config/IDs";
   //   ();
 
   // console.log(await checkStudentHasNoUncompletedBooked("xxxccc"));
-  console.log(
-    await addNewAppointment({
-      stdId: genId(),
-      case: 0,
-      room: "106",
-      start: new Date("December 12, 2023  13:00:00"),
-      student: "mohamed kamal",
-      supervisor: "",
-    })
-  );
+  // console.log(
+  //   await addNewAppointment({
+  //     stdId: genId(),
+  //     case: 0,
+  //     room: "106",
+  //     start: new Date("December 12, 2023  13:00:00"),
+  //     student: "mohamed kamal",
+  //     supervisor: "",
+  //   })
+  // );
 })();
