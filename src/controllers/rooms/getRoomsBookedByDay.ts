@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
 import { getDayRange } from "../date/getDayRange";
-import { caseType } from "../../config/rules";
+import { caseType } from "../../config/diff";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 
 export const getRoomsBookedByDay = async (day: string) => {

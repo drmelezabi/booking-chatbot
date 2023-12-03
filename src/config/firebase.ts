@@ -44,13 +44,18 @@ export const firestoreDb = getFirestore();
 
 // Initialize Firebase
 
-export const add = async (collectionName: string, data: object) => {
+export const addDocument = async (
+  collectionName: string,
+  documentId: string,
+  data: object
+) => {
   try {
-    const document = doc(firestoreDb, collectionName, genId());
+    const document = doc(firestoreDb, collectionName, documentId);
     await setDoc(document, data);
-    console.log({ add: "success" });
+    return true;
   } catch (error) {
     console.log("add", error);
+    return false;
   }
 };
 

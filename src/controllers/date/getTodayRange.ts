@@ -1,5 +1,5 @@
 export const getTodayRange = () => {
-  const now = new Date(); //"December 7, 2023  19:00:00"
+  const now = new Date("December 3, 2023  07:00:00"); //"December 7, 2023  19:00:00"
   const currentHour = now.getHours();
   const sRange = 7;
   const eRange = 17;
