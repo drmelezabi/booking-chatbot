@@ -30,6 +30,7 @@ import genId from "./config/IDs";
     }
   };
   initializeFirebaseApp();
+
   // console.log(await add("rooms", data));
   // console.log(await getRoomsAvailable());
   // console.log(await getStudentTodayBooked("1020205252"));
