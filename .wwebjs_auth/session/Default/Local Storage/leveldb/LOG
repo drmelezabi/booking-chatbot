@@ -1,3 +1,6 @@
-2023/12/03-23:33:55.859 1b274 Reusing MANIFEST E:\App\booking\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
-2023/12/03-23:33:55.861 1b274 Recovering log #12
-2023/12/03-23:33:55.861 1b274 Reusing old log E:\App\booking\.wwebjs_auth\session\Default\Local Storage\leveldb/000012.log 
+2023/12/03-23:46:47.111 167dc Reusing MANIFEST E:\App\booking\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
+2023/12/03-23:46:47.112 167dc Recovering log #12
+2023/12/03-23:46:47.112 167dc Reusing old log E:\App\booking\.wwebjs_auth\session\Default\Local Storage\leveldb/000012.log 
+2023/12/03-23:48:47.683 1e28 Level-0 table #17: started
+2023/12/03-23:48:47.746 1e28 Level-0 table #17: 14432 bytes OK
+2023/12/03-23:48:47.781 1e28 Delete type=0 #12
