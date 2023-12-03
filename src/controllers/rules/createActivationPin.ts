@@ -1,15 +1,18 @@
 import localDb from "../../config/localDb";
-import { ISuspendedStudent } from "./getStudentsSuspension";
 
-const addLocalSuspendedStudents = async (
-  suspendedStudentData: ISuspendedStudent
-) => {
+export interface IActivationObject {
+  reservationId: string;
+  pin: number;
+  creationDate: Date;
+}
+
+const createActivationPin = async (activationObject: IActivationObject) => {
   return new Promise((resolve, reject) => {
     try {
       const rulesData = localDb.push(
         "/suspendedStudent[]",
-        suspendedStudentData,
-        false
+        activationObject,
+        true
       );
       resolve(rulesData);
       return;
@@ -20,4 +23,4 @@ const addLocalSuspendedStudents = async (
   });
 };
 
-export default addLocalSuspendedStudents;
+export default createActivationPin;

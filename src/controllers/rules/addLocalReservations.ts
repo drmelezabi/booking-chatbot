@@ -1,12 +1,12 @@
 import localDb from "../../config/localDb";
 
-interface IReservations {
+export interface IReservation {
   studentId: string;
   reservationId: string;
   Date: Date;
 }
 
-const addLocalReservations = async (reservation: IReservations) => {
+const addLocalReservations = async (reservation: IReservation) => {
   return new Promise((resolve, reject) => {
     try {
       const rulesData = localDb.push("/reservation[]", reservation, true);

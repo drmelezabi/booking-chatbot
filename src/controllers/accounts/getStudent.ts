@@ -1,20 +1,12 @@
-import {
-  DocumentData,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
 
 export interface studentData {
-  id: string;
   admin: boolean;
   name: string;
   pass: string;
   type: string;
+  whatsappId: string;
   violations: string[];
 }
 

@@ -8,6 +8,7 @@
     "maxTimeBeforeDelete": 2
   },
   "registeredPhone": [],
+  "activationPin": [],
   "suspendedStudent": [],
   "reservation": [],
   "punishmentUnit": 3
