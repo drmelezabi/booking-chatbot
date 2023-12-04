@@ -3,10 +3,15 @@ import { Timestamp } from "firebase/firestore";
 const formatTimestamp = (time: any) => {
   const optionsDay: Intl.DateTimeFormatOptions = {
     timeZone: "Africa/Cairo",
-    weekday: "short",
+    weekday: "long",
+    hour12: true,
+  };
+
+  const optionsDate: Intl.DateTimeFormatOptions = {
+    timeZone: "Africa/Cairo",
     day: "2-digit",
     month: "short",
-    hour12: true,
+    year: "numeric",
   };
 
   const optionsTime: Intl.DateTimeFormatOptions = {
@@ -18,11 +23,13 @@ const formatTimestamp = (time: any) => {
 
   const dateFormat = (time as Timestamp).toDate();
 
-  const dayName = new Intl.DateTimeFormat("en-US", optionsDay);
-  const dayTime = new Intl.DateTimeFormat("en-US", optionsTime);
+  const day = new Intl.DateTimeFormat("ar-EG", optionsDay);
+  const date = new Intl.DateTimeFormat("ar-EG", optionsDate);
+  const dayTime = new Intl.DateTimeFormat("ar-EG", optionsTime);
 
   return {
-    Date: dayName.format(dateFormat),
+    Day: day.format(dateFormat),
+    Date: date.format(dateFormat),
     Time: dayTime.format(dateFormat),
   };
 };

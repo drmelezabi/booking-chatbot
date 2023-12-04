@@ -2,8 +2,7 @@ import { firebaseApp } from "./config/firebase";
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import router from "./resolvers";
-import { updateCloudAccount } from "./controllers/accounts/updateCloudAccount";
-import getStudentIdByPass from "./controllers/accounts/getStudentPass";
+import { getDayRange } from "./controllers/date/getDayRange";
 
 (async () => {
   const initializeFirebaseApp = () => {
@@ -15,6 +14,10 @@ import getStudentIdByPass from "./controllers/accounts/getStudentPass";
     }
   };
   initializeFirebaseApp();
+
+  console.log(getDayRange("Wed"));
+
+  // console.log(await getRecovery(`+رمز استعاده 201020205256`));
 })();
 
 const client = new Client({

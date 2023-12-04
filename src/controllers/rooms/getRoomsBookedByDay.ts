@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
 import { getDayRange } from "../date/getDayRange";
-import { caseType } from "../../config/diff";
+import { caseTypeAR } from "../../config/diff";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 
 export const getRoomsBookedByDay = async (day: string) => {
@@ -24,20 +24,22 @@ export const getRoomsBookedByDay = async (day: string) => {
     );
 
     const docSnap = await getDocs(q);
+
     docSnap.forEach((doc) => {
       finalData.push(doc.data());
     });
-    return finalData
-      .filter((filter) => filter.case != 0)
-      .map((booked) => {
-        return {
-          Date: formatTimestamp(booked.start).Date,
-          Time: formatTimestamp(booked.start).Time,
-          Student: booked.student,
-          Room: booked.room,
-          Case: caseType[booked.case],
-        };
-      });
+
+    return finalData.map((booked) => {
+      const dt = formatTimestamp(booked.start);
+      return {
+        Day: dt.Day,
+        Date: dt.Date,
+        Time: dt.Time,
+        Student: booked.student,
+        Room: booked.room,
+        Case: caseTypeAR[booked.case],
+      };
+    });
   } catch (error) {
     console.log("get", error);
     return [];

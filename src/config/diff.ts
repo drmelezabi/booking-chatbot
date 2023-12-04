@@ -9,3 +9,4 @@ export enum daysName {
 }
 
 export const caseType = ["booked", "active", "late", "fail"];
+export const caseTypeAR = ["محجوز", "نشط", "ملغى", "مهدر"];

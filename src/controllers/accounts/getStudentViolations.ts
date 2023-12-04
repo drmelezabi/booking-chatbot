@@ -5,7 +5,6 @@ import getStudentsSuspension, {
   ISuspendedStudent,
 } from "../rules/getStudentsSuspension";
 import removeLocalSuspendedStudent from "../rules/removeLocalSuspendedStudent";
-import getStudent from "./getStudent";
 import { updateCloudStudentViolations } from "./updateCloudStudentViolations";
 
 const getStudentViolations = async (studentId: string) => {
@@ -62,9 +61,8 @@ const getStudentViolations = async (studentId: string) => {
     if (EditedStudentData.violations.length) {
       await removeLocalSuspendedStudent(studentId);
       await addLocalSuspendedStudents(EditedStudentData);
-      const studentDate = (await getStudent(studentId))!;
       await updateCloudStudentViolations(
-        studentDate.id,
+        studentId,
         EditedStudentData.violations
       );
     }
