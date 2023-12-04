@@ -17,6 +17,19 @@ export const menu = async (
   await client.sendMessage(chatId, messageBody);
 };
 
+export const AdvancedMenu = async (
+  client: WAWebJS.Client,
+  message: WAWebJS.Message
+) => {
+  const messageBody = `*مرحبا بك في الظام الإداري*
+    أرسل أحد الكلمات التالية
+        
+      1- استعادة رمز الاستعادة`;
+
+  const chatId = message.from;
+  await client.sendMessage(chatId, messageBody);
+};
+
 export const verification = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message

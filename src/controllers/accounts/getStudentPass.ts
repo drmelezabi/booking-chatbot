@@ -18,7 +18,7 @@ export interface studentData {
 
 const getStudentIdByPass = async (
   studentPass: string
-): Promise<string | null> => {
+): Promise<{ id: string; data: studentData } | null> => {
   try {
     const finalData: DocumentData = [];
 
@@ -29,10 +29,12 @@ const getStudentIdByPass = async (
 
     const docSnap = await getDocs(q);
     docSnap.forEach((doc) => {
-      finalData.push(doc.id);
+      finalData.push({ id: doc.id, data: doc.data() });
     });
 
-    return finalData[0] as string;
+    if (!finalData.length) return null;
+
+    return finalData[0] as { id: string; data: studentData };
   } catch (error) {
     console.log("getStudentIdByPass", error);
     return null;

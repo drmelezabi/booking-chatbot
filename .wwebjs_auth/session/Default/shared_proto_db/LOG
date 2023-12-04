@@ -1,3 +1,2 @@
-2023/12/03-20:38:23.914 16d98 Reusing MANIFEST E:\App\booking\.wwebjs_auth\session\Default\shared_proto_db/MANIFEST-000001
-2023/12/03-20:38:23.915 16d98 Recovering log #3
-2023/12/03-20:38:23.915 16d98 Reusing old log E:\App\booking\.wwebjs_auth\session\Default\shared_proto_db/000003.log 
+2023/12/04-01:34:26.124 1c64 Creating DB D:\app\booking\.wwebjs_auth\session\Default\shared_proto_db since it was missing.
+2023/12/04-01:34:26.208 1c64 Reusing MANIFEST D:\app\booking\.wwebjs_auth\session\Default\shared_proto_db/MANIFEST-000001

@@ -7,7 +7,15 @@
     },
     "maxTimeBeforeDelete": 2
   },
-  "registeredPhone": [],
+  "registeredPhone": [
+    {
+      "studentId": "gouaZqpCRlk9KXkuhxHZ",
+      "chatId": "201020205256@c.us",
+      "admin": true,
+      "type": "student",
+      "recoveryId": "76997013"
+    }
+  ],
   "activationPin": [],
   "suspendedStudent": [],
   "reservation": [],
