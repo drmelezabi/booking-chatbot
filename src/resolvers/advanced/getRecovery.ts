@@ -4,7 +4,8 @@ import getRecovery from "../../controllers/accounts/getRecovery";
 
 const generateRecovery = async (
   client: WAWebJS.Client,
-  message: WAWebJS.Message
+  message: WAWebJS.Message,
+  msg: string
 ) => {
   const chatId = message.from;
 
@@ -13,7 +14,7 @@ const generateRecovery = async (
   if (typeof errorMessage === "string")
     await client.sendMessage(chatId, errorMessage);
 
-  const messages = await getRecovery(message.body);
+  const messages = await getRecovery(msg);
 
   messages.map((message) => {
     client.sendMessage(chatId, message);

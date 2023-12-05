@@ -1,1 +1,30 @@
-{"rules":{"BookingAvailability":{"SuspendedIndefinitely":false,"SuspendedUntilDate":false,"BookingAvailabilityDate":"2023-12-02T21:12:37.789Z"},"maxTimeBeforeDelete":2},"registeredPhone":[{"studentId":"gouaZqpCRlk9بdgkuddZ","chatId":"201020202020@c.us","admin":true,"type":"student","recoveryId":"12345678"},{"studentId":"gouaZqpCRlk9KXkuhxHZ","chatId":"201020205256@c.us","admin":true,"type":"student","recoveryId":"39526857"}],"activationPin":[],"suspendedStudent":[],"reservation":[],"punishmentUnit":3}
+{
+  "rules": {
+    "BookingAvailability": {
+      "SuspendedIndefinitely": false,
+      "SuspendedUntilDate": false,
+      "BookingAvailabilityDate": "2023-12-02T21:12:37.789Z"
+    },
+    "maxTimeBeforeDelete": 2
+  },
+  "registeredPhone": [
+    {
+      "studentId": "gouaZqpCRlk9بdgkuddZ",
+      "chatId": "201020202020@c.us",
+      "admin": true,
+      "type": "student",
+      "recoveryId": "12345678"
+    },
+    {
+      "studentId": "gouaZqpCRlk9KXkuhxHZ",
+      "chatId": "201020205256@c.us",
+      "admin": true,
+      "type": "student",
+      "recoveryId": "39526857"
+    }
+  ],
+  "activationPin": [],
+  "suspendedStudent": [],
+  "reservation": [],
+  "punishmentUnit": 3
+}

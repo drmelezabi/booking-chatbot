@@ -9,9 +9,10 @@ import updateRegisteredPhone from "../../controllers/rules/updateRegisteredPhone
 
 const phoneVerification = async (
   client: WAWebJS.Client,
-  message: WAWebJS.Message
+  message: WAWebJS.Message,
+  msg: string
 ) => {
-  const match = message.body.match(/^رمز\s*(\d+)$/);
+  const match = msg.match(/^رمز\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/);
   const chatId = message.from;
   if (!match) {
     await client.sendMessage(chatId, "رمز غير صالح");
