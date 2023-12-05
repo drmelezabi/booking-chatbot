@@ -6,7 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
-import { caseType } from "../../config/diff";
+import { caseTypeAR } from "../../config/diff";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { getWeekRange } from "../date/getWeekRange";
 
@@ -30,12 +30,14 @@ export const getStudentWeekBooked = async (studentId: string) => {
     return finalData
       .filter((filter) => filter.stdId === studentId)
       .map((booked) => {
+        const dt = formatTimestamp(booked.start);
         return {
-          Date: formatTimestamp(booked.start).Date,
-          Time: formatTimestamp(booked.start).Time,
+          Day: dt.Day,
+          Date: dt.Date,
+          Time: dt.Time,
           Student: booked.student,
           Room: booked.room,
-          Case: caseType[booked.case],
+          Case: caseTypeAR[booked.case],
         };
       });
   } catch (error) {

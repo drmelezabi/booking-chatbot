@@ -6,7 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
-import { caseType } from "../../config/diff";
+import { caseType, caseTypeAR } from "../../config/diff";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { geRestOfWeek } from "../date/getRestOfWeek";
 
@@ -27,17 +27,17 @@ export const getRoomsBookedNowToEndOfWeek = async () => {
     docSnap.forEach((doc) => {
       finalData.push(doc.data());
     });
-    return finalData
-      .filter((filter) => filter.case != 0)
-      .map((booked) => {
-        return {
-          Date: formatTimestamp(booked.start).Date,
-          Time: formatTimestamp(booked.start).Time,
-          Student: booked.student,
-          Room: booked.room,
-          Case: caseType[booked.case],
-        };
-      });
+    return finalData.map((booked) => {
+      const dt = formatTimestamp(booked.start);
+      return {
+        Day: dt.Day,
+        Date: dt.Date,
+        Time: dt.Time,
+        Student: booked.student,
+        Room: booked.room,
+        Case: caseTypeAR[booked.case],
+      };
+    });
   } catch (error) {
     console.log("get", error);
     return [];

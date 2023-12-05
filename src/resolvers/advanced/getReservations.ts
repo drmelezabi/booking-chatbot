@@ -13,19 +13,14 @@ const getReservations = async (
   if (typeof errorMessage === "string")
     await client.sendMessage(chatId, errorMessage);
 
-  const regex = new RegExp("^!متابعه ");
+  const regex = new RegExp("^!متابع[ةه] ");
   const match = regex.exec(message.body);
   if (!match)
     await client.sendMessage(message.from, "🔍 عبارة متابعة غير صحيحة");
 
   const query = message.body.substring(match![0].length);
 
-  //   const messages =
   await reservationsTracking(client, message, query);
-
-  //   messages.map((message) => {
-  //     client.sendMessage(chatId, message);
-  //   });
 };
 
 export default getReservations;

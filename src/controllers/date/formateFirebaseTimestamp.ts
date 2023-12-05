@@ -9,7 +9,7 @@ const formatTimestamp = (time: any) => {
 
   const optionsDate: Intl.DateTimeFormatOptions = {
     timeZone: "Africa/Cairo",
-    day: "2-digit",
+    day: "numeric",
     month: "short",
     year: "numeric",
   };

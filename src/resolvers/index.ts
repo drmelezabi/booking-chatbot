@@ -1,50 +1,83 @@
 import WAWebJS from "whatsapp-web.js";
-import { menu, verification, AdvancedMenu, getRec, trackingInfo } from "./menu";
+import {
+  menu,
+  verification,
+  AdvancedMenu,
+  getRec,
+  trackingInfo,
+  personalInfo,
+} from "./menu";
 import phoneVerification from "./PhoneVerification";
 import getRecovery from "./advanced/getRecovery";
 import isAdmin from "../controllers/accounts/isAdmin";
 import getReservations from "./advanced/getReservations";
+import mySchedule from "./personal/mySchedule";
+import myViolations from "./personal/myViolations";
+import { convertArToEnDigits } from "../config/diff";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
-  if (["مساعدة", "مساعده"].includes(message.body)) {
+  if (/^مساعد[ةه]\s*$/.test(message.body)) {
     await menu(client, message);
     //
   } else if (message.body === "توثيق") {
     await verification(client, message);
     //
-  } else if (/^رمز\s*(\d+)$/.test(message.body)) {
-    await phoneVerification(client, message);
+  } else if (/^رمز\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(message.body)) {
+    let msg: string = convertArToEnDigits(message.body);
+    await phoneVerification(client, message, msg);
     //
-  } else if (
-    [
-      "ادارة المنظومه",
-      "إدارة المنظومة",
-      "ادارة المنظومة",
-      "إدارة المنظومه",
-    ].includes(message.body)
-  ) {
+  } else if (/^[إأا]دار[ةه] المنظوم[ةه]\s*$/.test(message.body)) {
+    // إداة المنظومة
     const errorMessage = await isAdmin(message.from);
     if (typeof errorMessage === "string")
       client.sendMessage(message.from, errorMessage);
     else await AdvancedMenu(client, message);
     //
-  } else if (["متابعة", "متابعه"].includes(message.body)) {
+  } else if (/^متابع[ةه]\s*$/.test(message.body)) {
+    // متابعة
     const errorMessage = await isAdmin(message.from);
     if (typeof errorMessage === "string")
       client.sendMessage(message.from, errorMessage);
     else await trackingInfo(client, message);
     //
-  } else if (message.body === "طلب رمز استعاده") {
+  } else if (/^طلب رمز استعاد[ةه]\s*$/.test(message.body)) {
+    // طلب رمز استعادة
     const errorMessage = await isAdmin(message.from);
     if (typeof errorMessage === "string")
       client.sendMessage(message.from, errorMessage);
     else await getRec(client, message);
     //
-  } else if (/^رمز استعاده\s*(\d+)$/.test(message.body)) {
-    await getRecovery(client, message);
+  } else if (
+    /^رمز [إا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(
+      // رمز استعادة
+      message.body
+    )
+  ) {
+    let msg: string = convertArToEnDigits(message.body);
+    await getRecovery(client, message, msg);
     //
-  } else if (/^!متابعه\s/.test(message.body)) {
+  } else if (/^!متابع[ةه]\s/.test(message.body)) {
+    // متابعة
     await getReservations(client, message);
+  } else if (/^مواعيد[ىي]\s*$/.test(message.body)) {
+    // مواعيدي
+    await mySchedule(client, message);
+  } else if (/^ملف[ىي]\s*$/.test(message.body)) {
+    // ملفي
+    await personalInfo(client, message);
+  } else if (message.body === "!مخالفات") {
+    await myViolations(client, message);
+  } else if (/^!حجز\s/.test(message.body)) {
+    const items = message.body.split(" ");
+    const date = items[1];
+    const room = items[2];
+    const time = items[3];
+    console.log({ date, room, time });
+  } else {
+    client.sendMessage(
+      message.from,
+      `لا أفهم ما تحاول قوله يمكنك كتابة "مساعدة" لتلقي معلومات حول كيفية الاستفادة من منظومة المذاكرة`
+    );
   }
 };
 export default router;

@@ -32,14 +32,12 @@ export const geRestOfWeek = () => {
     end.setHours(eRange, 0, 0, 0);
     return { start, end };
   } else {
-    console.log("hi");
     const start = new Date(now);
     start.setDate(start.getDate());
     start.setHours(currentHour, 0, 0, 0);
     const dayNumber =
       number.findIndex((element) => element === names[start.getDay()]) + 1;
     const end = new Date(now);
-    console.log(dayNumber);
     end.setDate(end.getDate() + (6 - dayNumber));
     end.setHours(eRange, 0, 0, 0);
 

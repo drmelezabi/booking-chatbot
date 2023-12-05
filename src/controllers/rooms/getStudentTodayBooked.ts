@@ -8,11 +8,10 @@ import {
 import { firestoreDb } from "../../config/firebase";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { getTodayRange } from "../date/getTodayRange";
-import { caseType } from "../../config/diff";
+import { caseType, caseTypeAR } from "../../config/diff";
 
 export const getStudentTodayBooked = async (studentId: string) => {
   const range = getTodayRange();
-  console.log(range);
   if (!range) return [];
 
   try {
@@ -28,7 +27,6 @@ export const getStudentTodayBooked = async (studentId: string) => {
     docSnap.forEach((doc) => {
       finalData.push(doc.data());
     });
-    console.log(finalData);
     return finalData
       .filter((filter) => filter.stdId === studentId)
       .map((booked) => {
@@ -37,7 +35,7 @@ export const getStudentTodayBooked = async (studentId: string) => {
           Time: formatTimestamp(booked.start).Time,
           Student: booked.student,
           Room: booked.room,
-          Case: caseType[booked.case],
+          Case: caseTypeAR[booked.case],
         };
       });
   } catch (error) {

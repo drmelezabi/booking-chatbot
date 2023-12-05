@@ -27,7 +27,6 @@ export const getWeekRange = () => {
     const start = new Date(now);
     const dayNumber =
       number.findIndex((element) => element === names[start.getDay()]) + 1;
-    console.log(dayNumber);
     start.setDate(start.getDate() - dayNumber + 1);
     start.setHours(currentHour, 0, 0, 0);
     const end = new Date(now);
