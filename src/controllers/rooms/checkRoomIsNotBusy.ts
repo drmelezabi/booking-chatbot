@@ -1,6 +1,5 @@
 import {
   DocumentData,
-  Timestamp,
   collection,
   getDocs,
   query,

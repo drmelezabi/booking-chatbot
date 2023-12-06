@@ -14,47 +14,6 @@ import { getDayRange } from "./controllers/date/getDayRange";
     }
   };
   initializeFirebaseApp();
-
-  function extractInformation(inputString: string): {
-    room?: string;
-    date?: string;
-    time?: string;
-  } {
-    const roomRegex = /(?:قاعة|القاعة|القاعه|قاعه)\s+(\S+)/;
-    const dateRegex = /(?:يوم|اليوم|تاريخ|التاريخ)\s+(\S+)/;
-    const alternativeDateRegex =
-      /(?:بكرة|بكره|بعد بكرة|بعد بكره|النهاردة|النهارده)\s+(\S+)/;
-    const timeRegex =
-      /(?:موعد|الموعد|التوقيت|توقيت|الساعة|ساعة|ساعه|الساعه)\s+(\S+)/;
-
-    let dateMatch = dateRegex.exec(inputString);
-
-    if (!dateMatch) {
-      dateMatch = alternativeDateRegex.exec(inputString);
-    }
-
-    const roomMatch = roomRegex.exec(inputString);
-    const timeMatch = timeRegex.exec(inputString);
-
-    const result: { room?: string; date?: string; time?: string } = {};
-
-    if (roomMatch) {
-      result.room = roomMatch[1];
-    }
-    if (dateMatch) {
-      result.date = dateMatch[1];
-    }
-    if (timeMatch) {
-      result.time = timeMatch[1];
-    }
-
-    return result;
-  }
-
-  // Example usage:
-  const input = "عاوز احجز ميعاد الساعة 1 في قاعة 107 بكرة";
-  const extractedInfo = extractInformation(input);
-  console.log(extractedInfo);
 })();
 
 const client = new Client({

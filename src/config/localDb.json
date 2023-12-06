@@ -2,19 +2,12 @@
   "rules": {
     "BookingAvailability": {
       "SuspendedIndefinitely": false,
-      "SuspendedUntilDate": false,
-      "BookingAvailabilityDate": "2023-12-02T21:12:37.789Z"
+      "SuspendedUntilDate": true,
+      "BookingAvailabilityDate": "2023-12-09T21:12:37.789Z"
     },
     "maxTimeBeforeDelete": 2
   },
   "registeredPhone": [
-    {
-      "studentId": "gouaZqpCRlk9بdgkuddZ",
-      "chatId": "201020202020@c.us",
-      "admin": true,
-      "type": "student",
-      "recoveryId": "12345678"
-    },
     {
       "studentId": "gouaZqpCRlk9KXkuhxHZ",
       "chatId": "201020205256@c.us",
@@ -24,7 +17,16 @@
     }
   ],
   "activationPin": [],
-  "suspendedStudent": [],
+  "suspendedStudent": [
+    {
+      "studentId": "gouaZqpCRlk9KXkuhxHZ",
+      "ViolationCounter": 3,
+      "suspensionCase": false,
+      "admin": true,
+      "BookingAvailabilityDate": "2023-12-08T23:39:25.087Z",
+      "violations": []
+    }
+  ],
   "reservation": [],
   "punishmentUnit": 3
 }

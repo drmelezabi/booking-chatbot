@@ -14,6 +14,7 @@ import getReservations from "./advanced/getReservations";
 import mySchedule from "./personal/mySchedule";
 import myViolations from "./personal/myViolations";
 import { convertArToEnDigits } from "../config/diff";
+import addNewAppointment from "./booking/addNewAppointment";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   if (/^مساعد[ةه]\s*$/.test(message.body)) {
@@ -68,11 +69,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   } else if (message.body === "!مخالفات") {
     await myViolations(client, message);
   } else if (/^!حجز\s/.test(message.body)) {
-    const items = message.body.split(" ");
-    const date = items[1];
-    const room = items[2];
-    const time = items[3];
-    console.log({ date, room, time });
+    await addNewAppointment(client, message);
   } else {
     client.sendMessage(
       message.from,
