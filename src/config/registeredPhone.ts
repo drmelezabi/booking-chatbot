@@ -5,18 +5,14 @@ interface IRegisteredPhone {
   phoneId: string;
 }
 export const registeredPhone = async (): Promise<IRegisteredPhone[]> => {
-  return new Promise((resolve, reject) => {
-    try {
-      const localDb = new JsonDB(
-        new Config("src/config/localDb", true, false, "/")
-      );
+  try {
+    const localDb = new JsonDB(
+      new Config("src/config/localDb", true, false, "/")
+    );
 
-      const rulesData =
-        localDb.getObject<IRegisteredPhone[]>("/registeredPhone");
-      resolve(rulesData);
-    } catch (error: any) {
-      console.log(error.message);
-      reject(error);
-    }
-  });
+    return await localDb.getObject<IRegisteredPhone[]>("/registeredPhone");
+  } catch (error: any) {
+    console.log(error.message);
+    return [];
+  }
 };

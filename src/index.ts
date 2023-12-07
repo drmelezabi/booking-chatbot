@@ -2,6 +2,7 @@ import { firebaseApp } from "./config/firebase";
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import router from "./resolvers";
+import deleteReservation from "./controllers/rules/deleteReservation";
 
 (async () => {
   const initializeFirebaseApp = () => {
@@ -13,6 +14,7 @@ import router from "./resolvers";
     }
   };
   initializeFirebaseApp();
+  await deleteReservation("A3EvlYhDFULeP5Zy4qM1");
 })();
 
 const client = new Client({

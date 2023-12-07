@@ -17,6 +17,7 @@ import addNewAppointment from "./booking/addNewAppointment";
 import verify from "./verify";
 import studentActive from "./verify/active";
 import deleteAppointment from "./booking/deleteAppointment";
+import avail from "./replace";
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const { body, from } = message;
   //
@@ -67,6 +68,9 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   //
   //
   else if (/^![إأا]دار[ةه]\s*$/.test(body)) await AdvancedMenu(client, message);
+  //
+  //
+  else if (/^!تمرير\s*(\d+\s*)*$/.test(body)) await avail(client, message);
   //
   //
   else {

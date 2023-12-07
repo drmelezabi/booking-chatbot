@@ -9,24 +9,24 @@ const verify = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   if (isExist === null) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
+  }
+
+  const studentId = isExist!.studentId;
+
+  // await getStudentViolations(rsstudentId);
+
+  const studentData = await getStudent(studentId);
+
+  if (!studentData) {
+    client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
+    return;
   } else {
-    const studentId = isExist!.studentId;
-
-    // await getStudentViolations(rsstudentId);
-
-    const studentData = await getStudent(studentId);
-
-    if (!studentData) {
-      client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
-      return;
+    if (isExist.type === "student") {
+      await studentVerify(client, message, isExist);
+    } else if (isExist.type === "teacher" || isExist.admin === true) {
+      await supervisorVerify(client, message, isExist);
     } else {
-      if (isExist.type === "student") {
-        await studentVerify(client, message, isExist);
-      } else if (isExist.type === "teacher" || isExist.admin === true) {
-        await supervisorVerify(client, message, isExist);
-      } else {
-        client.sendMessage(message.from, "❌ لا تملك صلاحية التنشيط");
-      }
+      client.sendMessage(message.from, "❌ لا تملك صلاحية التنشيط");
     }
   }
 };

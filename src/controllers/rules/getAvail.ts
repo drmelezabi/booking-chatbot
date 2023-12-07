@@ -1,12 +1,14 @@
 import localDb from "../../config/localDb";
 
 export interface IAvail {
-  id: string;
+  hostId: string;
   pin: number;
   reservationId: string;
   host: boolean;
   availId?: string;
-  date: Date;
+  reservationDate: Date;
+  availCreatedDate: Date;
+  availName?: string;
 }
 
 const getAvail = async (): Promise<IAvail[]> => {

@@ -32,6 +32,12 @@ const updateRegisteredPhone = async (
     const newObj = [...omitReservations, { ...oldReservation, ...reg }];
 
     await localDb.push("/registeredPhone", newObj, true);
+    // Save the data (useful if you disable the saveOnPush)
+    await localDb.save();
+
+    // In case you have an exterior change to the databse file and want to reload it
+    // use this method
+    await localDb.reload();
     return true;
   } catch (error: any) {
     console.log(error.message);

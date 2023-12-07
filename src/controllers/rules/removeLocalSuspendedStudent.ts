@@ -10,6 +10,12 @@ const removeLocalSuspendedStudent = async (studentId: string) => {
       (reservation) => reservation.studentId != studentId
     );
     await localDb.push("/suspendedStudent", filteredReservations, true);
+    // Save the data (useful if you disable the saveOnPush)
+    await localDb.save();
+
+    // In case you have an exterior change to the databse file and want to reload it
+    // use this method
+    await localDb.reload();
   } catch (error: any) {
     console.log(error.message);
   }

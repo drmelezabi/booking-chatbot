@@ -29,24 +29,29 @@ const addNewAppointment = async (
   }
 
   const studentId = isExist.studentId;
-  await getStudentViolations(studentId);
-  const suspension = (await getStudentsSuspension()).filter(
-    (stdCase) => stdCase.studentId === studentId && stdCase
+
+  const isExistedInSuspensionList = (await getStudentsSuspension()).filter(
+    (sus) => sus.studentId === isExist.studentId
   );
 
-  if (suspension.length && suspension[0].suspensionCase) {
-    const dt = suspension[0].BookingAvailabilityDate;
-    const sticker = MessageMedia.fromFilePath("./src/imgs/rejected.png");
-    client.sendMessage(message.from, sticker, {
-      sendMediaAsSticker: true,
-    });
-    client.sendMessage(
-      message.from,
-      `يبدو أنك موقوف عن حجز قاعات المذاكرة وفقا لتجاوز عدد مرات المخالفات\n حيث أن عدد مخالفاتك وصلت ${
-        suspension[0].ViolationCounter
-      } مرات\nالإيقف ينتهي في ${dt.toLocaleDateString("ar-EG", dtOptions)}`
+  if (isExistedInSuspensionList.length) {
+    await getStudentViolations(studentId);
+    const suspension = (await getStudentsSuspension()).filter(
+      (stdCase) => stdCase.studentId === studentId && stdCase
     );
-    return;
+
+    if (suspension.length && suspension[0].suspensionCase) {
+      const dt = suspension[0].BookingAvailabilityDate;
+      const sticker = MessageMedia.fromFilePath("./src/imgs/rejected.png");
+      client.sendMessage(message.from, sticker, {
+        sendMediaAsSticker: true,
+      });
+      const msg = `يبدو أنك موقوف عن حجز قاعات المذاكرة وفقا لتجاوز عدد مرات المخالفات\n حيث أن عدد مخالفاتك وصلت ${
+        suspension[0].ViolationCounter
+      } مرات\nالإيقف ينتهي في ${dt.toLocaleDateString("ar-EG", dtOptions)}`;
+      client.sendMessage(message.from, msg);
+      return;
+    }
   }
 
   const existedRes = (await getLocalReservations()).filter(

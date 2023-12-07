@@ -7,16 +7,18 @@ export interface IReservation {
 }
 
 const addLocalReservations = async (reservation: IReservation) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const rulesData = localDb.push("/reservation[]", reservation, true);
-      resolve(rulesData);
-      return;
-    } catch (error: any) {
-      console.log(error.message);
-      reject(error);
-    }
-  });
+  try {
+    localDb.push("/reservation[]", reservation, true);
+    // Save the data (useful if you disable the saveOnPush)
+    await localDb.save();
+
+    // In case you have an exterior change to the databse file and want to reload it
+    // use this method
+    await localDb.reload();
+    return;
+  } catch (error: any) {
+    console.log(error.message);
+  }
 };
 
 export default addLocalReservations;
