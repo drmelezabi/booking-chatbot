@@ -5,4 +5,8 @@ export const chatCash = new JsonDB(
   new Config("src/config/chatCash", true, false, "/")
 );
 
+export const expected = new JsonDB(
+  new Config("src/config/expected", true, false, "/")
+);
+
 export default localDb;

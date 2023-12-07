@@ -8,10 +8,10 @@ interface IAppointment {
   start: Date;
   stdId: string;
   student: string;
-  supervisor: string;
+  supervisor?: string;
 }
 
-const addNewAppointment = async (appointment: IAppointment) => {
+const createNewAppointment = async (appointment: IAppointment) => {
   const appointmentId = genId20();
   try {
     await addDocument("appointment", appointmentId, appointment);
@@ -21,8 +21,8 @@ const addNewAppointment = async (appointment: IAppointment) => {
       Date: appointment.start,
     });
   } catch (error) {
-    console.log("addNewAppointment", error);
+    console.log("CreateNewAppointment", error);
   }
 };
 
-export default addNewAppointment;
+export default createNewAppointment;

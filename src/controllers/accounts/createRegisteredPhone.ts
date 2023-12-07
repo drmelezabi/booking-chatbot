@@ -4,6 +4,7 @@ export interface registeredData {
   studentId: string;
   chatId: string;
   recoveryId: string;
+  name: string;
   type: string;
   admin: boolean;
 }

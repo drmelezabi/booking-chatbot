@@ -2,7 +2,6 @@ import { firebaseApp } from "./config/firebase";
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import router from "./resolvers";
-import { getDayRange } from "./controllers/date/getDayRange";
 
 (async () => {
   const initializeFirebaseApp = () => {

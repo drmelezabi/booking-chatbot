@@ -12,7 +12,7 @@ export const checkRoomAvailability = async (room: string, start: Date) => {
     const finalData: DocumentData[] = [];
 
     const editedDate = new Date(start);
-    editedDate.setSeconds(start.getSeconds() + 1);
+    editedDate.setSeconds(start.getSeconds() + 3);
 
     const q = query(
       collection(firestoreDb, "appointment"),
@@ -33,6 +33,6 @@ export const checkRoomAvailability = async (room: string, start: Date) => {
     return true;
   } catch (error) {
     console.log("get", error);
-    return [];
+    return null;
   }
 };

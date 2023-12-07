@@ -12,7 +12,7 @@ const phoneVerification = async (
   message: WAWebJS.Message,
   msg: string
 ) => {
-  const match = msg.match(/^رمز\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/);
+  const match = msg.match(/^!توثيق\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/);
   const chatId = message.from;
   if (!match) {
     await client.sendMessage(chatId, "رمز غير صالح");
@@ -28,6 +28,7 @@ const phoneVerification = async (
       if (!IsActivated) {
         await createRegisteredPhone({
           studentId: accountData.id,
+          name: accountData.data.name,
           chatId: chatId,
           admin: accountData.data.admin,
           type: accountData.data.type,

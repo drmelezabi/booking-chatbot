@@ -5,8 +5,13 @@ import getStudentsSuspension from "../../controllers/rules/getStudentsSuspension
 import getStudentViolations from "../../controllers/accounts/getStudentViolations";
 import getLocalReservations from "../../controllers/rules/getLocalReservations";
 import checkBookingAvailability from "../../controllers/rules/checkBookingAvailability";
-import { dtOptions } from "../../config/diff";
+import { arabicName, dtOptions } from "../../config/diff";
 import { checkRoomAvailability } from "../../controllers/rooms/checkRoomIsNotBusy";
+import { getDayRangeWithTime } from "../../controllers/date/getDayRangeWithTime";
+import getRules from "../../controllers/rules/getRules";
+import createNewAppointment from "../../controllers/rooms/addAppointment";
+import formatDateTime from "../../controllers/date/formateTimestamp";
+import starkString from "starkstring";
 
 const addNewAppointment = async (
   client: WAWebJS.Client,
@@ -47,11 +52,11 @@ const addNewAppointment = async (
           client.sendMessage(message.from, sticker, {
             sendMediaAsSticker: true,
           });
-          const dtFormmat = existedRes[0].Date.toLocaleDateString(
+          const dtFormat = existedRes[0].Date.toLocaleDateString(
             "ar-EG",
             dtOptions
           );
-          const msg = `يمكنك حجز موعد جديد بعد انتهاء موعد الحجز الساري الخاص بك\nموعد الحجز الساري هو:\n${dtFormmat}`;
+          const msg = `يمكنك حجز موعد جديد بعد انتهاء موعد الحجز الساري الخاص بك\nموعد الحجز الساري هو:\n${dtFormat}`;
           client.sendMessage(message.from, msg);
         } else {
           const BookingIsAvailable = await checkBookingAvailability();
@@ -65,37 +70,105 @@ const addNewAppointment = async (
             client.sendMessage(message.from, BookingIsAvailable);
           } else {
             let restOfString: string = message.body.substring("!حجز".length);
-            const preparedMessages = prepareBookingMessage(restOfString);
-            const { day, room, time } = preparedMessages;
+            const { day, room, time } =
+              await prepareBookingMessage(restOfString);
 
             if (!day || !time || !room) {
+              const msg =
+                " أحد المعلومات غير واضحة برجاء توضيح الموعد واليوم والقاعة";
               const sticker = MessageMedia.fromFilePath("./src/imgs/lost.png");
-              await client.sendMessage(message.from, sticker, {
+              client.sendMessage(message.from, sticker, {
                 sendMediaAsSticker: true,
               });
-              client;
-              client.sendMessage(
-                message.from,
-                " أحد المعلومات غير واضحة برجاء توضيح الموعد واليوم والقاعة"
-              );
+              client.sendMessage(message.from, msg);
             } else {
-              const roomAvailability = await checkRoomAvailability(
-                preparedMessages.room,
-                new Date(``)
-              );
+              const stamp = await getDayRangeWithTime(day, time);
+              if (typeof stamp === "number") {
+                let msg = "";
+                if (stamp === 1)
+                  msg = "يبدو أن موعد الحجز المطلوب قبل مواعيد العمل بالكلية";
+                else if (stamp === 2)
+                  msg = `يبدو أن مواعيد الحجز لليوم المطلوب غير متاحة في الاسبوع الحالي\n\nيمكنك اختيار موعد خلال الفترة المتبقية المتاحة من الأسبوع الحالي\nأو الانتظار حتى نهاية يوم الخميس  حتى يصبح الحجز للأسبوع التالي متاح`;
+                const sticker = MessageMedia.fromFilePath(
+                  "./src/imgs/fence.png"
+                );
+                client.sendMessage(message.from, sticker, {
+                  sendMediaAsSticker: true,
+                });
+                client.sendMessage(message.from, msg);
+              } else {
+                const { blockedDays, blockedDates } = await getRules();
+                if (blockedDays.includes(day)) {
+                  const msg = `يوم ${arabicName[day]} ليس من ضمن الأيام المتاحة للحجز`;
+                  const sticker = MessageMedia.fromFilePath(
+                    "./src/imgs/lost.png"
+                  );
+                  client.sendMessage(message.from, sticker, {
+                    sendMediaAsSticker: true,
+                  });
+                  client.sendMessage(message.from, msg);
+                } else {
+                  const { start } = stamp;
+                  const isBlockedDate = blockedDates.filter((d) => {
+                    const IsNotAvailable =
+                      d.date.getDate() === start.getDate() &&
+                      d.date.getMonth() === start.getMonth() &&
+                      (d.annually ||
+                        d.date.getFullYear() === start.getFullYear());
+                    return IsNotAvailable;
+                  });
+                  if (isBlockedDate.length) {
+                    const msg = `يوم ${arabicName[day]} المطلوب ليس من ضمن الأيام المتاحة للمذاكرة\nوالسبب : ${isBlockedDate[0].reason}`;
+                    const sticker = MessageMedia.fromFilePath(
+                      "./src/imgs/rules.png"
+                    );
+                    client.sendMessage(message.from, sticker, {
+                      sendMediaAsSticker: true,
+                    });
+                    client.sendMessage(message.from, msg);
+                  } else {
+                    const isAvailableRoom = await checkRoomAvailability(
+                      room,
+                      start
+                    );
+                    if (!isAvailableRoom) {
+                      const msg = `الغرفة ${room} مشغولة في الوقت المطلوب\nيمكنك الاطلاع على المواعيد المحجوزة لتفادي هذه المواعيد`;
+                      const sticker = MessageMedia.fromFilePath(
+                        "./src/imgs/busy.png"
+                      );
+                      client.sendMessage(message.from, sticker, {
+                        sendMediaAsSticker: true,
+                      });
+                      client.sendMessage(message.from, msg);
+                    } else {
+                      await createNewAppointment({
+                        case: 0,
+                        room,
+                        start,
+                        stdId: studentId,
+                        student: isExist.name,
+                      });
+                      const dt = formatDateTime(start);
+                      const succeedMsg = `🌟 *تمت عملية الحجز بنجاح!* 🌟
 
-              client.sendMessage(
-                message.from,
-                `Day:${preparedMessages.day}\nTime:${preparedMessages.time}\nRoom:${preparedMessages.room}`
-              );
+*يوم:* ${arabicName[day]}
+*تاريخ:* ${dt.Date}
+*التوقيت:* ${dt.Time}
+*الغرفة:* ${starkString(room).arabicNumber().toString()}
 
-              // if (reservations.length) {
-              // } else {
-              //   // client.sendMessage(
-              //   //   message.from,
-              //   //   `🟢 *لا يوجد أي حجز خلال الأسبوع حتى الآن*`
-              //   // );
-              // }
+ننتظر منك الالتزام بالحضور في الموعد وسرعة تنشيط الحجز مع المشرف. 🕒
+                      `;
+                      const sticker = MessageMedia.fromFilePath(
+                        "./src/imgs/calendar.png"
+                      );
+                      client.sendMessage(message.from, sticker, {
+                        sendMediaAsSticker: true,
+                      });
+                      client.sendMessage(message.from, `${succeedMsg}`);
+                    }
+                  }
+                }
+              }
             }
           }
         }

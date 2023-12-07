@@ -8,10 +8,13 @@ const isAdmin = async (messageFrom: string) => {
   );
 
   if (!IsExist.length) return "انت تستخدم هاتف خارج المنظومه" as string;
-  const IsAdmin = IsExist.filter((account) => account.admin === true);
-  if (!IsAdmin.length) return "❌ لا تملك صلاحية تنفيذ الأمر" as string;
-
-  return true;
+  else {
+    const IsAdmin = IsExist.filter((account) => account.admin === true);
+    if (!IsAdmin.length) return "❌ لا تملك صلاحية تنفيذ الأمر" as string;
+    else {
+      return true;
+    }
+  }
 };
 
 export default isAdmin;

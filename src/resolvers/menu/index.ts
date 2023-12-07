@@ -1,4 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
+import isAdmin from "../../controllers/accounts/isAdmin";
 
 export const menu = async (
   client: WAWebJS.Client,
@@ -33,6 +34,11 @@ export const trackingInfo = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
+  const errMs = await isAdmin(message.from);
+  if (typeof errMs === "string") {
+    await client.sendMessage(message.from, errMs);
+    return;
+  }
   const messageBody = `📅 *لمتابعة جدول المذاكرة* 📅
 
   أرسل أحد الخبارات التالية:
@@ -73,10 +79,16 @@ export const AdvancedMenu = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
+  const errMs = await isAdmin(message.from);
+  if (typeof errMs === "string") {
+    await client.sendMessage(message.from, errMs);
+    return;
+  }
+
   const messageBody = `*مرحبا بك في النظام الإداري*
 أرسل أحد الكلمات التالية
 
-  1- طلب رمز استعاره`;
+  1- !استعاده`;
 
   await client.sendMessage(message.from, messageBody);
 };
@@ -85,13 +97,19 @@ export const getRec = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
+  const errMs = await isAdmin(message.from);
+  if (typeof errMs === "string") {
+    await client.sendMessage(message.from, errMs);
+    return;
+  }
+
   const messageBody = `🔐 *للحصول على رمز استعادة حساب من خلال رقم هاتفك* 🔐
 
-أرسل كلمة "رمز استعاده" متبوعة برقم الهاتف.
+أرسل كلمة "!استعادة" متبوعة برقم الهاتف.
 
 *مثال:*
 _إذا كان رقم الهاتف مصري_
-*مثال:* "رمز استعاده 01020202020"
+*مثال:* "!توثيق 01020202020"
 ⚠ يمكنك كتابة الرقم بالطريقة الشائعة مثل 
 الطريقة التقليدية 01022222222
 أو مسبوقا برقم 2 مثل 20102020202020 
@@ -100,7 +118,7 @@ _إذا كان رقم الهاتف مصري_
 _إذا كان رقم الهاتف غير مصري_
 يجب كتابتها مسبوقة بمفتاح الدولة بدون كتابة 00 أو + في البداية.
 كمثال، إذا كانت دولة عمان هي 968 ورقم الهاتف 93565656، يُكتب رقم الهاتف 96893565656.
-لتكون الرسالة "رمز استعاده 96893565656"  
+لتكون الرسالة "!توثيق 96893565656"  
 `;
 
   await client.sendMessage(message.from, messageBody);
@@ -110,7 +128,7 @@ export const verification = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
-  const messageBody = `📱 *لتوثيق رقم هاتفك* 📱\nأرسل كلمة " *رمز* " متبوعة بالرقم الشخصي\n⚠ ملحوظة هامة: الأرقام يجب أن تكون بالأنجليزية\n\n*مثال*:\n\`\`\`رمز 12345\`\`\``;
+  const messageBody = `📱 *لتوثيق رقم هاتفك* 📱\nأرسل كلمة " *!توثيق* " متبوعة بالرقم الشخصي\n⚠ ملحوظة هامة: الأرقام يجب أن تكون بالأنجليزية\n\n*مثال*:\n\`\`\`!توثيق 12345\`\`\``;
 
   await client.sendMessage(message.from, messageBody);
 };

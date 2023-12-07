@@ -7,18 +7,19 @@ const generateRecovery = async (
   message: WAWebJS.Message,
   msg: string
 ) => {
-  const chatId = message.from;
+  const { from: chatId } = message;
 
   const errorMessage = await isAdmin(chatId);
 
   if (typeof errorMessage === "string")
     await client.sendMessage(chatId, errorMessage);
+  else {
+    const messages = await getRecovery(msg);
 
-  const messages = await getRecovery(msg);
-
-  messages.map((message) => {
-    client.sendMessage(chatId, message);
-  });
+    messages.map((message) => {
+      client.sendMessage(chatId, message);
+    });
+  }
 };
 
 export default generateRecovery;

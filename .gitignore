@@ -133,8 +133,8 @@ prisma/migrations
 prisma/down.sql
 
 
-.wwebjs_auth/
-.wwebjs_cache/
-
-.wwebjs_auth
-.wwebjs_cache
+.wwebjs_auth/*
+.wwebjs_cache/*
+.wwebjs_auth/session/*
+.wwebjs_auth/session/Crashpad/metadata
+.wwebjs_auth/session/Crashpad/settings.dat

@@ -6,7 +6,12 @@ interface IRules {
     SuspendedUntilDate: Boolean;
     BookingAvailabilityDate: Date;
   };
+  blockedDays: ("Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat")[];
+  blockedDates: { date: Date; reason: string; annually: boolean }[];
+  bookingOpen: number;
+  bookingClose: number;
   maxTimeBeforeDelete: number;
+  rooms: string[];
 }
 
 const getRules = async (): Promise<IRules> => {

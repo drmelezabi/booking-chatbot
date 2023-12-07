@@ -4,13 +4,13 @@ import manipulatePhone from "./manipulatePhone";
 const getRecovery = async (unformattedPhone: string) => {
   let phone: RegExpMatchArray;
   phone = unformattedPhone.match(
-    /^رمز [إا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/
+    /^![إا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/
   )!;
 
   if (!phone)
     phone = unformattedPhone
       .slice(1)
-      .match(/^رمز [إا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/)!;
+      .match(/^![إا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/)!;
 
   const returnMessages: string[] = [];
 

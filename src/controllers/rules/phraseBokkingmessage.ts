@@ -1,7 +1,8 @@
 import starkString from "starkstring";
-import { rephrase } from "../../config/diff";
+import getRules from "./getRules";
+import getExpected from "./getExpected";
 
-const preparationHumanType = (inp: string) => {
+const preparationHumanType = async (inp: string) => {
   let str = starkString(` ${inp} `).toString(); //returns: 345 45
   const today = new Date();
   const tomorrowD = new Date(today);
@@ -11,16 +12,18 @@ const preparationHumanType = (inp: string) => {
   const threeDaysAfterTomorrow = new Date(today);
   threeDaysAfterTomorrow.setDate(today.getDate() + 3);
 
-  const todayName = today.toLocaleDateString("en-US", { weekday: "long" });
+  const todayName = today.toLocaleDateString("en-US", { weekday: "short" });
   const tomorrowName = tomorrowD.toLocaleDateString("en-US", {
-    weekday: "long",
+    weekday: "short",
   });
   const twoAfterTomorrow = twoDaysAfterTomorrow.toLocaleDateString("en-US", {
-    weekday: "long",
+    weekday: "short",
   });
   const theeAfterTomorrow = threeDaysAfterTomorrow.toLocaleDateString("en-US", {
-    weekday: "long",
+    weekday: "short",
   });
+
+  const rephrase = await getExpected();
 
   const tomorrow = /(?<!بعد\s)(بكر[ةه]|غد(اً?|ا)?|الغد(اً?)?)/g;
   const tdy = /ال(?:نهاردة|يوم|نهارده)/g;
@@ -34,6 +37,7 @@ const preparationHumanType = (inp: string) => {
     .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, (match) =>
       starkString(match).englishNumber().toString()
     )
+    // .replace(/و\s+نص/g, "ونص")
     .replace(letterBeforeNumberArabic, " ")
     .replace(tdy, todayName)
     .replace(threeDayAfter, theeAfterTomorrow)
@@ -51,26 +55,18 @@ const preparationHumanType = (inp: string) => {
   return str;
 };
 
+type dayType = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | null;
+
 type TimeDetails = {
-  time: string;
-  day: string;
-  room: string;
+  time: string | null;
+  day: dayType;
+  room: string | null;
 };
 
-function extractTimeDetails(input: string): TimeDetails {
+async function extractTimeDetails(input: string): Promise<TimeDetails> {
   try {
     const timeRegex = /\b((1[0-2]|0?[1-9]):([0-5][0-9]))\b/g;
-    const roomArray = [
-      "107",
-      "106A",
-      "106B",
-      "105",
-      "معمل أ",
-      "معمل ب",
-      "109",
-      "106 أ",
-      "106 ب",
-    ]; // Add variations of room numbers
+    const { rooms: roomArray } = await getRules();
 
     const match = input.match(timeRegex);
     let time = match ? match[0] : "";
@@ -101,20 +97,19 @@ function extractTimeDetails(input: string): TimeDetails {
 
     const room = roomArray.find((room) => input.includes(room)) || "";
 
-    const dayRegex =
-      /\b(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\b/g;
+    const dayRegex = /\b(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\b/g;
     const dayMatch = input.match(dayRegex);
-    const day = dayMatch ? dayMatch[0] : "";
+    const day = dayMatch ? dayMatch[0] : null;
 
-    return { time: timeIn24HourFormat, day, room };
+    return { time: timeIn24HourFormat, day: day as dayType, room };
   } catch (error) {
     console.warn(error);
-    return { time: "", day: "", room: "" };
+    return { time: null, day: null, room: null };
   }
 }
-const prepareBookingMessage = (str: string) => {
-  const prepared = preparationHumanType(str);
-  return extractTimeDetails(prepared);
+const prepareBookingMessage = async (str: string): Promise<TimeDetails> => {
+  const prepared = await preparationHumanType(str);
+  return await extractTimeDetails(prepared);
 };
 
 export default prepareBookingMessage;
