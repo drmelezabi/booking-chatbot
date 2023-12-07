@@ -16,15 +16,18 @@ import { convertArToEnDigits as ArToEnNum } from "../config/diff";
 import addNewAppointment from "./booking/addNewAppointment";
 import verify from "./verify";
 import studentActive from "./verify/active";
-
+import deleteAppointment from "./booking/deleteAppointment";
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const { body, from } = message;
-
   //
   if (/^!مساعد[ةه]\s*$/.test(body)) await menu(client, message);
   //
   //
   else if (body === "!توثيق") await verification(client, message);
+  //
+  //
+  else if (/^![إاأ]لغاء\s*$/.test(body))
+    await deleteAppointment(client, message);
   //
   //
   else if (/^!توثيق\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
@@ -44,10 +47,10 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   else if (/^!متابع[ةه]\s*$/.test(body)) await trackingInfo(client, message);
   //
   //
-  else if (/^![إا]ستعاد[هة]\s*$/.test(body)) await getRec(client, message);
+  else if (/^![إأا]ستعاد[هة]\s*$/.test(body)) await getRec(client, message);
   //
   //
-  else if (/^![إا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
+  else if (/^![إأا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
     await getRecovery(client, message, ArToEnNum(body));
   //
   //

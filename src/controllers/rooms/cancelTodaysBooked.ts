@@ -1,11 +1,9 @@
 import {
   Timestamp,
-  updateDoc,
   collection,
   getDocs,
   query,
   where,
-  runTransaction,
   DocumentData,
   deleteDoc,
 } from "firebase/firestore";

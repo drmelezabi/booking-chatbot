@@ -1,6 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
 import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
-import getStudentViolations from "../../controllers/accounts/getStudentViolations";
 import getStudent from "../../controllers/accounts/getStudent";
 import studentVerify from "./studentVerify";
 import supervisorVerify from "./supervisorVerify";
