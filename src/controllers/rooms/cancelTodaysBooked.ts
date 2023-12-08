@@ -13,7 +13,7 @@ import { getRestOfToday } from "../date/getRestOfToday";
 // Assuming you've initialized Firestore with `firestoreDb`
 
 export async function cancelTodaysBooked() {
-  const RestOfToday = getRestOfToday();
+  const RestOfToday = await getRestOfToday();
   if (!RestOfToday) return true;
 
   const rangeStart = Timestamp.fromDate(RestOfToday.start);

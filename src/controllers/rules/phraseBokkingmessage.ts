@@ -55,57 +55,66 @@ const preparationHumanType = async (inp: string) => {
   return str;
 };
 
-type dayType = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | null;
+type dayType = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
 type TimeDetails = {
   time: string | null;
-  day: dayType;
+  day: dayType | null;
   room: string | null;
 };
 
 async function extractTimeDetails(input: string): Promise<TimeDetails> {
-  try {
-    const timeRegex = /\b((1[0-2]|0?[1-9]):([0-5][0-9]))\b/g;
-    const { rooms: roomArray } = await getRules();
+  const { rooms: roomsArray } = await getRules();
 
-    const match = input.match(timeRegex);
-    let time = match ? match[0] : "";
+  const timeRegex = /\b\d{2}:\d{2}\b/;
+  const dayRegex = /\bSun\b|\bMon\b|\bTue\b|\bWed\b|\bThu\b|\bFri\b|\bSat\b/;
 
-    if (time) {
-      if (!time.includes("am") && !time.includes("pm")) {
-        // If 'am' or 'pm' is not present, add 'PM' by default
-        const [hour, minute] = time.split(":").map(Number);
-        const adjustedHour = hour >= 7 && hour < 12 ? hour : (hour + 12) % 24;
-        time = `${adjustedHour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}:00.000 PM`;
-      } else {
-        time = time.replace(/\b(\d{1,2}:\d{2})\b/, "$1:00.000");
-      }
-    }
+  const timeMatch = input.match(timeRegex);
+  const dayMatch = input.match(dayRegex);
 
-    const date = new Date();
-    date.setHours(
-      parseInt(time.slice(0, 2), 10),
-      parseInt(time.slice(3, 5), 10),
-      0,
-      0
-    );
+  let room: string | null = null;
+  let time: string | null = null;
+  let day: string | null = null;
 
-    // Convert time to 24-hour format
-    const timeIn24HourFormat = date.toISOString().slice(11, -1);
+  room = roomsArray.find((room) => input.includes(room)) || null;
 
-    const room = roomArray.find((room) => input.includes(room)) || "";
-
-    const dayRegex = /\b(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\b/g;
-    const dayMatch = input.match(dayRegex);
-    const day = dayMatch ? dayMatch[0] : null;
-
-    return { time: timeIn24HourFormat, day: day as dayType, room };
-  } catch (error) {
-    console.warn(error);
-    return { time: null, day: null, room: null };
+  if (dayMatch) {
+    day = dayMatch[0];
   }
+
+  if (timeMatch) {
+    const parsedTime = timeMatch[0];
+    const isAM = input.toLowerCase().includes("am");
+    const isPM = input.toLowerCase().includes("pm");
+
+    if (isAM || isPM) {
+      const [hours, minutes] = parsedTime.split(":").map(Number);
+      let hour = hours;
+
+      if (isPM && hour < 12) {
+        hour += 12;
+      } else if (isAM && hour === 12) {
+        hour = 0;
+      }
+
+      time = `${hour.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}:00.000`;
+    } else {
+      const [hours, minutes] = parsedTime.split(":").map(Number);
+      let hour = hours;
+
+      if (hour < 7) {
+        hour += 12;
+      }
+
+      time = `${hour.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}:00.000`;
+    }
+  }
+
+  return { time, day: day as dayType | null, room };
 }
 const prepareBookingMessage = async (str: string): Promise<TimeDetails> => {
   const prepared = await preparationHumanType(str);

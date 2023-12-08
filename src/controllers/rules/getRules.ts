@@ -1,11 +1,13 @@
 import localDb from "../../config/localDb";
 
+interface BookingAvailability {
+  SuspendedIndefinitely: Boolean;
+  SuspendedUntilDate: Boolean;
+  BookingAvailabilityDate: Date;
+}
+
 interface IRules {
-  BookingAvailability: {
-    SuspendedIndefinitely: Boolean;
-    SuspendedUntilDate: Boolean;
-    BookingAvailabilityDate: Date;
-  };
+  BookingAvailability: BookingAvailability;
   blockedDays: ("Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat")[];
   blockedDates: { date: Date; reason: string; annually: boolean }[];
   bookingOpen: number;

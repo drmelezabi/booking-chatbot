@@ -12,7 +12,7 @@ export const getDayRangeWithTime = async (day: string, time: string) => {
 
   const timeArray = time.split(":");
 
-  const hour = +timeArray[0] + 2;
+  const hour = +timeArray[0];
   const minuet = +timeArray[1];
 
   if (hour < bookingOpen) {

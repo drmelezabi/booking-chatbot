@@ -18,6 +18,7 @@ import verify from "./verify";
 import studentActive from "./verify/active";
 import deleteAppointment from "./booking/deleteAppointment";
 import avail from "./replace";
+import localDb from "../config/localDb";
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const { body, from } = message;
   //
@@ -77,5 +78,6 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     const msg = `لا أفهم ما تحاول قوله يمكنك كتابة "مساعدة" لتلقي معلومات حول كيفية الاستفادة من منظومة المذاكرة`;
     client.sendMessage(from, msg);
   }
+  await localDb.reload();
 };
 export default router;

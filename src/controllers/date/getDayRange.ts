@@ -1,31 +1,32 @@
-export const getDayRange = (day: string) => {
+import getRules from "../rules/getRules";
+
+export const getDayRange = async (day: string) => {
   const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const number = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
   const now = new Date(); //"December 7, 2023  19:00:00"
   const dayName = names[now.getDay()];
   const currentHour = now.getHours();
-  const sRange = 7;
-  const eRange = 17;
+  const { bookingOpen, bookingClose } = await getRules();
 
   if (dayName === "Fri") {
     const dayNumber = number.findIndex((element) => element === day) + 1;
     if (day === "Fri") return null;
     const start = new Date(now);
     start.setDate(start.getDate() + dayNumber);
-    start.setHours(sRange, 0, 0, 0);
+    start.setHours(bookingOpen, 0, 0, 0);
     const end = new Date(now);
     end.setDate(end.getDate() + dayNumber);
-    end.setHours(eRange, 0, 0, 0);
+    end.setHours(bookingClose, 0, 0, 0);
     return { start, end };
-  } else if (dayName === "Thu" && currentHour >= eRange) {
+  } else if (dayName === "Thu" && currentHour >= bookingClose) {
     const dayNumber = number.findIndex((element) => element === day) + 1;
     const start = new Date(now);
     start.setDate(start.getDate() + dayNumber);
-    start.setHours(sRange, 0, 0, 0);
+    start.setHours(bookingOpen, 0, 0, 0);
     const end = new Date(now);
     end.setDate(end.getDate() + dayNumber);
-    end.setHours(eRange, 0, 0, 0);
+    end.setHours(bookingClose, 0, 0, 0);
     return { start, end };
   } else if (dayName === "Thu") {
     if (day !== "Thu") return null;
@@ -34,15 +35,15 @@ export const getDayRange = (day: string) => {
     start.setHours(currentHour, 0, 0, 0);
     const end = new Date(now);
     end.setDate(end.getDate());
-    end.setHours(eRange, 0, 0, 0);
+    end.setHours(bookingClose, 0, 0, 0);
     return { start, end };
-  } else if (dayName === day && currentHour < eRange) {
+  } else if (dayName === day && currentHour < bookingClose) {
     const start = new Date(now);
     start.setDate(start.getDate());
     start.setHours(currentHour, 0, 0, 0);
     const end = new Date(now);
     end.setDate(end.getDate());
-    end.setHours(eRange, 0, 0, 0);
+    end.setHours(bookingClose, 0, 0, 0);
     return { start, end };
   } else {
     const todayDayName = names[now.getDay()];
@@ -53,10 +54,10 @@ export const getDayRange = (day: string) => {
     if (daySteps < 0) return null;
     const start = new Date(now);
     start.setDate(start.getDate() + daySteps);
-    start.setHours(sRange, 0, 0, 0);
+    start.setHours(bookingOpen, 0, 0, 0);
     const end = new Date(now);
     end.setDate(end.getDate() + daySteps);
-    end.setHours(eRange, 0, 0, 0);
+    end.setHours(bookingClose, 0, 0, 0);
     return { start, end };
   }
 };

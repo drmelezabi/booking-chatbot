@@ -11,7 +11,7 @@ import { getTodayRange } from "../date/getTodayRange";
 import { caseType, caseTypeAR } from "../../config/diff";
 
 export const getStudentTodayBooked = async (studentId: string) => {
-  const range = getTodayRange();
+  const range = await getTodayRange();
   if (!range) return [];
 
   try {

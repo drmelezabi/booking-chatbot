@@ -46,9 +46,13 @@ const addNewAppointment = async (
       client.sendMessage(message.from, sticker, {
         sendMediaAsSticker: true,
       });
-      const msg = `يبدو أنك موقوف عن حجز قاعات المذاكرة وفقا لتجاوز عدد مرات المخالفات\n حيث أن عدد مخالفاتك وصلت ${
+      const msg = `🚫 **يبدو أنك موقوف عن حجز قاعات المذاكرة** 🚫\n\nتم تجاوز عدد المرات المسموحة للمخالفات، حيث بلغ عدد المخالفات الخاصة بك ${
         suspension[0].ViolationCounter
-      } مرات\nالإيقف ينتهي في ${dt.toLocaleDateString("ar-EG", dtOptions)}`;
+      } مرات.\nتاريخ انتهاء الإيقاف: ${dt.toLocaleDateString(
+        "ar-EG",
+        dtOptions
+      )}
+      `;
       client.sendMessage(message.from, msg);
       return;
     }
@@ -64,7 +68,7 @@ const addNewAppointment = async (
       sendMediaAsSticker: true,
     });
     const dtFormat = existedRes[0].Date.toLocaleDateString("ar-EG", dtOptions);
-    const msg = `يمكنك حجز موعد جديد بعد انتهاء موعد الحجز الساري الخاص بك\nموعد الحجز الساري هو:\n${dtFormat}`;
+    const msg = `🕒 **يمكنك حجز موعد جديد بعد انتهاء موعد الحجز الساري الخاص بك** 🕒\n\nموعد الحجز الساري هو: ${dtFormat}`;
     client.sendMessage(message.from, msg);
     return;
   }
@@ -80,9 +84,16 @@ const addNewAppointment = async (
   }
   let restOfString: string = message.body.substring("!حجز".length);
   const { day, room, time } = await prepareBookingMessage(restOfString);
-
+  console.log({ time });
   if (!day || !time || !room) {
-    const msg = " أحد المعلومات غير واضحة برجاء توضيح الموعد واليوم والقاعة";
+    const info: string[] = [];
+    if (!day) info.push("اليوم");
+    if (!time) info.push("التوقيت");
+    if (!room) info.push("القاعة");
+
+    const msg = `❓ **معلومات ${info.join(
+      " و "
+    )} غير واضحة** ❓\n\nببساطة، حاول التعبير عن هذه المعلومات`;
     const sticker = MessageMedia.fromFilePath("./src/imgs/lost.png");
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,
@@ -91,22 +102,9 @@ const addNewAppointment = async (
     return;
   }
 
-  const stamp = await getDayRangeWithTime(day, time);
-  if (typeof stamp === "number") {
-    let msg = "";
-    if (stamp === 1)
-      msg = "يبدو أن موعد الحجز المطلوب قبل مواعيد العمل بالكلية";
-    else if (stamp === 2)
-      msg = `يبدو أن مواعيد الحجز لليوم المطلوب غير متاحة في الاسبوع الحالي\n\nيمكنك اختيار موعد خلال الفترة المتبقية المتاحة من الأسبوع الحالي\nأو الانتظار حتى نهاية يوم الخميس  حتى يصبح الحجز للأسبوع التالي متاح`;
-    const sticker = MessageMedia.fromFilePath("./src/imgs/fence.png");
-    client.sendMessage(message.from, sticker, {
-      sendMediaAsSticker: true,
-    });
-    client.sendMessage(message.from, msg);
-    return;
-  }
+  const { blockedDays, blockedDates, bookingOpen, bookingClose } =
+    await getRules();
 
-  const { blockedDays, blockedDates } = await getRules();
   if (blockedDays.includes(day)) {
     const msg = `يوم ${arabicName[day]} ليس من ضمن الأيام المتاحة للحجز`;
     const sticker = MessageMedia.fromFilePath("./src/imgs/lost.png");
@@ -117,7 +115,26 @@ const addNewAppointment = async (
     return;
   }
 
-  const { start } = stamp;
+  const stamp = await getDayRangeWithTime(day, time);
+  const open = `${starkString(
+    bookingOpen > 12 ? bookingOpen - 12 : bookingOpen
+  ).arabicNumber()} ${bookingOpen > 12 ? "م" : "ص"}`;
+  if (typeof stamp === "number") {
+    let msg = "";
+    if (stamp === 1)
+      msg = `⏰ **عذرًا، يبدو أن موعد الحجز المطلوب قبل مواعيد العمل بالكلية** ⏰\nتبدأ فترات المذاكرة من: ${open}`;
+    else if (stamp === 2)
+      msg = `📅 **يبدو أن مواعيد الحجز لليوم المطلوب غير متاحة في الأسبوع الحالي** 📅\n\nيمكنك اختيار موعد خلال الفترة المتبقية المتاحة من الأسبوع الحالي\nأو الانتظار حتى نهاية يوم الخميس ليصبح الحجز للأسبوع التالي متاح`;
+    const sticker = MessageMedia.fromFilePath("./src/imgs/fence.png");
+    client.sendMessage(message.from, sticker, {
+      sendMediaAsSticker: true,
+    });
+    client.sendMessage(message.from, msg);
+    return;
+  }
+
+  const { start, end } = stamp;
+
   const isBlockedDate = blockedDates.filter((d) => {
     const IsNotAvailable =
       d.date.getDate() === start.getDate() &&
@@ -126,8 +143,33 @@ const addNewAppointment = async (
     return IsNotAvailable;
   });
 
+  // Create a copy of the current date to avoid modification
+  const dayStarts = new Date(start);
+  const dayEnds = new Date(end);
+
+  // Set the time of the copied date to 17:00 (5:00 PM)
+  dayStarts.setHours(bookingOpen, 0, 0, 0);
+  dayEnds.setHours(bookingClose, 0, 0, 0); // setHours(hours, minutes, seconds, milliseconds)
+
+  if (end > dayEnds) {
+    const sticker = MessageMedia.fromFilePath("./src/imgs/project-status.png");
+    client.sendMessage(message.from, sticker, {
+      sendMediaAsSticker: true,
+    });
+    const dtFormat = dayEnds.toLocaleDateString("ar-EG", {
+      timeZone: "Africa/Cairo",
+      hour: "2-digit",
+      hour12: true,
+    });
+    const msg = `🚫 **عذرًا، يبدو أنك اخترت موعدًا بعد الحد الأقصى المحدد من قبل الجامعة** 🚫\n\nموعد الحد الأقصى هو: \n${
+      dtFormat.split(",")[1]
+    }`;
+    client.sendMessage(message.from, msg);
+    return;
+  }
+
   if (isBlockedDate.length) {
-    const msg = `يوم ${arabicName[day]} المطلوب ليس من ضمن الأيام المتاحة للمذاكرة\nوالسبب : ${isBlockedDate[0].reason}`;
+    const msg = `🗓️ **يوم ${arabicName[day]} المطلوب غير متاح للمذاكرة** 🗓️\n\nالسبب: ${isBlockedDate[0].reason}`;
     const sticker = MessageMedia.fromFilePath("./src/imgs/rules.png");
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,
@@ -136,9 +178,22 @@ const addNewAppointment = async (
     return;
   }
 
+  const now = new Date();
+  if (now.getMinutes() > 30) dayStarts.setHours(now.getHours(), 30, 0, 0);
+  if (now.getMinutes() < 30) dayStarts.setHours(now.getHours(), 0, 0, 0);
+
+  if (
+    new Date().getHours() === now.getHours() &&
+    new Date().getMinutes() - now.getMinutes() > 5
+  ) {
+    const msg = `يبدو أنه قدمضى من الوقت ما يزيد عن ${} دقائق ولم يعد الموعد متاح للحجز\n\nحاول حجز المواعيد قبل بدء الحجز بوقت كاف`;
+    client.sendMessage(message.from, msg);
+    return;
+  }
+
   const isAvailableRoom = await checkRoomAvailability(room, start);
   if (!isAvailableRoom) {
-    const msg = `الغرفة ${room} مشغولة في الوقت المطلوب\nيمكنك الاطلاع على المواعيد المحجوزة لتفادي هذه المواعيد`;
+    const msg = `🚪 **الغرفة ${room} مشغولة في الوقت المطلوب** 🚪\n\nيمكنك الاطلاع على المواعيد المحجوزة لتفادي هذه المواعيد`;
     const sticker = MessageMedia.fromFilePath("./src/imgs/busy.png");
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,

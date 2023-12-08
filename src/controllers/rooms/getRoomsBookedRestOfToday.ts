@@ -11,7 +11,7 @@ import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { getRestOfToday } from "../date/getRestOfToday";
 
 export const getRoomsBookedRestOfToday = async () => {
-  const range = getRestOfToday();
+  const range = await getRestOfToday();
   console.log({ range });
   if (!range) return [];
 

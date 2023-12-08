@@ -11,7 +11,7 @@ import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { geRestOfWeek } from "../date/getRestOfWeek";
 
 export const getRoomsBookedNowToEndOfWeek = async () => {
-  const range = geRestOfWeek();
+  const range = await geRestOfWeek();
   if (!range) return [];
 
   try {
