@@ -8,18 +8,19 @@ const generateRecovery = async (
   msg: string
 ) => {
   const { from: chatId } = message;
-
+  // ---------------- Is Admin ----------------
   const errorMessage = await isAdmin(chatId);
-
-  if (typeof errorMessage === "string")
+  if (typeof errorMessage === "string") {
     await client.sendMessage(chatId, errorMessage);
-  else {
-    const messages = await getRecovery(msg);
-
-    messages.map((message) => {
-      client.sendMessage(chatId, message);
-    });
+    return;
   }
+  // ------------------------------------------
+
+  const messages = await getRecovery(msg);
+
+  messages.map((message) => {
+    client.sendMessage(chatId, message);
+  });
 };
 
 export default generateRecovery;

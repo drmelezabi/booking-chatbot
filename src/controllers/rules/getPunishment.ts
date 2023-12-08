@@ -3,7 +3,7 @@ import localDb from "../../config/localDb";
 const getPunishmentUnit = async (): Promise<number> => {
   return new Promise((resolve, reject) => {
     try {
-      const rulesData = localDb.getObject<number>("/punishmentUnit");
+      const rulesData = localDb.getObject<number>("/rules/punishmentUnit");
       resolve(rulesData);
     } catch (error: any) {
       console.log(error.message);

@@ -19,6 +19,7 @@ import studentActive from "./verify/active";
 import deleteAppointment from "./booking/deleteAppointment";
 import avail from "./replace";
 import localDb from "../config/localDb";
+import updateBlockedDaysResolve from "./rules/updateBlockedDays";
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const { body, from } = message;
   //
@@ -72,6 +73,9 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   //
   //
   else if (/^!تمرير\s*(\d+\s*)*$/.test(body)) await avail(client, message);
+  //
+  //
+  else if (/^!حجب/i.test(body)) await updateBlockedDaysResolve(client, message);
   //
   //
   else {

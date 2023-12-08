@@ -13,6 +13,7 @@ interface IRules {
   bookingOpen: number;
   bookingClose: number;
   maxTimeBeforeDelete: number;
+  maxTimeToBookAfterItsStartInMin: number;
   rooms: string[];
 }
 

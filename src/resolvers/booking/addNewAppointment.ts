@@ -102,8 +102,13 @@ const addNewAppointment = async (
     return;
   }
 
-  const { blockedDays, blockedDates, bookingOpen, bookingClose } =
-    await getRules();
+  const {
+    blockedDays,
+    blockedDates,
+    bookingOpen,
+    bookingClose,
+    maxTimeToBookAfterItsStartInMin,
+  } = await getRules();
 
   if (blockedDays.includes(day)) {
     const msg = `يوم ${arabicName[day]} ليس من ضمن الأيام المتاحة للحجز`;
@@ -182,11 +187,29 @@ const addNewAppointment = async (
   if (now.getMinutes() > 30) dayStarts.setHours(now.getHours(), 30, 0, 0);
   if (now.getMinutes() < 30) dayStarts.setHours(now.getHours(), 0, 0, 0);
 
+  let maxAfterStarts = "";
+
+  switch (maxTimeToBookAfterItsStartInMin) {
+    case 1:
+      maxAfterStarts = "دقيقة";
+      break;
+    case 2:
+      maxAfterStarts = "دقيقتين";
+      break;
+    default:
+      if (maxTimeToBookAfterItsStartInMin <= 10) {
+        maxAfterStarts = `${maxTimeToBookAfterItsStartInMin} دقائق`;
+      } else {
+        maxAfterStarts = `${maxTimeToBookAfterItsStartInMin} دقيقة`;
+      }
+      break;
+  }
+
   if (
     new Date().getHours() === now.getHours() &&
-    new Date().getMinutes() - now.getMinutes() > 5
+    new Date().getMinutes() - now.getMinutes() > maxTimeToBookAfterItsStartInMin
   ) {
-    const msg = `يبدو أنه قدمضى من الوقت ما يزيد عن ${} دقائق ولم يعد الموعد متاح للحجز\n\nحاول حجز المواعيد قبل بدء الحجز بوقت كاف`;
+    const msg = `⏰ **يبدو أنه قد مر وقت يزيد عن ${maxAfterStarts} دقيقة ولم يعد الموعد متاحًا للحجز** ⏰\n\nحاول حجز المواعيد قبل بدء الحجز بوقت كافٍ`;
     client.sendMessage(message.from, msg);
     return;
   }
