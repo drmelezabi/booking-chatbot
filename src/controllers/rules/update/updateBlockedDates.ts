@@ -4,7 +4,7 @@ import getBlockedDays from "../read/getBlockedDays";
 
 type blockedDays = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
-const updateBlockedDays = async (
+const updateBlockedDate = async (
   add: Date[],
   remove: Date[]
 ): Promise<string | null> => {
@@ -40,4 +40,4 @@ const updateBlockedDays = async (
   }
 };
 
-export default updateBlockedDays;
+export default updateBlockedDate;

@@ -3,6 +3,7 @@ import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import router from "./resolvers";
 import deleteReservation from "./controllers/rules/deleteReservation";
+import localDb, { chat } from "./config/localDb";
 
 (async () => {
   const initializeFirebaseApp = () => {
@@ -35,6 +36,8 @@ client.on("authenticated", () => {
 });
 
 client.on("message", async (message) => {
+  await localDb.reload();
+  await chat.reload();
   await router(client, message);
 });
 

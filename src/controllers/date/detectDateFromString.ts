@@ -1,17 +1,6 @@
-export default function parseDate(input: string): Date | null {
+export default function detectDateFromString(dateString: string): Date | null {
+  const currentYear = new Date().getFullYear();
   const months: { [key: string]: number } = {
-    يناير: 0,
-    فبراير: 1,
-    مارس: 2,
-    أبريل: 3,
-    مايو: 4,
-    يونيو: 5,
-    يوليو: 6,
-    أغسطس: 7,
-    سبتمبر: 8,
-    أكتوبر: 9,
-    نوفمبر: 10,
-    ديسمبر: 11,
     jan: 0,
     january: 0,
     feb: 1,
@@ -37,37 +26,75 @@ export default function parseDate(input: string): Date | null {
     december: 11,
   };
 
-  const formats: RegExp[] = [
-    /\d{1,2}[-/ ]\d{1,2}[-/ ]\d{2,4}/, // Matches formats like 1/1/2024, 01-01-24, etc.
-    /\d{1,2} (يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر|jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?) \d{2,4}/i,
-    /\d{1,2}(?:[-/ ])?(يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر|jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)(?:[-/ ])?\d{2,4}/i,
-  ];
+  const arabicMonths: { [key: string]: string } = {
+    يناير: "jan",
+    فبراير: "feb",
+    مارس: "mar",
+    إبريل: "apr",
+    آبريل: "apr",
+    ابريل: "apr",
+    أبريل: "apr",
+    مايو: "may",
+    يونيو: "jun",
+    يوليو: "aug",
+    أغسطس: "aug",
+    اغسطس: "aug",
+    إغسطس: "aug",
+    آغسطس: "aug",
+    سبتمبر: "sep",
+    أكتوبر: "oct",
+    اكتوبر: "oct",
+    إكتوبر: "oct",
+    آكتوبر: "oct",
+    نوفمبر: "nov",
+    ديسمبر: "dec",
+  };
+  const regex = new RegExp(Object.keys(arabicMonths).join("|"), "g");
 
-  for (const format of formats) {
-    const match = input.match(format);
-    if (match) {
-      const parts = match[0].split(/[-/ ]+/);
-      let day: number, month: number, year: number;
+  const parts = dateString
+    .replace(regex, (matched) => arabicMonths[matched])
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .filter(Boolean);
 
-      if (parts.length === 3) {
-        day = parseInt(parts[0]);
-        month = isNaN(parseInt(parts[1]))
-          ? months[parts[1].toLowerCase()]
-          : parseInt(parts[1]) - 1;
-        year = parseInt(parts[2].length === 2 ? `20${parts[2]}` : parts[2]);
-      } else {
-        day = parseInt(parts[1]);
-        month = isNaN(parseInt(parts[0]))
-          ? months[parts[0].toLowerCase()]
-          : parseInt(parts[0]) - 1;
-        year = parseInt(parts[2].length === 2 ? `20${parts[2]}` : parts[2]);
+  let day: number | undefined;
+  let month: number | undefined;
+  let year: number | undefined;
+
+  for (const part of parts) {
+    if (!isNaN(Number(part))) {
+      const num = Number(part);
+      if (num >= 1 && num <= 31) {
+        if (!day) {
+          day = num;
+        } else if (!month) {
+          month = num - 1;
+        } else {
+          year = num;
+        }
+      } else if (num >= 1000 && num <= 9999) {
+        year = num;
+      } else if (num >= 0 && num <= 99) {
+        if (num + 2000 <= currentYear) {
+          year = num + 2000;
+        } else {
+          year = num + 1900;
+        }
       }
-
-      if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-        return new Date(year, month, day);
-      }
+    } else if (Object.prototype.hasOwnProperty.call(months, part)) {
+      month = months[part];
     }
   }
 
-  return null;
+  if (day === undefined || month === undefined) {
+    return null;
+  }
+
+  if (year === undefined) {
+    year = currentYear;
+  }
+
+  const date = new Date(year, month, day, 7, 0, 0, 0);
+  return date;
 }

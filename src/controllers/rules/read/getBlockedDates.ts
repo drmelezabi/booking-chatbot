@@ -1,14 +1,14 @@
 import localDb from "../../../config/localDb";
 
-type blockedDays = ("Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat")[];
+type blockedDates = { date: Date; reason: string; annually: boolean }[];
 
-const getBlockedDays = async (): Promise<blockedDays> => {
+const getBlockedDates = async (): Promise<blockedDates> => {
   try {
-    return localDb.getObject<blockedDays>("/rules/blockedDays");
+    return localDb.getObject<blockedDates>("/rules/blockedDates");
   } catch (error: any) {
     console.log(error.message);
     return [];
   }
 };
 
-export default getBlockedDays;
+export default getBlockedDates;

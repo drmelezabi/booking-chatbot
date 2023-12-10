@@ -20,8 +20,36 @@ import deleteAppointment from "./booking/deleteAppointment";
 import avail from "./replace";
 import localDb from "../config/localDb";
 import updateBlockedDaysResolve from "./rules/updateBlockedDays";
+import getChatData from "../controllers/chat/getChatData";
+import getAccountByChatId from "../controllers/accounts/getStudentByChatId";
+import deleteChatData from "../controllers/chat/deleteChatData";
 import updateBlockedDatesResolve from "./rules/updateBlockedDates";
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
+  let counter = 0;
+  let data: { [key: string]: unknown } = {};
+  let lastMessage: Date = new Date();
+  let taskSyntax: string = "";
+  let accountId: string = "";
+
+  if (!message.body.startsWith("!")) {
+    const chat = await getChatData(accountId);
+    const isExist = await getAccountByChatId(message.from);
+    if (isExist) accountId = isExist.studentId;
+    const oneMinutes = 1 * 60 * 1000;
+
+    if (new Date() > new Date(new Date(lastMessage).getTime() + oneMinutes)) {
+      if (chat) taskSyntax = chat[accountId].taskSyntax;
+      await deleteChatData(accountId);
+    } else if (chat) {
+      counter = chat[accountId].counter;
+      data = chat[accountId].data;
+      lastMessage = chat[accountId].lastMessage;
+      taskSyntax = chat[accountId].taskSyntax;
+    }
+  } else {
+    await deleteChatData(accountId);
+  }
+
   const { body, from } = message;
   //
   if (/^!مساعد[ةه]\s*$/.test(body)) await menu(client, message);
@@ -76,10 +104,11 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   else if (/^!تمرير\s*(\d+\s*)*$/.test(body)) await avail(client, message);
   //
   //
+  else if (body === "!حجب تاريخ" || taskSyntax === "!حجب تاريخ")
+    await updateBlockedDatesResolve(client, message, counter, data);
+  //
+  //
   else if (/^!حجب/i.test(body)) await updateBlockedDaysResolve(client, message);
-  //
-  //
-  else if (/^!تم/i.test(body)) await updateBlockedDatesResolve(client, message);
   //
   //
   else {

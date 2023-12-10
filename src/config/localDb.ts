@@ -9,4 +9,7 @@ export const expected = new JsonDB(
   new Config("src/config/expected", true, false, "/")
 );
 
+export const chat = new JsonDB(new Config("src/config/chat", true, false, "/"));
+export const menu = new JsonDB(new Config("src/config/menu", true, false, "/"));
+
 export default localDb;

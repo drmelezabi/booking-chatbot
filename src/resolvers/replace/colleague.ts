@@ -49,7 +49,6 @@ const colleagueAvail = async (
     const match = str.match(/^!تمرير\s*(\d+\s*)*$/);
 
     if (!match) {
-      console.log(2222);
       await client.sendMessage(message.from, "رمز غير صالح");
       return;
     }
@@ -59,7 +58,6 @@ const colleagueAvail = async (
     const avails = (await getAvail()).filter((av) => av.pin === +match[1]);
 
     if (!avails.length) {
-      console.log(1111);
       await client.sendMessage(message.from, "رمز غير صالح");
       return;
     }
