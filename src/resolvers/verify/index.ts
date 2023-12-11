@@ -1,34 +1,40 @@
 import WAWebJS from "whatsapp-web.js";
-import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
-import getStudent from "../../controllers/accounts/getStudent";
+import getCloudAccount from "../../controllers/accounts/getStudent";
 import studentVerify from "./studentVerify";
 import supervisorVerify from "./supervisorVerify";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const verify = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
-  const isExist = await getAccountByChatId(message.from);
-  if (isExist === null) {
+  const isExist = RegisteredPhone.get(
+    (account) => account.chatId === message.from
+  );
+
+  if (!isExist) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
   }
 
-  const studentId = isExist!.studentId;
+  const studentId = isExist.accountId;
 
-  // await getStudentViolations(rsstudentId);
-
-  const studentData = await getStudent(studentId);
+  const studentData = await getCloudAccount(studentId);
 
   if (!studentData) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
-  } else {
-    if (isExist.type === "student") {
-      await studentVerify(client, message, isExist);
-    } else if (isExist.type === "teacher" || isExist.admin === true) {
-      await supervisorVerify(client, message, isExist);
-    } else {
-      client.sendMessage(message.from, "❌ لا تملك صلاحية التنشيط");
-    }
   }
+
+  if (isExist.type === "student") {
+    await studentVerify(client, message, isExist);
+    return;
+  }
+  //
+  else if (isExist.type === "teacher" || isExist.admin === true) {
+    await supervisorVerify(client, message);
+    return;
+  }
+  //
+  client.sendMessage(message.from, "❌ لا تملك صلاحية التنشيط");
+  return;
 };
 
 export default verify;

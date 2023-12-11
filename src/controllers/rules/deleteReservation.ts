@@ -1,7 +1,7 @@
 import { firestoreDb } from "../../config/firebase";
 import { doc, deleteDoc } from "firebase/firestore";
 
-const deleteReservation = async (reservationId: string) => {
+const deleteCloudReservation = async (reservationId: string) => {
   try {
     const myDocRef = doc(firestoreDb, "appointment", reservationId);
     await deleteDoc(myDocRef);
@@ -12,4 +12,4 @@ const deleteReservation = async (reservationId: string) => {
   return true;
 };
 
-export default deleteReservation;
+export default deleteCloudReservation;

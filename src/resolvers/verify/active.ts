@@ -1,10 +1,8 @@
 import WAWebJS from "whatsapp-web.js";
-import localDb from "../../config/localDb";
-import { IActivationObject } from "../../controllers/rules/createActivationPin";
-import removeActivationPin from "../../controllers/rules/removeActivationPin";
-import { updateAppointmentById } from "../../controllers/rooms/updateAppointmentById";
-import removeLocalReservations from "../../controllers/rules/removeLocalReservations";
+import { updateCloudAppointmentById } from "../../controllers/rooms/updateAppointmentById";
 import starkString from "starkstring";
+import Reservation from "../../database/reservation";
+import ActivationPin from "../../database/activationPin";
 
 const studentActive = async (
   client: WAWebJS.Client,
@@ -25,27 +23,28 @@ const studentActive = async (
     starkString(match).englishNumber().toString()
   );
 
-  const isExist = (
-    await localDb.getObject<IActivationObject[]>("/activationPin")
-  ).filter((activationObj) => activationObj.pin === +pin);
-
-  if (!isExist.length) {
+  const ExistedActivationObj = ActivationPin.fetch(
+    (activationObj) => activationObj.pin === +pin
+  );
+  if (!ExistedActivationObj) {
     client.sendMessage(message.from, "رمز التنشيط غير صحيح");
     return;
   }
 
-  const res = isExist[0];
-
   const oneMinute = 1 * 60 * 1000; // Convert 1 minute to milliseconds
 
-  const resDate = new Date(res.creationDate);
+  const resDate = new Date(ExistedActivationObj.creationDate);
 
   // Calculate the range
   const upperBound = new Date(resDate.getTime() + oneMinute);
 
   // Check if dateA is within the range
   if (!(new Date() <= upperBound)) {
-    await removeActivationPin(res.reservationId);
+    ActivationPin.remove(
+      (activationObj) =>
+        activationObj.reservationId === ExistedActivationObj.reservationId
+    );
+    ActivationPin.save();
     const msg =
       '🚀 **انتهيت الآن من الخطوة الأولى من خطوات التنفيذ** 🚀\n\nالآن، توجه إلى أقرب مشرف لإعطاءك رمز التفعيل. بعد الحصول على رمز التنشيط، ارسل كلمة "!رمز التنشيط" متبوعة بالرمز.';
     client.sendMessage(message.from, msg);
@@ -53,9 +52,20 @@ const studentActive = async (
   }
 
   if (new Date() <= upperBound) {
-    await updateAppointmentById(res.reservationId, { case: 1 });
-    await removeLocalReservations(res.reservationId);
-    await removeActivationPin(res.reservationId);
+    await updateCloudAppointmentById(ExistedActivationObj.reservationId, {
+      case: 1,
+    });
+    Reservation.remove(
+      (reservation) =>
+        reservation.reservationId === ExistedActivationObj.reservationId
+    );
+    Reservation.save();
+    ActivationPin.remove(
+      (activationObj) =>
+        activationObj.reservationId === ExistedActivationObj.reservationId
+    );
+    ActivationPin.save();
+
     const msg = `🎉 **تم تنشيط الحجز بنجاح! نتمنى لك التوفيق** 🎉`;
     client.sendMessage(message.from, msg);
     return;

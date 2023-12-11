@@ -1,17 +1,18 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
 import checkTimeIsFitToCancelReservation from "../../controllers/accounts/checkTimeIsFitToCancelReservation";
 import removeLocalReservations from "../../controllers/rules/removeLocalReservations";
-import deleteReservation from "../../controllers/rules/deleteReservation";
+import deleteCloudReservation from "../../controllers/rules/deleteReservation";
 import Reservation from "../../database/reservation";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const deleteAppointment = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
-  const isExist = await getAccountByChatId(message.from);
-
-  if (isExist === null) {
+  const isExist = RegisteredPhone.fetch(
+    (account) => account.chatId === message.from
+  );
+  if (!isExist) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
   }
@@ -41,7 +42,7 @@ const deleteAppointment = async (
 
   await removeLocalReservations(existedRes[0].reservationId);
 
-  await deleteReservation(existedRes[0].reservationId);
+  await deleteCloudReservation(existedRes[0].reservationId);
 
   const sticker = MessageMedia.fromFilePath("./src/imgs/garbage.png");
   client.sendMessage(message.from, sticker, {

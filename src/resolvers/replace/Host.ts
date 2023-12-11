@@ -1,8 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import getLocalReservations from "../../controllers/rules/getLocalReservations";
-import localDb from "../../config/localDb";
 import { activatingPin } from "../../config/IDs";
-import getAvail, { IAvail } from "../../controllers/rules/getAvail";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
 import Avail from "../../database/avail";
 import Reservation from "../../database/reservation";
@@ -13,18 +10,18 @@ const hostAvail = async (
   registeredData: registeredData
 ) => {
   try {
-    const getRes = Reservation.fetchAll().filter((res) => {
+    const getRes = Reservation.fetch((res) => {
       return res.accountId === registeredData.accountId;
     });
 
-    if (getRes.length !== 1) {
+    if (!getRes) {
       client.sendMessage(message.from, "📚 **لم تقم بحجز أي موعد للمذاكرة**");
       return;
     }
     const tenMinutes = 10 * 60 * 1000; // Convert 15 minutes to milliseconds
     const threeMinutes = 3 * 60 * 1000; // Convert 18 minutes to milliseconds
 
-    const resDate = new Date(getRes[0].Date);
+    const resDate = new Date(getRes.Date);
 
     // Calculate the range
     const firstUpperBound = new Date(resDate.getTime() + tenMinutes);
@@ -52,10 +49,6 @@ const hostAvail = async (
       return;
     }
 
-    // const hasAvail = (await getAvail()).filter(
-    //   (av) => av.hostId === registeredData.studentId
-    // );
-
     const hasAvail = Avail.has((u) => u.hostId === registeredData.accountId);
 
     if (hasAvail) {
@@ -66,23 +59,15 @@ const hostAvail = async (
 
     const genPin = +activatingPin();
 
-    const avail: IAvail = {
+    Avail.create({
       hostId: registeredData.accountId,
       pin: genPin,
-      reservationId: getRes[0].reservationId,
+      reservationId: getRes.reservationId,
       host: true,
-      reservationDate: getRes[0].Date,
+      reservationDate: getRes.Date,
       availCreatedDate: new Date(),
-    };
-
-    // localDb.push("/avail[]", avail, true);
-    Avail.create(avail);
-    // Save the data (useful if you disable the saveOnPush)
-    await localDb.save();
-
-    // In case you have an exterior change to the databse file and want to reload it
-    // use this method
-    await localDb.reload();
+    });
+    Avail.save();
 
     const msg = `شارك الرمز مع زميلك وأحد المشرفين\n${genPin}`;
     client.sendMessage(message.from, msg);

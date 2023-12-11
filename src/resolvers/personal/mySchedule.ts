@@ -1,13 +1,17 @@
 import WAWebJS from "whatsapp-web.js";
-import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
 import { getStudentWeekBooked } from "../../controllers/rooms/getStudentWeekBooked";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const mySchedule = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
-  const isExist = await getAccountByChatId(message.from);
-  if (isExist === null)
+  const isExist = RegisteredPhone.fetch(
+    (account) => account.chatId === message.from
+  );
+  if (!isExist) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
-  const studentId = isExist!.studentId;
-  const reservations = await getStudentWeekBooked(studentId);
+    return;
+  }
+  const accountId = isExist.accountId;
+  const reservations = await getStudentWeekBooked(accountId);
 
   if (reservations.length) {
     const title = `*⏳ مواعيد المذاكرة لهذا الأسبوع*\n`;

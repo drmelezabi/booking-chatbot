@@ -90,9 +90,12 @@ const colleagueAvail = async (
     Avail.save();
 
     client.sendMessage(message.from, "الموعد جاهز للتفعيل مع المشرف");
-
     return;
   } catch (error: any) {
+    client.sendMessage(
+      message.from,
+      "حدث خطأ غير متوقع إذا استمرت المشكلة تواصل مع الإدارة"
+    );
     console.log(error.message);
     return;
   }

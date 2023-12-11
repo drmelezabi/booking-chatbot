@@ -16,7 +16,7 @@ export interface studentData {
   violations: string[];
 }
 
-const getStudentIdByPass = async (
+const getCloudStudentIdByPass = async (
   studentPass: string
 ): Promise<{ id: string; data: studentData } | null> => {
   try {
@@ -36,9 +36,9 @@ const getStudentIdByPass = async (
 
     return finalData[0] as { id: string; data: studentData };
   } catch (error) {
-    console.log("getStudentIdByPass", error);
+    console.log("getCloudStudentIdByPass", error);
     return null;
   }
 };
 
-export default getStudentIdByPass;
+export default getCloudStudentIdByPass;

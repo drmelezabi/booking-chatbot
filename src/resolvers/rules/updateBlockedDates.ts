@@ -1,11 +1,11 @@
 import WAWebJS from "whatsapp-web.js";
 import isAdmin from "../../controllers/accounts/isAdmin";
-import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
 import getBlockedDates from "../../controllers/rules/read/getBlockedDates";
 import detectDateFromString from "../../controllers/date/detectDateFromString";
 import starkString from "starkstring";
 import localDb, { chat } from "../../config/localDb";
 import Chat from "../../database/chat";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const updateBlockedDatesResolve = async (
   client: WAWebJS.Client,
@@ -24,8 +24,10 @@ const updateBlockedDatesResolve = async (
     return;
   }
   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~------
-  const isExist = await getAccountByChatId(message.from);
-  if (isExist === null) {
+  const isExist = RegisteredPhone.fetch(
+    (account) => account.chatId === message.from
+  );
+  if (!isExist) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
   }

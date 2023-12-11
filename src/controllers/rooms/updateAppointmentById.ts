@@ -12,7 +12,7 @@ interface IAppointment {
   supervisor?: string;
 }
 
-export async function updateAppointmentById(
+export async function updateCloudAppointmentById(
   appointmentId: string,
   appointment: IAppointment
 ) {

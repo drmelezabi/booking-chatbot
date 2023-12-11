@@ -1,10 +1,10 @@
 import WAWebJS from "whatsapp-web.js";
-import getStudent from "../../controllers/accounts/getStudent";
-import { updateAppointmentById } from "../../controllers/rooms/updateAppointmentById";
-import removeLocalReservations from "../../controllers/rules/removeLocalReservations";
-import deleteReservation from "../../controllers/rules/deleteReservation";
+import deleteCloudReservation from "../../controllers/rules/deleteReservation";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
 import Avail from "../../database/avail";
+import RegisteredPhone from "../../database/RegisteredPhone";
+import Reservation from "../../database/reservation";
+import { updateCloudAppointmentById } from "../../controllers/rooms/updateAppointmentById";
 
 const teacherAvail = async (
   client: WAWebJS.Client,
@@ -14,9 +14,11 @@ const teacherAvail = async (
 ) => {
   const accountId = registeredData.accountId;
 
-  const studentData = await getStudent(accountId);
+  const isExist = RegisteredPhone.get(
+    (account) => account.accountId === accountId
+  );
 
-  if (!studentData) {
+  if (!isExist) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
   }
@@ -63,14 +65,19 @@ const teacherAvail = async (
     return;
   }
 
-  await updateAppointmentById(avail.reservationId, {
+  await updateCloudAppointmentById(avail.reservationId, {
     stdId: avail.availId,
     student: avail.availName,
     case: 1,
     supervisor: registeredData.accountId,
   });
-  await removeLocalReservations(avail.reservationId);
-  await deleteReservation(avail.reservationId);
+
+  Reservation.remove(
+    (reservation) => reservation.reservationId === avail.reservationId
+  );
+  Reservation.save();
+
+  await deleteCloudReservation(avail.reservationId);
 
   Avail.remove((avail) => avail.pin === +match[1]);
   Avail.save();

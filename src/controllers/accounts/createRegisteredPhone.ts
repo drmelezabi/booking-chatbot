@@ -5,7 +5,7 @@ export interface registeredData {
   chatId: string;
   recoveryId: string;
   name: string;
-  type: string;
+  type: "student" | "teacher" | "security" | "employee" | undefined;
   admin: boolean;
 }
 

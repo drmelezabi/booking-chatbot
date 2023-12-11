@@ -1,9 +1,7 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
 import prepareBookingMessage from "../../controllers/rules/phraseBokkingmessage";
 import getStudentsSuspension from "../../controllers/rules/getStudentsSuspension";
 import getStudentViolations from "../../controllers/accounts/getStudentViolations";
-import getLocalReservations from "../../controllers/rules/getLocalReservations";
 import checkBookingAvailability from "../../controllers/rules/checkBookingAvailability";
 import { arabicName, dtOptions } from "../../config/diff";
 import { checkRoomAvailability } from "../../controllers/rooms/checkRoomIsNotBusy";
@@ -13,13 +11,17 @@ import createNewAppointment from "../../controllers/rooms/addAppointment";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import starkString from "starkstring";
 import Reservation from "../../database/reservation";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const addNewAppointment = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
-  const isExist = await getAccountByChatId(message.from);
-  if (isExist === null) {
+  const isExist = RegisteredPhone.fetch(
+    (account) => account.chatId === message.from
+  );
+
+  if (!isExist) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
   }

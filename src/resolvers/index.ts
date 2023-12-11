@@ -20,10 +20,11 @@ import deleteAppointment from "./booking/deleteAppointment";
 import avail from "./replace";
 import localDb from "../config/localDb";
 import updateBlockedDaysResolve from "./rules/updateBlockedDays";
-import getAccountByChatId from "../controllers/accounts/getStudentByChatId";
 import updateBlockedDatesResolve from "./rules/updateBlockedDates";
 import Chat from "../database/chat";
 import showRules from "./rules/ShowRules";
+import RegisteredPhone from "../database/RegisteredPhone";
+
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   let counter = 0;
   let data: { [key: string]: unknown } = {};
@@ -42,7 +43,9 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
       return c;
     });
   } else {
-    const isExist = await getAccountByChatId(message.from);
+    const isExist = RegisteredPhone.fetch(
+      (account) => account.chatId === message.from
+    );
     Chat.save();
     if (isExist) accountId = isExist.accountId;
     const chanData = Chat.fetch((u) => u.id === accountId);

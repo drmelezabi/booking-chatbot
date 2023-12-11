@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import getStudentIdByPass from "../../controllers/accounts/getStudentPass";
+import getCloudStudentIdByPass from "../../controllers/accounts/getStudentPass";
 import { recoveryCodeGen } from "../../config/IDs";
 import { updateCloudAccount } from "../../controllers/accounts/updateCloudAccount";
 import RegisteredPhone from "../../database/RegisteredPhone";
@@ -16,7 +16,7 @@ const phoneVerification = async (
     return;
   }
 
-  const accountData = await getStudentIdByPass(match[1]);
+  const accountData = await getCloudStudentIdByPass(match[1]);
 
   if (!accountData) {
     await client.sendMessage(chatId, "رمز غير صالح");

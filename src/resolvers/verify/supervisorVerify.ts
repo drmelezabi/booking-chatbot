@@ -1,16 +1,12 @@
 import WAWebJS from "whatsapp-web.js";
-import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
-import localDb from "../../config/localDb";
-import { IActivationObject } from "../../controllers/rules/createActivationPin";
-import removeActivationPin from "../../controllers/rules/removeActivationPin";
+
+import ActivationPin from "../../database/activationPin";
 
 const supervisorVerify = async (
   client: WAWebJS.Client,
-  message: WAWebJS.Message,
-  regData: registeredData
+  message: WAWebJS.Message
 ) => {
-  const isExist =
-    await localDb.getObject<IActivationObject[]>("/activationPin");
+  const isExist = ActivationPin.getAll();
 
   if (!isExist.length) {
     client.sendMessage(
@@ -40,11 +36,12 @@ const supervisorVerify = async (
   });
 
   if (!list.length) {
-    await Promise.all(
-      toDeletePin.map(async (reservationId) => {
-        await removeActivationPin(reservationId);
-      })
-    );
+    toDeletePin.map((reservationId) => {
+      ActivationPin.remove(
+        (activationObj) => activationObj.reservationId === reservationId
+      );
+      ActivationPin.save();
+    });
 
     client.sendMessage(
       message.from,

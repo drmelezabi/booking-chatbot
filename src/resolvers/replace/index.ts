@@ -1,13 +1,15 @@
 import WAWebJS from "whatsapp-web.js";
-import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
 import { convertArToEnDigits as ArToEnNum } from "../../config/diff";
 import hostAvail from "./Host";
 import colleagueAvail from "./colleague";
 import teacherAvail from "./teacher";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const avail = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
-  const registeredData = await getAccountByChatId(message.from);
-  if (registeredData === null) {
+  const registeredData = RegisteredPhone.fetch(
+    (account) => account.chatId === message.from
+  );
+  if (!registeredData) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
   }

@@ -1,6 +1,6 @@
 import Reservation from "../../database/reservation";
+import db from "../../database/setup";
 import SuspendedStudent from "../../database/suspendedStudent";
-import getPunishmentUnit from "../rules/getPunishment";
 import { ISuspendedStudent } from "../rules/getStudentsSuspension";
 import { updateCloudStudentViolations } from "./updateCloudStudentViolations";
 
@@ -21,7 +21,8 @@ const getStudentViolations = async (accountId: string) => {
   };
 
   if (reservations.length) {
-    const punishmentUnit = await getPunishmentUnit();
+    const punishmentUnit = db.get<number>("punishmentUnit");
+
     reservations
       .filter(
         (reservation) =>

@@ -1,6 +1,6 @@
 import db from "./setup";
 
-type avail = {
+export interface IAvail {
   hostId: string;
   pin: number;
   reservationId: string;
@@ -9,8 +9,8 @@ type avail = {
   reservationDate: Date;
   availCreatedDate: Date;
   availName?: string;
-};
+}
 
-const Avail = db.createCollection<avail>("avail");
+const Avail = db.createCollection<IAvail>("avail");
 
 export default Avail;

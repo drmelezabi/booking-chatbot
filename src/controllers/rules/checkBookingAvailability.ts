@@ -1,4 +1,4 @@
-import localDb from "../../config/localDb";
+import db from "../../database/setup";
 import getRules from "./getRules";
 
 const checkBookingAvailability = async () => {
@@ -20,16 +20,18 @@ const checkBookingAvailability = async () => {
       return `الحجز متوقف حتى ${dateString}`;
     } else {
       try {
-        await localDb.push(
-          "/rules/BookingAvailability/SuspendedUntilDate",
-          false
-        );
+        db.set("BookingAvailability.SuspendedUntilDate", false);
+        db.save();
+        // await localDb.push(
+        //   "/rules/BookingAvailability/SuspendedUntilDate",
+        //   false
+        // );
         // Save the data (useful if you disable the saveOnPush)
-        await localDb.save();
+        // await localDb.save();
 
         // In case you have an exterior change to the databse file and want to reload it
         // use this method
-        await localDb.reload();
+        // await localDb.reload();
       } catch (error: any) {
         console.log(error.message);
       }

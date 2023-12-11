@@ -1,6 +1,5 @@
 import { arabicName } from "../../../config/diff";
-import localDb from "../../../config/localDb";
-import getBlockedDays from "../read/getBlockedDays";
+import db from "../../../database/setup";
 
 type blockedDays = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 
@@ -9,7 +8,8 @@ const updateBlockedDays = async (
   remove: blockedDays[]
 ): Promise<string | null> => {
   try {
-    const originalBlockedDays = await getBlockedDays();
+    const originalBlockedDays = db.get<blockedDays[]>("blockedDays");
+
     const Filtered: Set<blockedDays> = new Set();
     originalBlockedDays.map((day) => Filtered.add(day));
     add.map((day) => {
@@ -23,14 +23,8 @@ const updateBlockedDays = async (
 
     const newArray = [...Filtered];
 
-    await localDb.push("/rules/blockedDays", newArray, true);
-
-    // Save the data (useful if you disable the saveOnPush)
-    await localDb.save();
-
-    // In case you have an exterior change to the databse file and want to reload it
-    // use this method
-    await localDb.reload();
+    db.set("blockedDays", newArray);
+    db.save();
 
     const arArray = newArray.map((day) => arabicName[day]);
 

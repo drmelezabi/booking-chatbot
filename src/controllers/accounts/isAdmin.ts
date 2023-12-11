@@ -1,20 +1,18 @@
-import checkRegisteredPhones from "../rules/getRegisteredPhones";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const isAdmin = async (messageFrom: string) => {
-  const registeredPhones = await checkRegisteredPhones();
-
-  const IsExist = registeredPhones.filter(
+  const existedRegisteredPhones = RegisteredPhone.fetch(
     (account) => account.chatId === messageFrom
   );
 
-  if (!IsExist.length) return "انت تستخدم هاتف خارج المنظومه" as string;
-  else {
-    const IsAdmin = IsExist.filter((account) => account.admin === true);
-    if (!IsAdmin.length) return "❌ لا تملك صلاحية تنفيذ الأمر" as string;
-    else {
-      return true;
-    }
-  }
+  if (!existedRegisteredPhones)
+    return "انت تستخدم هاتف خارج المنظومه" as string;
+
+  const IsAdmin = existedRegisteredPhones.admin === true;
+
+  if (!IsAdmin) return "❌ لا تملك صلاحية تنفيذ الأمر" as string;
+
+  return true;
 };
 
 export default isAdmin;
