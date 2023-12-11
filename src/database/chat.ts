@@ -1,6 +1,7 @@
 import db from "./setup";
 
 type chat = {
+  id: string;
   lastMessage: Date;
   taskSyntax: string;
   counter: number;

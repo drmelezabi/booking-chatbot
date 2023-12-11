@@ -8,23 +8,24 @@ import createActivationPin, {
 import { activatingPin } from "../../config/IDs";
 import localDb from "../../config/localDb";
 import removeActivationPin from "../../controllers/rules/removeActivationPin";
+import Reservation from "../../database/reservation";
 
 const studentVerify = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message,
   regData: registeredData
 ) => {
-  const getRes = (await getLocalReservations()).filter((res) => {
-    return res.studentId === regData.studentId;
+  const getRes = Reservation.fetch((reservation) => {
+    return reservation.accountId === regData.accountId;
   });
 
-  if (getRes.length !== 1) {
+  if (!getRes) {
     client.sendMessage(message.from, "📚 **لم تقم بحجز أي موعد للمذاكرة**");
     return;
   }
 
   const readyForActivating = await checkTimeIsFitToActiveReservation(
-    getRes[0].reservationId
+    getRes.reservationId
   );
 
   if (readyForActivating !== 3) {
@@ -34,7 +35,7 @@ const studentVerify = async (
       msg = "🕒 **الحجز الخاص بك لم يدخل حيز التنشيط حتى الآن** 🕒";
 
     if (readyForActivating === 2) {
-      await removeActivationPin(getRes[0].reservationId);
+      await removeActivationPin(getRes.reservationId);
       msg = `🚨 **انتهت المهلة المتاحة لتنشيط الحجز** 🚨\n\nسيتم احتساب مخالفة للتخلف عن الحضور.\n\nيمكنك تجاوز المخالفة إذا دعوت أحد زملائك للاستفادة من الفترة المتبقية من الحجز وذلك من خلال:\nاستخدام رسالة " *موعد مهدر* " ⏰`;
     }
 
@@ -45,7 +46,7 @@ const studentVerify = async (
   const isExist = (
     await localDb.getObject<IActivationObject[]>("/activationPin")
   ).filter(
-    (activationObj) => activationObj.reservationId === getRes[0].reservationId
+    (activationObj) => activationObj.reservationId === getRes.reservationId
   );
 
   if (isExist.length) {
@@ -57,7 +58,7 @@ const studentVerify = async (
   }
 
   await createActivationPin({
-    reservationId: getRes[0].reservationId,
+    reservationId: getRes.reservationId,
     creationDate: new Date(),
     pin: +activatingPin(),
     name: regData.name,

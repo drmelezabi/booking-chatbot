@@ -1,7 +1,7 @@
 import localDb from "../../config/localDb";
+import Reservation from "../../database/reservation";
 import getStudentViolations from "../accounts/getStudentViolations";
 import { IActivationObject } from "./createActivationPin";
-import getLocalReservations from "./getLocalReservations";
 import removeActivationPin from "./removeActivationPin";
 import removeLocalReservations from "./removeLocalReservations";
 
@@ -35,25 +35,23 @@ const checkPinCode = async (pin: number): Promise<string | true> => {
       return "رمز التفعيل انتهى صلاحيته";
     }
 
-    const reservationIsExist = (await getLocalReservations()).filter(
+    const reservation = Reservation.fetch(
       (reservation) => reservation.reservationId === isExist[0].reservationId
     );
 
-    if (!reservationIsExist) {
+    if (!reservation) {
       await removeActivationPin(isExist[0].reservationId);
       return "حجز غير صحيح";
     }
 
     const oneHour = 60 * 60 * 1000; // Convert 1 minutes to milliseconds
 
-    const reservationEnded = new Date(
-      reservationIsExist[0].Date.getTime() + oneHour
-    );
+    const reservationEnded = new Date(reservation.Date.getTime() + oneHour);
 
     if (new Date() >= reservationEnded) {
-      await removeActivationPin(reservationIsExist[0].reservationId);
-      await getStudentViolations(reservationIsExist[0].studentId);
-      await removeLocalReservations(reservationIsExist[0].reservationId);
+      await removeActivationPin(reservation.reservationId);
+      await getStudentViolations(reservation.accountId);
+      await removeLocalReservations(reservation.reservationId);
       return "انتهت صلاحية الحجز";
     }
 

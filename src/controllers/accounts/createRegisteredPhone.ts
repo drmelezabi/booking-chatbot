@@ -1,7 +1,7 @@
 import localDb from "../../config/localDb";
 
 export interface registeredData {
-  studentId: string;
+  accountId: string;
   chatId: string;
   recoveryId: string;
   name: string;

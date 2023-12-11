@@ -4,6 +4,8 @@ import localDb from "../../config/localDb";
 import { activatingPin } from "../../config/IDs";
 import getAvail, { IAvail } from "../../controllers/rules/getAvail";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
+import Avail from "../../database/avail";
+import Reservation from "../../database/reservation";
 
 const hostAvail = async (
   client: WAWebJS.Client,
@@ -11,8 +13,8 @@ const hostAvail = async (
   registeredData: registeredData
 ) => {
   try {
-    const getRes = (await getLocalReservations()).filter((res) => {
-      return res.studentId === registeredData.studentId;
+    const getRes = Reservation.fetchAll().filter((res) => {
+      return res.accountId === registeredData.accountId;
     });
 
     if (getRes.length !== 1) {
@@ -50,11 +52,13 @@ const hostAvail = async (
       return;
     }
 
-    const hasAvail = (await getAvail()).filter(
-      (av) => av.hostId === registeredData.studentId
-    );
+    // const hasAvail = (await getAvail()).filter(
+    //   (av) => av.hostId === registeredData.studentId
+    // );
 
-    if (hasAvail.length) {
+    const hasAvail = Avail.has((u) => u.hostId === registeredData.accountId);
+
+    if (hasAvail) {
       const msg = "الحجز تم عرضه للتمرير بالفعل";
       client.sendMessage(message.from, msg);
       return;
@@ -63,7 +67,7 @@ const hostAvail = async (
     const genPin = +activatingPin();
 
     const avail: IAvail = {
-      hostId: registeredData.studentId,
+      hostId: registeredData.accountId,
       pin: genPin,
       reservationId: getRes[0].reservationId,
       host: true,
@@ -71,7 +75,8 @@ const hostAvail = async (
       availCreatedDate: new Date(),
     };
 
-    localDb.push("/avail[]", avail, true);
+    // localDb.push("/avail[]", avail, true);
+    Avail.create(avail);
     // Save the data (useful if you disable the saveOnPush)
     await localDb.save();
 

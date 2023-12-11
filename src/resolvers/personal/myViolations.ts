@@ -33,11 +33,11 @@ const myViolations = async (
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
   } else {
-    const studentId = isExist!.studentId;
+    const accounId = isExist!.accountId;
 
-    await getStudentViolations(studentId);
+    await getStudentViolations(accounId);
 
-    const studentData = await getStudent(studentId);
+    const studentData = await getStudent(accounId);
 
     if (!studentData) {
       client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");

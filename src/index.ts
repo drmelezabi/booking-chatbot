@@ -4,6 +4,7 @@ import qrcode from "qrcode-terminal";
 import router from "./resolvers";
 import deleteReservation from "./controllers/rules/deleteReservation";
 import localDb, { chat } from "./config/localDb";
+import db from "./database/setup";
 
 (async () => {
   const initializeFirebaseApp = () => {
@@ -38,6 +39,8 @@ client.on("authenticated", () => {
 client.on("message", async (message) => {
   await localDb.reload();
   await chat.reload();
+  db.save();
+
   await router(client, message);
 });
 

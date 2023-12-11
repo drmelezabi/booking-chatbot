@@ -2,11 +2,9 @@ import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
 import { dtOptions } from "../../config/diff";
 import getStudentViolations from "../../controllers/accounts/getStudentViolations";
-import getAvail from "../../controllers/rules/getAvail";
 import getStudentsSuspension from "../../controllers/rules/getStudentsSuspension";
-import updateLocalAvailObj from "../../controllers/rules/updateAvail";
-import removeAvail from "../../controllers/rules/removeAvail";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
+import Avail from "../../database/avail";
 
 const colleagueAvail = async (
   client: WAWebJS.Client,
@@ -20,16 +18,16 @@ const colleagueAvail = async (
       return;
     }
 
-    const studentId = registeredData.studentId;
+    const accountId = registeredData.accountId;
 
     const isExistedInSuspensionList = (await getStudentsSuspension()).filter(
-      (sus) => sus.studentId === registeredData.studentId
+      (sus) => sus.accountId === registeredData.accountId
     );
 
     if (isExistedInSuspensionList.length) {
-      await getStudentViolations(studentId);
+      await getStudentViolations(accountId);
       const suspension = (await getStudentsSuspension()).filter(
-        (stdCase) => stdCase.studentId === studentId && stdCase
+        (stdCase) => stdCase.accountId === accountId && stdCase
       );
 
       if (suspension.length && suspension[0].suspensionCase) {
@@ -53,52 +51,43 @@ const colleagueAvail = async (
       return;
     }
 
-    console.log({ object: +match[1] });
+    const avail = Avail.fetch((u) => u.pin === +match[1]);
 
-    const avails = (await getAvail()).filter((av) => av.pin === +match[1]);
-
-    if (!avails.length) {
+    if (!avail) {
       await client.sendMessage(message.from, "رمز غير صالح");
       return;
     }
 
-    const avToDelete: number[] = [];
+    const threeMinutes = 3 * 60 * 1000;
+    const thirtyMinutes = 30 * 60 * 1000;
 
-    const filtered = avails.filter((av) => {
-      const threeMinutes = 3 * 60 * 1000;
-      const thirtyMinutes = 30 * 60 * 1000;
+    const afterResStarted = new Date() > new Date(avail.availCreatedDate);
+    const before3MinuetsOfAvailCreation =
+      new Date() <
+      new Date(new Date(avail.availCreatedDate).getTime() + threeMinutes);
+    const beforeReservationEnds =
+      new Date() <
+      new Date(new Date(avail.reservationDate).getTime() + thirtyMinutes);
 
-      const afterResStarted = new Date() > new Date(av.availCreatedDate);
-      const before3MinuetsOfAvailCreation =
-        new Date() <
-        new Date(new Date(av.availCreatedDate).getTime() + threeMinutes);
-      const beforeReservationEnds =
-        new Date() <
-        new Date(new Date(av.reservationDate).getTime() + thirtyMinutes);
+    const readyForReplacement =
+      afterResStarted && // after start
+      before3MinuetsOfAvailCreation && // before 3m of avail creation
+      beforeReservationEnds; // before reservation Ends
 
-      const readyForReplacement =
-        afterResStarted && // after start
-        before3MinuetsOfAvailCreation && // before 3m of avail creation
-        beforeReservationEnds; // before reservation Ends
-
-      if (!readyForReplacement) {
-        avToDelete.push(av.pin);
-        return false;
-      } else return true;
-    });
-
-    await Promise.all(avToDelete.map(async (av) => await removeAvail(av)));
-
-    if (!filtered.length) {
-      console.log(33333);
+    if (!readyForReplacement) {
+      Avail.remove((avail) => avail.pin === +match[1]);
+      Avail.save();
       await client.sendMessage(message.from, "رمز غير صالح");
       return;
     }
 
-    await updateLocalAvailObj(+match[1], {
-      availId: registeredData.studentId,
-      availName: registeredData.name,
+    Avail.update((avail) => {
+      if (avail.pin === +match[1]) {
+        avail.availId = registeredData.accountId;
+        avail.availName = registeredData.name;
+      }
     });
+    Avail.save();
 
     client.sendMessage(message.from, "الموعد جاهز للتفعيل مع المشرف");
 

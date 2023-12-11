@@ -1,12 +1,12 @@
-import getLocalReservations from "../rules/getLocalReservations";
+import Reservation from "../../database/reservation";
 
 const checkStudentHasNoUncompletedBooked = async (studentId: string) => {
-  const reservations = await getLocalReservations();
+  const reservations = Reservation.fetchAll();
 
   if (
     reservations.filter(
       (reservation) =>
-        reservation.studentId == studentId &&
+        reservation.accountId == studentId &&
         new Date(reservations[0].Date) > new Date()
     ).length
   )

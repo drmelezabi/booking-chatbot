@@ -12,6 +12,7 @@ import getRules from "../../controllers/rules/getRules";
 import createNewAppointment from "../../controllers/rooms/addAppointment";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import starkString from "starkstring";
+import Reservation from "../../database/reservation";
 
 const addNewAppointment = async (
   client: WAWebJS.Client,
@@ -28,16 +29,16 @@ const addNewAppointment = async (
     return;
   }
 
-  const studentId = isExist.studentId;
+  const studentId = isExist.accountId;
 
   const isExistedInSuspensionList = (await getStudentsSuspension()).filter(
-    (sus) => sus.studentId === isExist.studentId
+    (sus) => sus.accountId === isExist.accountId
   );
 
   if (isExistedInSuspensionList.length) {
     await getStudentViolations(studentId);
     const suspension = (await getStudentsSuspension()).filter(
-      (stdCase) => stdCase.studentId === studentId && stdCase
+      (stdCase) => stdCase.accountId === studentId && stdCase
     );
 
     if (suspension.length && suspension[0].suspensionCase) {
@@ -58,16 +59,16 @@ const addNewAppointment = async (
     }
   }
 
-  const existedRes = (await getLocalReservations()).filter(
-    (std) => std.studentId === studentId
+  const existedRes = Reservation.fetch(
+    (account) => account.accountId === studentId
   );
 
-  if (existedRes.length) {
+  if (existedRes) {
     const sticker = MessageMedia.fromFilePath("./src/imgs/project-status.png");
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,
     });
-    const dtFormat = existedRes[0].Date.toLocaleDateString("ar-EG", dtOptions);
+    const dtFormat = existedRes.Date.toLocaleDateString("ar-EG", dtOptions);
     const msg = `🕒 **يمكنك حجز موعد جديد بعد انتهاء موعد الحجز الساري الخاص بك** 🕒\n\nموعد الحجز الساري هو: ${dtFormat}`;
     client.sendMessage(message.from, msg);
     return;

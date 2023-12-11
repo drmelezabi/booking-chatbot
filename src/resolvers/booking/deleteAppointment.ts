@@ -1,9 +1,9 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 import getAccountByChatId from "../../controllers/accounts/getStudentByChatId";
-import getLocalReservations from "../../controllers/rules/getLocalReservations";
 import checkTimeIsFitToCancelReservation from "../../controllers/accounts/checkTimeIsFitToCancelReservation";
 import removeLocalReservations from "../../controllers/rules/removeLocalReservations";
 import deleteReservation from "../../controllers/rules/deleteReservation";
+import Reservation from "../../database/reservation";
 
 const deleteAppointment = async (
   client: WAWebJS.Client,
@@ -21,8 +21,8 @@ const deleteAppointment = async (
     return;
   }
 
-  const existedRes = (await getLocalReservations()).filter(
-    (std) => std.studentId === isExist.studentId
+  const existedRes = Reservation.fetchAll().filter(
+    (std) => std.accountId === isExist.accountId
   );
 
   if (!existedRes.length) {

@@ -1,11 +1,10 @@
 import WAWebJS from "whatsapp-web.js";
-import getAvail from "../../controllers/rules/getAvail";
 import getStudent from "../../controllers/accounts/getStudent";
-import removeAvail from "../../controllers/rules/removeAvail";
 import { updateAppointmentById } from "../../controllers/rooms/updateAppointmentById";
 import removeLocalReservations from "../../controllers/rules/removeLocalReservations";
 import deleteReservation from "../../controllers/rules/deleteReservation";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
+import Avail from "../../database/avail";
 
 const teacherAvail = async (
   client: WAWebJS.Client,
@@ -13,9 +12,9 @@ const teacherAvail = async (
   registeredData: registeredData,
   str: string
 ) => {
-  const studentId = registeredData.studentId;
+  const accountId = registeredData.accountId;
 
-  const studentData = await getStudent(studentId);
+  const studentData = await getStudent(accountId);
 
   if (!studentData) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
@@ -34,54 +33,47 @@ const teacherAvail = async (
     return;
   }
 
-  const avails = (await getAvail()).filter((av) => av.pin === +match[1]);
+  const avail = Avail.fetch((u) => u.pin === +match[1]);
 
-  if (!avails.length) {
+  if (!avail) {
     await client.sendMessage(message.from, "رمز غير صالح");
     return;
   }
 
-  const avToDelete: number[] = [];
+  const threeMinutes = 3 * 60 * 1000;
+  const thirtyMinutes = 30 * 60 * 1000;
 
-  const filtered = avails.filter((av) => {
-    const threeMinutes = 3 * 60 * 1000;
-    const thirtyMinutes = 30 * 60 * 1000;
+  const afterResStarted = new Date() > new Date(avail.availCreatedDate);
+  const before3MinuetsOfAvailCreation =
+    new Date() <
+    new Date(new Date(avail.availCreatedDate).getTime() + threeMinutes);
+  const beforeReservationEnds =
+    new Date() <
+    new Date(new Date(avail.reservationDate).getTime() + thirtyMinutes);
 
-    const afterResStarted = new Date() > new Date(av.availCreatedDate);
-    const before3MinuetsOfAvailCreation =
-      new Date() <
-      new Date(new Date(av.availCreatedDate).getTime() + threeMinutes);
-    const beforeReservationEnds =
-      new Date() <
-      new Date(new Date(av.reservationDate).getTime() + thirtyMinutes);
+  const readyForReplacement =
+    afterResStarted && // after start
+    before3MinuetsOfAvailCreation && // before 3m of avail creation
+    beforeReservationEnds; // before reservation Ends
 
-    const readyForReplacement =
-      afterResStarted && // after start
-      before3MinuetsOfAvailCreation && // before 3m of avail creation
-      beforeReservationEnds; // before reservation Ends
-
-    if (!readyForReplacement) {
-      avToDelete.push(av.pin);
-      return false;
-    } else return true;
-  });
-
-  await Promise.all(avToDelete.map(async (av) => await removeAvail(av)));
-
-  if (!filtered.length) {
+  if (!readyForReplacement) {
+    Avail.remove((avail) => avail.pin === avail.pin);
+    Avail.save();
     await client.sendMessage(message.from, "رمز غير صالح");
     return;
   }
 
-  await updateAppointmentById(filtered[0].reservationId, {
-    stdId: filtered[0].availId,
-    student: filtered[0].availName,
+  await updateAppointmentById(avail.reservationId, {
+    stdId: avail.availId,
+    student: avail.availName,
     case: 1,
-    supervisor: registeredData.studentId,
+    supervisor: registeredData.accountId,
   });
-  await removeLocalReservations(filtered[0].reservationId);
-  await deleteReservation(filtered[0].reservationId);
-  await removeAvail(+match[1]);
+  await removeLocalReservations(avail.reservationId);
+  await deleteReservation(avail.reservationId);
+
+  Avail.remove((avail) => avail.pin === +match[1]);
+  Avail.save();
 
   await client.sendMessage(message.from, "تم التنشيط");
 };

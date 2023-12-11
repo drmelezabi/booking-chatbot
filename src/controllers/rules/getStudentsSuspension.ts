@@ -1,7 +1,7 @@
 import localDb from "../../config/localDb";
 
 export interface ISuspendedStudent {
-  studentId: string;
+  accountId: string;
   ViolationCounter: number;
   suspensionCase: Boolean;
   BookingAvailabilityDate: Date;

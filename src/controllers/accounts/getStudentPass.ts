@@ -11,7 +11,7 @@ export interface studentData {
   admin: boolean;
   name: string;
   pass: string;
-  type: string;
+  type: "student" | "teacher" | "security" | "employee" | undefined;
   whatsappId: string;
   violations: string[];
 }

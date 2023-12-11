@@ -12,20 +12,10 @@
     "punishmentUnit": 3,
     "blockedDates": [
       {
-        "date": "2023-10-06T21:12:37.789Z",
-        "reason": "انتصارات أكتوبر",
-        "annually": true
-      },
-      {
         "status": "add",
-        "date": "2023-12-12T05:00:00.000Z",
+        "date": "2023-10-06T05:00:00.000Z",
         "annually": true,
-        "reason": "قرار"
-      },
-      {
-        "date": "2023-10-06T21:12:37.789Z",
-        "reason": "انتصارات أكتوبر",
-        "annually": true
+        "reason": "اجازة رسمية : انتصارات اكتوبر"
       }
     ],
     "maxTimeBeforeDelete": 2,

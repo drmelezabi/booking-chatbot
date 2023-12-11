@@ -1,0 +1,1 @@
+{"BookingAvailability":{"SuspendedIndefinitely":false,"SuspendedUntilDate":false,"BookingAvailabilityDate":"2023-12-09T21:12:37.789Z"},"maxTimeToBookAfterItsStartInMin":5,"bookingOpen":7,"bookingClose":17,"blockedDays":["Fri"],"punishmentUnit":3,"maxTimeBeforeDelete":2,"rooms":["107","109","105","معمل أ","معمل ب","106 أ","106 ب"]}

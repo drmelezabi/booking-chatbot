@@ -1,5 +1,5 @@
 import localDb from "../../config/localDb";
-import getLocalReservations from "./getLocalReservations";
+import Reservation from "../../database/reservation";
 
 interface IReservation {
   studentId?: string;
@@ -12,7 +12,7 @@ const updateLocalReservation = async (
   reservation: IReservation
 ) => {
   try {
-    const reservations = await getLocalReservations();
+    const reservations = Reservation.fetchAll();
 
     if (!reservations.length) return false;
 

@@ -1,22 +1,19 @@
-import addLocalSuspendedStudents from "../rules/addLocalSuspendedStudents";
-import getLocalReservations from "../rules/getLocalReservations";
+import Reservation from "../../database/reservation";
+import SuspendedStudent from "../../database/suspendedStudent";
 import getPunishmentUnit from "../rules/getPunishment";
-import getStudentsSuspension, {
-  ISuspendedStudent,
-} from "../rules/getStudentsSuspension";
-import removeLocalSuspendedStudent from "../rules/removeLocalSuspendedStudent";
+import { ISuspendedStudent } from "../rules/getStudentsSuspension";
 import { updateCloudStudentViolations } from "./updateCloudStudentViolations";
 
-const getStudentViolations = async (studentId: string) => {
-  const reservations = await getLocalReservations();
-  const suspendedStudent = await getStudentsSuspension();
+const getStudentViolations = async (accountId: string) => {
+  const reservations = Reservation.fetchAll();
+  const studentCase = SuspendedStudent.fetch(
+    (studentCase) => studentCase.accountId === accountId
+  );
 
-  const studentCase = suspendedStudent.filter(
-    (studentCase) => studentCase.studentId === studentId
-  )[0];
+  if (!studentCase) return false;
 
   let EditedStudentData: ISuspendedStudent = {
-    studentId: studentId,
+    accountId: accountId,
     ViolationCounter: 0,
     suspensionCase: false,
     BookingAvailabilityDate: new Date(),
@@ -28,7 +25,7 @@ const getStudentViolations = async (studentId: string) => {
     reservations
       .filter(
         (reservation) =>
-          reservation.studentId === studentId &&
+          reservation.accountId === accountId &&
           new Date(reservation.Date) < new Date()
       )
       .map((reservation) => {
@@ -38,10 +35,9 @@ const getStudentViolations = async (studentId: string) => {
         ) {
           const punishmentDays =
             (studentCase.ViolationCounter / 2) * punishmentUnit;
-          // get "BookingAvailabilityDate"
           reservation.Date.setDate(reservation.Date.getDate() + punishmentDays);
           EditedStudentData = {
-            studentId: studentId,
+            accountId: accountId,
             ViolationCounter: studentCase.ViolationCounter + 1,
             suspensionCase: true,
             BookingAvailabilityDate: reservation.Date,
@@ -49,7 +45,7 @@ const getStudentViolations = async (studentId: string) => {
           };
         } else {
           EditedStudentData = {
-            studentId: studentId,
+            accountId: accountId,
             ViolationCounter: studentCase.ViolationCounter + 1,
             suspensionCase: false,
             BookingAvailabilityDate: reservation.Date,
@@ -59,10 +55,12 @@ const getStudentViolations = async (studentId: string) => {
       });
 
     if (EditedStudentData.violations.length) {
-      await removeLocalSuspendedStudent(studentId);
-      await addLocalSuspendedStudents(EditedStudentData);
+      SuspendedStudent.remove((account) => account.accountId === accountId);
+      SuspendedStudent.save();
+      SuspendedStudent.create(EditedStudentData);
+      SuspendedStudent.save();
       await updateCloudStudentViolations(
-        studentId,
+        accountId,
         EditedStudentData.violations
       );
     }

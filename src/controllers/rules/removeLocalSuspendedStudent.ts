@@ -7,7 +7,7 @@ const removeLocalSuspendedStudent = async (studentId: string) => {
       await localDb.getObject<ISuspendedStudent[]>("/suspendedStudent");
 
     const filteredReservations = reservations.filter(
-      (reservation) => reservation.studentId != studentId
+      (reservation) => reservation.accountId != studentId
     );
     await localDb.push("/suspendedStudent", filteredReservations, true);
     // Save the data (useful if you disable the saveOnPush)

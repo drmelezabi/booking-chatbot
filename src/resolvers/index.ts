@@ -20,10 +20,10 @@ import deleteAppointment from "./booking/deleteAppointment";
 import avail from "./replace";
 import localDb from "../config/localDb";
 import updateBlockedDaysResolve from "./rules/updateBlockedDays";
-import getChatData from "../controllers/chat/getChatData";
 import getAccountByChatId from "../controllers/accounts/getStudentByChatId";
-import deleteChatData from "../controllers/chat/deleteChatData";
 import updateBlockedDatesResolve from "./rules/updateBlockedDates";
+import Chat from "../database/chat";
+import showRules from "./rules/ShowRules";
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   let counter = 0;
   let data: { [key: string]: unknown } = {};
@@ -31,24 +31,50 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   let taskSyntax: string = "";
   let accountId: string = "";
 
-  if (!message.body.startsWith("!")) {
-    const chat = await getChatData(accountId);
-    const isExist = await getAccountByChatId(message.from);
-    if (isExist) accountId = isExist.studentId;
-    const oneMinutes = 1 * 60 * 1000;
-
-    if (new Date() > new Date(new Date(lastMessage).getTime() + oneMinutes)) {
-      if (chat) taskSyntax = chat[accountId].taskSyntax;
-      await deleteChatData(accountId);
-    } else if (chat) {
-      counter = chat[accountId].counter;
-      data = chat[accountId].data;
-      lastMessage = chat[accountId].lastMessage;
-      taskSyntax = chat[accountId].taskSyntax;
-    }
+  if (message.body.startsWith("!")) {
+    Chat.remove();
+    const collection = Chat.fetchAll();
+    collection.map((c) => {
+      if (c.id == accountId) {
+        Chat.remove((c) => c.id === accountId);
+        Chat.save();
+      }
+      return c;
+    });
   } else {
-    await deleteChatData(accountId);
+    const isExist = await getAccountByChatId(message.from);
+    Chat.save();
+    if (isExist) accountId = isExist.accountId;
+    const chanData = Chat.fetch((u) => u.id === accountId);
+    Chat.save();
+    if (/^[إآأا]لغاء/.test(message.body)) {
+      if (chanData) {
+        Chat.remove((c) => c.id === accountId);
+        Chat.save();
+        const msg = `تم الإلغاء`;
+        client.sendMessage(message.from, msg);
+        return;
+      }
+    } else {
+      const oneMinutes = 1 * 60 * 1000;
+      if (chanData) {
+        if (
+          new Date() > new Date(new Date(lastMessage).getTime() + oneMinutes)
+        ) {
+          if (chanData) taskSyntax = chanData.taskSyntax;
+          Chat.remove((c) => c.id === accountId);
+          Chat.save();
+        } else {
+          counter = chanData.counter;
+          data = chanData.data;
+          lastMessage = chanData.lastMessage;
+          taskSyntax = chanData.taskSyntax;
+        }
+      }
+    }
   }
+
+  Chat.save();
 
   const { body, from } = message;
   //
@@ -109,6 +135,9 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   //
   //
   else if (/^!حجب/i.test(body)) await updateBlockedDaysResolve(client, message);
+  //
+  //
+  else if (/^!عرض القواعد/.test(body)) await showRules(client, message);
   //
   //
   else {

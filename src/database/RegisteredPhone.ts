@@ -4,7 +4,7 @@ type registeredPhone = {
   accountId: string; // studentId
   chatId: string;
   admin: boolean;
-  type: "student" | "teacher" | "security" | "employee";
+  type: "student" | "teacher" | "security" | "employee" | undefined;
   recoveryId: string;
   name: string;
 };
