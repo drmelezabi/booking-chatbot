@@ -10,8 +10,8 @@ const deleteChatData = async (accountId: string) => {
     await chat.reload();
 
     // Deleting data
-    if (await chat.exists(`/${accountId}`)) {
-      await chat.delete(`/${accountId}`);
+    if (await chat.exists(`/cash/${accountId}`)) {
+      await chat.delete(`/cash/${accountId}`);
     }
 
     // Save the data (useful if you disable the saveOnPush)

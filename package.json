@@ -5,10 +5,22 @@
   "main": "index.js",
   "scripts": {
     "new": "pnpm cleanup && pnpm i && rimraf dist && rimraf ./build && swc src --out-dir dist",
+    "iNew": "pnpm cleanup && rimraf prisma/migrations && rimraf prisma/down.sql && prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --script > prisma/down.sql && prisma migrate dev --name start && rimraf ./build && swc src --out-dir dist --ignore 'src/tests/**' ",
     "cleanup": "powershell -File make-It-New.ps1",
     "dev": "set NODE_ENV=development&& nodemon -e js,ts,py",
     "build": "rimraf dist && swc src --out-dir dist",
-    "start": "pnpm run build && node ./dist"
+    "start": "pnpm run build && node ./dist",
+    "--------------------------------------------------------------------------------- Prisma scripts ---------------------------------------------------------------------------------": "",
+    "prisma:up": "rimraf prisma/migrations && rimraf prisma/down.sql && pnpm Prisma:Create:Drop && prisma migrate dev --name start",
+    "prisma:update": "pnpm prisma:down && rimraf prisma/migrations && rimraf prisma/down.sql && prisma migrate reset -f && pnpm Prisma:Create:Drop && prisma migrate dev --name start",
+    "prisma:updateDev": "pnpm prisma:down && rimraf prisma/migrations && rimraf prisma/down.sql && prisma migrate reset -f && pnpm Prisma:Create:Drop && prisma migrate dev --name start && pnpm exec cross-env NODE_ENV=\"development\" db-migrate db:drop table_test -e development && pnpm exec db-migrate db:create table_test -e development && cross-env NODE_ENV=test ts-node --esm testDbUp.ts",
+    "-------------------------------------------------------------------------------- internal scripts -------------------------------------------------------------------------------": "",
+    "seq:test:up": "cross-env NODE_ENV=test ts-node testDbUp.ts",
+    "seq:test:down": "cross-env NODE_ENV=test ts-node testDbDown.ts",
+    "db:clean": "cross-env NODE_ENV=test ts-node testDbClean.ts",
+    "Prisma:Create:Drop": "prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --script > prisma/down.sql",
+    "prisma:down": "prisma db execute --file ./prisma/down.sql --schema prisma/schema.prisma",
+    "reset:db": "pnpm exec cross-env NODE_ENV=\"test\" db-migrate db:drop table_dev -e test && pnpm exec db-migrate db:create table_dev -e test && cross-env NODE_ENV=development ts-node testDbUp.ts"
   },
   "keywords": [],
   "author": "Dr Mohamed El-Ezabi",
@@ -30,15 +42,19 @@
     "util": "^0.12.5"
   },
   "dependencies": {
+    "@prisma/client": "^5.7.0",
     "@types/qrcode-terminal": "^0.12.2",
+    "acebase": "^1.29.5",
+    "better-sqlite3": "^9.2.2",
     "child_process": "^1.0.2",
+    "db-local": "^3.1.0",
     "dotenv": "^16.3.1",
     "firebase": "^10.7.0",
-    "lodash": "^4.17.21",
-    "lowdb": "^6.1.1",
     "nanoid": "3.3.6",
     "node-json-db": "^2.3.0",
     "qrcode-terminal": "^0.12.0",
+    "quick.db": "^9.1.7",
+    "simpl.db": "^2.12.1",
     "starkstring": "^0.4.4",
     "whatsapp-web.js": "^1.23.0"
   }

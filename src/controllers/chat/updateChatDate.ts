@@ -7,9 +7,15 @@ interface IChatData {
   data?: { [key: string]: unknown };
 }
 
-const updateChatData = async (accountId: string, chatObject?: IChatData) => {
+const updateChatData = async (
+  accountId: string,
+  chatObject: IChatData,
+  override: boolean = false
+) => {
   try {
-    await chat.push(`/${accountId}`, chatObject, false);
+    const data: { [key: string]: IChatData } = {};
+    data[accountId] = chatObject;
+    await chat.push(`/cash`, data, override);
     // Save the data (useful if you disable the saveOnPush)
     await chat.save();
 

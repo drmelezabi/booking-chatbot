@@ -16,7 +16,10 @@ const createChatDate = async (accountId: string, chatData: IChatData) => {
     // use this method
     await chat.reload();
 
-    chat.push(`/${accountId}`, chatData, false);
+    const data: { [key: string]: IChatData } = {};
+    data[accountId] = chatData;
+
+    chat.push(`/cash`, data, true);
 
     // Save the data (useful if you disable the saveOnPush)
     await chat.save();

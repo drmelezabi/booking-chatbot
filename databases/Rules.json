@@ -1,5 +1,5 @@
-{
-  "rules": {
+[
+  {
     "BookingAvailability": {
       "SuspendedIndefinitely": false,
       "SuspendedUntilDate": false,
@@ -11,17 +11,6 @@
     "blockedDays": ["Fri"],
     "punishmentUnit": 3,
     "blockedDates": [
-      {
-        "date": "2023-10-06T21:12:37.789Z",
-        "reason": "انتصارات أكتوبر",
-        "annually": true
-      },
-      {
-        "status": "add",
-        "date": "2023-12-12T05:00:00.000Z",
-        "annually": true,
-        "reason": "قرار"
-      },
       {
         "date": "2023-10-06T21:12:37.789Z",
         "reason": "انتصارات أكتوبر",
@@ -40,19 +29,5 @@
       "106 أ",
       "106 ب"
     ]
-  },
-  "registeredPhone": [
-    {
-      "studentId": "gouaZqpCRlk9KXkuhxHZ",
-      "chatId": "201020205256@c.us",
-      "admin": true,
-      "type": "student",
-      "recoveryId": "12578549",
-      "name": "محمد العزبي"
-    }
-  ],
-  "activationPin": [],
-  "avail": [],
-  "suspendedStudent": [],
-  "reservation": []
-}
+  }
+]

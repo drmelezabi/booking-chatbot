@@ -6,243 +6,25 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASEURL")
-}
-
-enum place {
-  collage
-  campus
-  school
-}
-
-enum classType {
-  individually
-  groups
-  wholeClass
-}
-
-enum department {
-  music
-  art
-  media
-  computer
-  homeEconomics
-  educationalAndPsychological
-  universityRequirements
+  provider = "sqlite"
+  url      = "file:\\app\\booking\\src\\database\\quik.db"
 }
 
 //=================================⁡⁣⁣⁡⁣⁣⁢​‌‌‌​‌‌‌𝗥͟𝗲͟𝗹͟𝗮͟𝘁͟𝗶͟𝗼͟𝗻͟​‌‌‌𝘀​​⁡⁡=============================== //
 
-model teacherSubject {
-  //Relations
-  teacherId String  @db.VarChar(16)
-  teacher   teacher @relation(fields: [teacherId], references: [id])
-  subjectId String  @db.VarChar(16)
-  subject   subject @relation(fields: [subjectId], references: [id])
+//
 
-  @@id([subjectId, teacherId])
+//-----------------------------------⁡⁣⁣⁢​‌‌‌𝗠͟𝗢͟𝗗͟𝗘͟𝗟͟𝗦​⁡-------------------------------!//
+
+model test {
+  id       String @id
+  name     String
+  relation home[]
 }
 
-model studentSubject {
-  //Relations
-  studentId String  @db.VarChar(16)
-  student   student @relation(fields: [studentId], references: [id])
-  subjectId String  @db.VarChar(16)
-  subject   subject @relation(fields: [subjectId], references: [id])
-
-  @@id([subjectId, studentId])
-}
-
-//-----------------------------------⁡⁣⁣⁢​‌‌‌𝗠͟𝗢͟𝗗͟𝗘͟𝗟͟𝗦​⁡-----------------------------------------!//
-model mergedSubjects {
-  id            Int     @id @default(autoincrement())
-  firstSubject  String  @db.VarChar(16)
-  secondSubject String  @db.VarChar(16)
-  thirdSubject  String? @db.VarChar(16)
-  fourthSubject String? @db.VarChar(16)
-}
-
-model generalRules {
-  id                               Int   @id @default(autoincrement())
-  //
-  firstGradeUniversityDay          Int[]
-  secondGradeUniversityDay         Int[]
-  thirdGradeUniversityDay          Int[]
-  fourthGradeUniversityDay         Int[]
-  firstGradeUniversityDayEnd       Int[]
-  secondGradeUniversityDayEnd      Int[]
-  thirdGradeUniversityDayEnd       Int[]
-  fourthGradeUniversityDayEnd      Int[]
-  //
-  collageAfterUniversityDay        Int   @default(1)
-  transportsTimeAfterUniversityDay Int   @default(1)
-  //
-  thirdGradeSchoolDay              Int?
-  fourthGradeSchoolDay             Int?
-  transportsTimeAfterSchoolDay     Int   @default(1)
-  //
-  seniorityActive                  Int   @default(1)
-}
-
-model UnitsPerDay {
-  id         Int        @id @default(autoincrement())
-  department department
-  regulation Int
-  grade      Int
-  sat        Int[]      @default([0, 1, 2, 3, 4, 5, 6, 7, 8])
-  sun        Int[]      @default([0, 1, 2, 3, 4, 5, 6, 7, 8])
-  mon        Int[]      @default([0, 1, 2, 3, 4, 5, 6, 7, 8])
-  tue        Int[]      @default([0, 1, 2, 3, 4, 5, 6, 7, 8])
-  wed        Int[]      @default([0, 1, 2, 3, 4, 5, 6, 7, 8])
-  thu        Int[]      @default([0, 1, 2, 3, 4, 5, 6, 7, 8])
-  fri        Int[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-}
-
-model regulation {
-  id        Int       @id @default(autoincrement())
-  title     String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-}
-
-model room {
-  id                          Int          @id @default(autoincrement())
-  department                  department[]
-  title                       String
-  maxStudentInRoom            Int          @default(5)
-  pianoIncludes               Int          @default(0)
-  mirrorIncludes              Int          @default(0)
-  rehearsalQualified          Int          @default(0)
-  private                     Int          @default(0)
-  universityRoom              Int          @default(0)
-  projector                   Int          @default(0)
-  sat                         Int[]        @default([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-  sun                         Int[]        @default([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-  mon                         Int[]        @default([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-  tue                         Int[]        @default([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-  wed                         Int[]        @default([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-  thu                         Int[]        @default([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-  BusyByOtherDepartmentsStart DateTime[]
-  BusyByOtherDepartmentsEnd   DateTime[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-
-  //Relations
-  OwnedBy teacher[]
-}
-
-model teacher {
-  id                   String           @id @db.VarChar(16)
-  name                 String
-  position             String
-  seniority            Int
-  department           department
-  instrument           String[]
-  teachingDays         Int[]
-  maxTeachingDays      Int
-  priority             Int              @default(0) // 0-Day  1-Early Ending 
-  //
-  minTeachingTimeStart Int?
-  maxTeachingTimeEnd   Int?
-  //
-  traveler             Int              @default(0)
-  startInTravelDay     Int?
-  endingInTravelDay    Int?
-  //
-  onlineDays           Int[]
-  onlineTimeStart      Int[]
-  onlineTimeEnd        Int[]
-  //Relations
-  subjects             teacherSubject[]
-  privateRoomId        Int?
-  privateRoom          room?            @relation(fields: [privateRoomId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-}
-
-model subject {
-  id                        String     @id @db.VarChar(16)
-  title                     String
-  regulation                Int
-  Semester                  Int
-  grade                     Int
-  practicalHours            Int?
-  theoreticalHours          Int?
-  studentsPerTimeUnit       Int?
-  anotherSubjectInSameClass String[]   @db.VarChar(16)
-  timeUnitInMinuets         Int        @default(60)
-  sharedSubject             Int        @default(0)
-  dedicatedRoom             Int[]
-  online                    Int?
-  fixedRoom                 Int?
-  fixedStart                Int[]
-  fixedEnd                  Int[]
-  fixedDay                  Int?
-  place                     place[]
-  department                department
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-
-  //Relations
-  students studentSubject[]
-  teachers teacherSubject[]
-}
-
-model student {
-  id         String    @id @db.VarChar(16)
-  name       String
-  gender     Int
-  grade      Int
-  regulation Int
-  instrument String
-  Commitment Int       @default(1) // He is attending
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime? @updatedAt
-
-  //Relations
-  subjects studentSubject[]
-}
-
-model schedule {
-  id               String     @id @default(cuid())
-  department       department
-  regulation       Int
-  grade            Int
-  day              Int
-  title            String
-  unitStartName    String
-  unitStart        Int
-  unitEndName      String
-  unitEnd          Int
-  subject          String
-  room             Int
-  roomChangAbility Int
-  practical        Int        @default(1)
-  classType        classType  @default(wholeClass)
-  teachers         String[]
-  students         String[]
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime?  @updatedAt
-}
-
-model onlineSchedule {
-  id         String    @id @default(cuid())
-  grade      Int
-  regulation Int
-  practical  Int       @default(0)
-  oneToOne   Int       @default(0)
-  subject    String
-  teachers   String[]
-  Students   String[]
-  start      DateTime
-  end        DateTime
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime? @updatedAt
+model home {
+  id     String  @id
+  name   String
+  test   test?   @relation(fields: [testId], references: [id])
+  testId String?
 }

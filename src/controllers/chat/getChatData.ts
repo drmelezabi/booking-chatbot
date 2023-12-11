@@ -15,7 +15,8 @@ const getChatData = async (
   try {
     await chat.save();
     await chat.reload();
-    return await chat.getObject<IChatData>(`/${accountId}`);
+
+    return await chat.getObject<IChatData>(`/cash/${accountId}`);
   } catch (error: any) {
     console.log(error.message);
     return undefined;
