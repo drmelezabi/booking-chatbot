@@ -1,10 +1,11 @@
-import getRules from "../rules/getRules";
+import db from "../../database/setup";
 
-export const getTodayRange = async () => {
+export const getTodayRange = () => {
   const now = new Date("December 3, 2023  07:00:00"); //"December 7, 2023  19:00:00"
   const currentHour = now.getHours();
 
-  const { bookingOpen, bookingClose } = await getRules();
+  const bookingOpen = db.get<number>("bookingOpen");
+  const bookingClose = db.get<number>("bookingClose");
 
   if (currentHour < bookingClose) {
     const start = new Date(now);

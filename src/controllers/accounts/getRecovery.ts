@@ -1,4 +1,4 @@
-import checkRegisteredPhones from "../rules/getRegisteredPhones";
+import RegisteredPhone from "../../database/RegisteredPhone";
 import manipulatePhone from "./manipulatePhone";
 
 const getRecovery = async (unformattedPhone: string) => {
@@ -17,20 +17,18 @@ const getRecovery = async (unformattedPhone: string) => {
   if (phone) {
     const preparePhone = manipulatePhone(phone[1]);
 
-    const registeredPhones = await checkRegisteredPhones();
-
-    const caseExist = registeredPhones.filter(
+    const caseExist = RegisteredPhone.fetch(
       (caseData) => caseData.chatId === `${preparePhone}@c.us`
     );
 
-    if (!caseExist.length) {
+    if (!caseExist) {
       returnMessages.push(`❗ أنت تستعلم عن هاتف غير موجود بالمنظومه أو تكتب رقم الهاتف بدون مفتاح الدولة
 مثال:
 مفتاح الهاتف لجمهورية مصر هو 20 و رقم الهتاف هو 1020202020
 في تلك الحالة يكون رقم الهاتف 201020202020`);
     } else {
       returnMessages.push(`🔑 رمز الاستعادة هو`);
-      returnMessages.push(caseExist[0].recoveryId);
+      returnMessages.push(caseExist.recoveryId);
     }
   } else {
     returnMessages.push(`❗ رقم هاتف خاطئ

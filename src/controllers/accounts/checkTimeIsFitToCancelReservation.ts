@@ -1,11 +1,13 @@
 import Reservation from "../../database/reservation";
-import getRules from "../rules/getRules";
+import db from "../../database/setup";
 
 //تأكد ان الحجز لم يدخل نطاق التنفيذ أو قبله بساعتين
 
 const checkTimeIsFitToCancelReservation = async (reservationId: string) => {
   const reservations = Reservation.fetchAll();
-  const { maxTimeBeforeDelete } = await getRules();
+  const maxTimeBeforeDelete = db.get<number>("maxTimeBeforeDelete");
+
+  db.get<number>("maxTimeBeforeDelete");
 
   if (
     reservations.filter((reservation) => {

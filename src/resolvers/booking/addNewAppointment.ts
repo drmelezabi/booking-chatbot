@@ -1,17 +1,18 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 import prepareBookingMessage from "../../controllers/rules/phraseBokkingmessage";
-import getStudentsSuspension from "../../controllers/rules/getStudentsSuspension";
 import getStudentViolations from "../../controllers/accounts/getStudentViolations";
 import checkBookingAvailability from "../../controllers/rules/checkBookingAvailability";
 import { arabicName, dtOptions } from "../../config/diff";
 import { checkRoomAvailability } from "../../controllers/rooms/checkRoomIsNotBusy";
 import { getDayRangeWithTime } from "../../controllers/date/getDayRangeWithTime";
-import getRules from "../../controllers/rules/getRules";
-import createNewAppointment from "../../controllers/rooms/addAppointment";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import starkString from "starkstring";
 import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";
+import SuspendedStudent from "../../database/suspendedStudent";
+import Appointment from "../../database/appointment";
+import db from "../../database/setup";
+import BlockedDates from "../../database/blockedDates";
 
 const addNewAppointment = async (
   client: WAWebJS.Client,
@@ -33,24 +34,22 @@ const addNewAppointment = async (
 
   const studentId = isExist.accountId;
 
-  const isExistedInSuspensionList = (await getStudentsSuspension()).filter(
-    (sus) => sus.accountId === isExist.accountId
-  );
-
-  if (isExistedInSuspensionList.length) {
-    await getStudentViolations(studentId);
-    const suspension = (await getStudentsSuspension()).filter(
-      (stdCase) => stdCase.accountId === studentId && stdCase
+  const suspension = SuspendedStudent.fetch((account) => {
+    return (
+      account.accountId === isExist.accountId && account.suspensionCase === true
     );
+  });
 
-    if (suspension.length && suspension[0].suspensionCase) {
-      const dt = suspension[0].BookingAvailabilityDate;
+  if (suspension) {
+    await getStudentViolations(studentId);
+    if (suspension && suspension.suspensionCase) {
+      const dt = suspension.BookingAvailabilityDate;
       const sticker = MessageMedia.fromFilePath("./src/imgs/rejected.png");
       client.sendMessage(message.from, sticker, {
         sendMediaAsSticker: true,
       });
       const msg = `🚫 **يبدو أنك موقوف عن حجز قاعات المذاكرة** 🚫\n\nتم تجاوز عدد المرات المسموحة للمخالفات، حيث بلغ عدد المخالفات الخاصة بك ${
-        suspension[0].ViolationCounter
+        suspension.ViolationCounter
       } مرات.\nتاريخ انتهاء الإيقاف: ${dt.toLocaleDateString(
         "ar-EG",
         dtOptions
@@ -105,13 +104,14 @@ const addNewAppointment = async (
     return;
   }
 
-  const {
-    blockedDays,
-    blockedDates,
-    bookingOpen,
-    bookingClose,
-    maxTimeToBookAfterItsStartInMin,
-  } = await getRules();
+  const blockedDates = BlockedDates.fetchAll();
+  type dayType = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
+  const blockedDays = db.get<dayType>("blockedDays");
+  const bookingOpen = db.get<number>("bookingOpen");
+  const bookingClose = db.get<number>("bookingClose");
+  const maxTimeToBookAfterItsStartInMin = db.get<number>(
+    "maxTimeToBookAfterItsStartInMin"
+  );
 
   if (blockedDays.includes(day)) {
     const msg = `يوم ${arabicName[day]} ليس من ضمن الأيام المتاحة للحجز`;
@@ -123,7 +123,7 @@ const addNewAppointment = async (
     return;
   }
 
-  const stamp = await getDayRangeWithTime(day, time);
+  const stamp = getDayRangeWithTime(day, time);
   const open = `${starkString(
     bookingOpen > 12 ? bookingOpen - 12 : bookingOpen
   ).arabicNumber()} ${bookingOpen > 12 ? "م" : "ص"}`;
@@ -228,13 +228,15 @@ const addNewAppointment = async (
     return;
   }
 
-  await createNewAppointment({
+  Appointment.create({
     case: 0,
     room,
     start,
     stdId: studentId,
     student: isExist.name,
   });
+  Appointment.save();
+
   const dt = formatDateTime(start);
   const succeedMsg = `🌟 *تمت عملية الحجز بنجاح!* 🌟
 

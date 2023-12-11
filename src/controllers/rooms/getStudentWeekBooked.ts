@@ -11,7 +11,7 @@ import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { getWeekRange } from "../date/getWeekRange";
 
 export const getStudentWeekBooked = async (studentId: string) => {
-  const range = await getWeekRange();
+  const range = getWeekRange();
   if (!range) return [];
 
   try {

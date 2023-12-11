@@ -1,6 +1,6 @@
 import starkString from "starkstring";
-import getRules from "./getRules";
-import getExpected from "./getExpected";
+import getDictionary from "./getExpected";
+import db from "../../database/setup";
 
 const preparationHumanType = async (inp: string) => {
   let str = starkString(` ${inp} `).toString(); //returns: 345 45
@@ -23,7 +23,7 @@ const preparationHumanType = async (inp: string) => {
     weekday: "short",
   });
 
-  const rephrase = await getExpected();
+  const rephrase = getDictionary();
 
   const tomorrow = /(?<!بعد\s)(بكر[ةه]|غد(اً?|ا)?|الغد(اً?)?)/g;
   const tdy = /ال(?:نهاردة|يوم|نهارده)/g;
@@ -64,7 +64,7 @@ type TimeDetails = {
 };
 
 async function extractTimeDetails(input: string): Promise<TimeDetails> {
-  const { rooms: roomsArray } = await getRules();
+  const roomsArray = db.get<string[]>("rooms");
 
   const timeRegex = /\b\d{2}:\d{2}\b/;
   const dayRegex = /\bSun\b|\bMon\b|\bTue\b|\bWed\b|\bThu\b|\bFri\b|\bSat\b/;

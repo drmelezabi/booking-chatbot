@@ -6,12 +6,12 @@ import {
   where,
 } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
-import { caseType, caseTypeAR } from "../../config/diff";
+import { caseTypeAR } from "../../config/diff";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { geRestOfWeek } from "../date/getRestOfWeek";
 
 export const getRoomsBookedNowToEndOfWeek = async () => {
-  const range = await geRestOfWeek();
+  const range = geRestOfWeek();
   if (!range) return [];
 
   try {

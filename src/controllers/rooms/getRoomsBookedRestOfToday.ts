@@ -6,12 +6,12 @@ import {
   where,
 } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
-import { caseType, caseTypeAR } from "../../config/diff";
+import { caseTypeAR } from "../../config/diff";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { getRestOfToday } from "../date/getRestOfToday";
 
 export const getRoomsBookedRestOfToday = async () => {
-  const range = await getRestOfToday();
+  const range = getRestOfToday();
   console.log({ range });
   if (!range) return [];
 

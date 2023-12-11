@@ -1,13 +1,15 @@
-import getRules from "../rules/getRules";
+import db from "../../database/setup";
 
-export const getDayRange = async (day: string) => {
+export const getDayRange = (day: string) => {
   const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const number = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
   const now = new Date(); //"December 7, 2023  19:00:00"
   const dayName = names[now.getDay()];
   const currentHour = now.getHours();
-  const { bookingOpen, bookingClose } = await getRules();
+
+  const bookingOpen = db.get<number>("bookingOpen");
+  const bookingClose = db.get<number>("bookingClose");
 
   if (dayName === "Fri") {
     const dayNumber = number.findIndex((element) => element === day) + 1;

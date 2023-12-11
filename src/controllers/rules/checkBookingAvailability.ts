@@ -1,14 +1,11 @@
 import db from "../../database/setup";
-import getRules from "./getRules";
 
 const checkBookingAvailability = async () => {
-  const {
-    BookingAvailability: {
-      SuspendedIndefinitely,
-      SuspendedUntilDate,
-      BookingAvailabilityDate,
-    },
-  } = await getRules();
+  const SuspendedIndefinitely = db.get<boolean>("SuspendedIndefinitely");
+  const SuspendedUntilDate = db.get<boolean>("SuspendedUntilDate");
+  const BookingAvailabilityDate = new Date(
+    db.get<string>("BookingAvailabilityDate")
+  );
 
   if (SuspendedIndefinitely) return "الحجز متوقف لأجل غير مسمى";
   else if (SuspendedUntilDate) {

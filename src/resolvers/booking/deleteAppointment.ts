@@ -1,6 +1,5 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 import checkTimeIsFitToCancelReservation from "../../controllers/accounts/checkTimeIsFitToCancelReservation";
-import removeLocalReservations from "../../controllers/rules/removeLocalReservations";
 import deleteCloudReservation from "../../controllers/rules/deleteReservation";
 import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";
@@ -22,17 +21,17 @@ const deleteAppointment = async (
     return;
   }
 
-  const existedRes = Reservation.fetchAll().filter(
+  const existedRes = Reservation.fetch(
     (std) => std.accountId === isExist.accountId
   );
 
-  if (!existedRes.length) {
+  if (!existedRes) {
     client.sendMessage(message.from, "❌ لا يوجد أي حجز");
     return;
   }
 
   const ableToDelete = await checkTimeIsFitToCancelReservation(
-    existedRes[0].reservationId
+    existedRes.reservationId
   );
 
   if (!ableToDelete) {
@@ -40,9 +39,12 @@ const deleteAppointment = async (
     return;
   }
 
-  await removeLocalReservations(existedRes[0].reservationId);
+  Reservation.remove(
+    (reservation) => reservation.reservationId === existedRes.reservationId
+  );
+  Reservation.save();
 
-  await deleteCloudReservation(existedRes[0].reservationId);
+  await deleteCloudReservation(existedRes.reservationId);
 
   const sticker = MessageMedia.fromFilePath("./src/imgs/garbage.png");
   client.sendMessage(message.from, sticker, {
@@ -50,6 +52,7 @@ const deleteAppointment = async (
   });
 
   client.sendMessage(message.from, "🗑 تم إلغاء الحجز");
+  return;
 };
 //
 export default deleteAppointment;

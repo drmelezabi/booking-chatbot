@@ -1,6 +1,4 @@
 import Reservation from "../../database/reservation";
-import getLocalReservations from "../rules/getLocalReservations";
-import getRules from "../rules/getRules";
 
 //تأكد ان الحجز لم يدخل نطاق التنفيذ أو قبله بساعتين
 

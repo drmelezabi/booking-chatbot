@@ -11,7 +11,7 @@ import { caseTypeAR } from "../../config/diff";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 
 export const getRoomsBookedByDay = async (day: string) => {
-  const range = await getDayRange(day);
+  const range = getDayRange(day);
   if (!range) return [];
 
   try {

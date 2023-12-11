@@ -8,10 +8,10 @@ import {
 import { firestoreDb } from "../../config/firebase";
 import formatTimestamp from "../date/formateFirebaseTimestamp";
 import { getTodayRange } from "../date/getTodayRange";
-import { caseType, caseTypeAR } from "../../config/diff";
+import { caseTypeAR } from "../../config/diff";
 
 export const getStudentTodayBooked = async (studentId: string) => {
-  const range = await getTodayRange();
+  const range = getTodayRange();
   if (!range) return [];
 
   try {

@@ -33,7 +33,6 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   let accountId: string = "";
 
   if (message.body.startsWith("!")) {
-    Chat.remove();
     const collection = Chat.fetchAll();
     collection.map((c) => {
       if (c.id == accountId) {

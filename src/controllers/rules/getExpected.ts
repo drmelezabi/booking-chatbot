@@ -1,19 +1,25 @@
-import { expected } from "../../config/localDb";
+import { dict } from "../../config/diff";
+import db from "../../database/setup";
 
 interface IExpected {
   [key: string]: string;
 }
 
-const getExpected = async (): Promise<IExpected> => {
-  return new Promise((resolve, reject) => {
-    try {
-      const ExpectedData = expected.getObject<IExpected>("/");
-      resolve(ExpectedData);
-    } catch (error: any) {
-      console.log(error.message);
-      reject(error);
+const getDictionary = (): IExpected => {
+  try {
+    const dictionary = db.get<IExpected>("dictionary");
+
+    if (!dictionary) {
+      db.set("dictionary", dict);
+      db.save();
+      return db.get<IExpected>("dictionary");
     }
-  });
+
+    return dictionary;
+  } catch (error: any) {
+    console.log(error.message);
+    return {};
+  }
 };
 
-export default getExpected;
+export default getDictionary;

@@ -1,13 +1,13 @@
-import getRules from "../rules/getRules";
+import db from "../../database/setup";
 
-export const geRestOfWeek = async () => {
+export const geRestOfWeek = () => {
   const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const number = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"];
 
   const now = new Date(); //"December 7, 2023  19:00:00"
   const dayName = names[now.getDay()];
   const currentHour = now.getHours();
-  const { bookingClose } = await getRules();
+  const bookingClose = db.get<number>("bookingClose");
 
   if (dayName === "Fri") {
     const start = new Date(now);
