@@ -5,6 +5,7 @@ import router from "./resolvers";
 import deleteCloudReservation from "./controllers/rules/deleteReservation";
 import localDb, { chat } from "./config/localDb";
 import db from "./database/setup";
+import schedule from "node-schedule";
 
 (async () => {
   const initializeFirebaseApp = () => {
