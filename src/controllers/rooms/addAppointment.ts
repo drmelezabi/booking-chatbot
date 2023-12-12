@@ -16,7 +16,7 @@ const createNewAppointment = async (appointment: IAppointment) => {
   try {
     await addDocument("appointment", appointmentId, appointment);
     await addLocalReservations({
-      studentId: appointment.stdId,
+      accountId: appointment.stdId,
       reservationId: appointmentId,
       Date: appointment.start,
     });

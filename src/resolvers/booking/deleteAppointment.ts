@@ -11,6 +11,7 @@ const deleteAppointment = async (
   const isExist = RegisteredPhone.fetch(
     (account) => account.chatId === message.from
   );
+
   if (!isExist) {
     client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
     return;
@@ -24,6 +25,8 @@ const deleteAppointment = async (
   const existedRes = Reservation.fetch(
     (std) => std.accountId === isExist.accountId
   );
+
+  console.log({ existedRes });
 
   if (!existedRes) {
     client.sendMessage(message.from, "❌ لا يوجد أي حجز");

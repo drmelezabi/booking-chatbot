@@ -1,20 +1,16 @@
 import localDb from "../../config/localDb";
+import Reservation from "../../database/reservation";
 
 export interface IReservation {
-  studentId: string;
+  accountId: string;
   reservationId: string;
   Date: Date;
 }
 
 const addLocalReservations = async (reservation: IReservation) => {
   try {
-    localDb.push("/reservation[]", reservation, true);
-    // Save the data (useful if you disable the saveOnPush)
-    await localDb.save();
-
-    // In case you have an exterior change to the databse file and want to reload it
-    // use this method
-    await localDb.reload();
+    Reservation.create(reservation);
+    Reservation.save();
     return;
   } catch (error: any) {
     console.log(error.message);

@@ -13,6 +13,7 @@ import SuspendedStudent from "../../database/suspendedStudent";
 import Appointment from "../../database/appointment";
 import db from "../../database/setup";
 import BlockedDates from "../../database/blockedDates";
+import createNewAppointment from "../../controllers/rooms/addAppointment";
 
 const addNewAppointment = async (
   client: WAWebJS.Client,
@@ -69,7 +70,10 @@ const addNewAppointment = async (
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,
     });
-    const dtFormat = existedRes.Date.toLocaleDateString("ar-EG", dtOptions);
+    const dtFormat = new Date(existedRes.Date).toLocaleDateString(
+      "ar-EG",
+      dtOptions
+    );
     const msg = `🕒 **يمكنك حجز موعد جديد بعد انتهاء موعد الحجز الساري الخاص بك** 🕒\n\nموعد الحجز الساري هو: ${dtFormat}`;
     client.sendMessage(message.from, msg);
     return;
@@ -160,16 +164,17 @@ const addNewAppointment = async (
   dayEnds.setHours(bookingClose, 0, 0, 0); // setHours(hours, minutes, seconds, milliseconds)
 
   if (end > dayEnds) {
+    console.log({ end, dayEnds });
     const sticker = MessageMedia.fromFilePath("./src/imgs/project-status.png");
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,
     });
     const dtFormat = dayEnds.toLocaleDateString("ar-EG", {
       timeZone: "Africa/Cairo",
-      hour: "2-digit",
+      hour: "numeric",
       hour12: true,
     });
-    const msg = `🚫 **عذرًا، يبدو أنك اخترت موعدًا بعد الحد الأقصى المحدد من قبل الجامعة** 🚫\n\nموعد الحد الأقصى هو: \n${
+    const msg = `🚫 **عذرًا، يبدو أنك اخترت موعدًا بعد الحد الأقصى المحدد من قبل الجامعة** 🚫\n\nموعد الحد الأقصى هو: ${
       dtFormat.split(",")[1]
     }`;
     client.sendMessage(message.from, msg);
@@ -228,14 +233,13 @@ const addNewAppointment = async (
     return;
   }
 
-  Appointment.create({
+  await createNewAppointment({
     case: 0,
     room,
     start,
     stdId: studentId,
     student: isExist.name,
   });
-  Appointment.save();
 
   const dt = formatDateTime(start);
   const succeedMsg = `🌟 *تمت عملية الحجز بنجاح!* 🌟
