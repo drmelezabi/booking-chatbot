@@ -24,6 +24,18 @@ import updateBlockedDatesResolve from "./rules/updateBlockedDates";
 import Chat from "../database/chat";
 import showRules from "./rules/ShowRules";
 import RegisteredPhone from "../database/RegisteredPhone";
+import reservationAvailabilityControl from "./advanced/stopBooking";
+import updateRoomsResolve from "./rules/updateRooms";
+import EditBookingRules from "./advanced/EditBookingRules";
+import permissionsResolvers from "./advanced/permissions.ts";
+
+const remove = (accountId: string) => {
+  const length = Chat.fetchMany((c) => c.id === accountId).length;
+  for (let index = 0; index < length; index++) {
+    Chat.remove((c) => c.id === accountId);
+    Chat.save();
+  }
+};
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   let counter = 0;
@@ -33,14 +45,14 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   let accountId: string = "";
 
   if (message.body.startsWith("!")) {
-    const collection = Chat.fetchAll();
-    collection.map((c) => {
-      if (c.id == accountId) {
-        Chat.remove((c) => c.id === accountId);
-        Chat.save();
-      }
-      return c;
-    });
+    const isExist = RegisteredPhone.fetch(
+      (account) => account.chatId === message.from
+    );
+    Chat.save();
+    if (isExist) {
+      accountId = isExist.accountId;
+      remove(accountId);
+    }
   } else {
     const isExist = RegisteredPhone.fetch(
       (account) => account.chatId === message.from
@@ -51,8 +63,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     Chat.save();
     if (/^[إآأا]لغاء/.test(message.body)) {
       if (chanData) {
-        Chat.remove((c) => c.id === accountId);
-        Chat.save();
+        remove(accountId);
         const msg = `تم الإلغاء`;
         client.sendMessage(message.from, msg);
         return;
@@ -64,8 +75,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
           new Date() > new Date(new Date(lastMessage).getTime() + oneMinutes)
         ) {
           if (chanData) taskSyntax = chanData.taskSyntax;
-          Chat.remove((c) => c.id === accountId);
-          Chat.save();
+          remove(accountId);
         } else {
           counter = chanData.counter;
           data = chanData.data;
@@ -139,7 +149,26 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   else if (/^!حجب/i.test(body)) await updateBlockedDaysResolve(client, message);
   //
   //
+  else if (/^!غرف/i.test(body)) await updateRoomsResolve(client, message);
+  //
+  //
   else if (/^!عرض القواعد/.test(body)) await showRules(client, message);
+  //
+  //
+  else if (/^!قواعد الحجز/.test(body) || taskSyntax === "!قواعد الحجز")
+    await EditBookingRules(client, message, counter);
+  //
+  //
+  else if (/^!صلاحيات/.test(message.body)) {
+    await permissionsResolvers(client, message);
+  }
+  //
+  //
+  else if (
+    /^!حال[ةه] المنظوم[ةه]/.test(body) ||
+    taskSyntax === "!حالة المنظومة"
+  )
+    await reservationAvailabilityControl(client, message, counter, data);
   //
   //
   else {

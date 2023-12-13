@@ -1,11 +1,10 @@
 import WAWebJS from "whatsapp-web.js";
 import isAdmin from "../../controllers/accounts/isAdmin";
-import getBlockedDates from "../../controllers/rules/read/getBlockedDates";
 import detectDateFromString from "../../controllers/date/detectDateFromString";
 import starkString from "starkstring";
-import localDb, { chat } from "../../config/localDb";
 import Chat from "../../database/chat";
 import RegisteredPhone from "../../database/RegisteredPhone";
+import BlockedDates from "../../database/blockedDates";
 
 const updateBlockedDatesResolve = async (
   client: WAWebJS.Client,
@@ -13,9 +12,6 @@ const updateBlockedDatesResolve = async (
   counter: number,
   collectingData: { [key: string]: unknown }
 ) => {
-  await localDb.reload();
-  await chat.reload();
-
   const chatId = message.from;
   // ~~~~~~~~~~~~~~~~~~~~---- Is Admin ~~~~~~~~~~~~~~~~~~~~----
   const errorMessage = await isAdmin(chatId);
@@ -62,13 +58,14 @@ const updateBlockedDatesResolve = async (
         message.body
       )
     ) {
-      await localDb.push("/rules/blockedDates[]", collectingData, true);
-      await localDb.save();
-      await localDb.reload();
+      delete collectingData.status;
+      BlockedDates.create(collectingData);
+      BlockedDates.save();
+
       Chat.remove((c) => c.id === isExist.accountId);
       Chat.save();
 
-      const blockedDates = await getBlockedDates();
+      const blockedDates = BlockedDates.fetchAll();
       const msg = "تم إضافة التاريخ إلى قائمة الحجب بنجاح";
       client.sendMessage(message.from, msg);
       const array = blockedDates.length
@@ -104,15 +101,16 @@ const updateBlockedDatesResolve = async (
     const collectedDate = new Date(collectingData["date"] as Date);
 
     Chat.update((chat) => {
-      if (chat.id === isExist.accountId) chat.counter = 2;
-      chat.counter = 5;
-      chat.lastMessage = new Date();
-      chat.data.reason = message.body
-        .trim()
-        .replace(/\s+/g, " ")
-        .replace(/[\d]/g, (match) =>
-          starkString(match).englishNumber().toString()
-        );
+      if (chat.id === isExist.accountId) {
+        chat.counter = 5;
+        chat.lastMessage = new Date();
+        chat.data.reason = message.body
+          .trim()
+          .replace(/\s+/g, " ")
+          .replace(/[\d]/g, (match) =>
+            starkString(match).englishNumber().toString()
+          );
+      }
     });
     Chat.save();
 
@@ -137,10 +135,11 @@ const updateBlockedDatesResolve = async (
         )
       ) {
         Chat.update((chat) => {
-          if (chat.id === isExist.accountId) chat.counter = 2;
-          chat.counter = 4;
-          chat.lastMessage = new Date();
-          chat.data.annually = true;
+          if (chat.id === isExist.accountId) {
+            chat.counter = 4;
+            chat.lastMessage = new Date();
+            chat.data.annually = true;
+          }
         });
         Chat.save();
         const msg = `ما هو السبب المعلن عن حجب المذاكرة\n\nمثال :\n    - اجازة رسمية - انتصارات اكتوبر \n    - قرار إداري`;
@@ -148,10 +147,11 @@ const updateBlockedDatesResolve = async (
         return;
       } else if (/لا|لأ|كلا|No|no|N|n|غير|[اآإأ]رفض|رافض|/.test(message.body)) {
         Chat.update((chat) => {
-          if (chat.id === isExist.accountId) chat.counter = 2;
-          chat.counter = 4;
-          chat.lastMessage = new Date();
-          chat.data.annually = false;
+          if (chat.id === isExist.accountId) {
+            chat.counter = 4;
+            chat.lastMessage = new Date();
+            chat.data.annually = false;
+          }
         });
         Chat.save();
 
@@ -170,18 +170,16 @@ const updateBlockedDatesResolve = async (
           message.body
         )
       ) {
-        const updatedBlockedDates = (await getBlockedDates()).filter((dt) => {
+        BlockedDates.remove((dt) => {
           return !compareDate(collectedDate, dt.date);
         });
-        await localDb.push("/rules/blockedDates", updatedBlockedDates, true);
-        await localDb.save();
-        await localDb.reload();
+        BlockedDates.save();
 
         Chat.remove((c) => c.id === isExist.accountId);
         Chat.save();
 
         client.sendMessage(message.from, `تم حذف التاريخ من قائمة الحجب`);
-        const blockedDates = await getBlockedDates();
+        const blockedDates = BlockedDates.fetchAll();
         const array = blockedDates.length
           ? blockedDates
               .map((dateCase) => {
@@ -230,7 +228,7 @@ const updateBlockedDatesResolve = async (
     }
 
     if (collectingData["status"] === "add") {
-      const blockedDataArray = await getBlockedDates();
+      const blockedDataArray = BlockedDates.fetchAll();
       const isExistedDate = blockedDataArray.filter((dt) => {
         return compareDate(getDate, dt.date);
       });
@@ -242,10 +240,11 @@ const updateBlockedDatesResolve = async (
       }
 
       Chat.update((chat) => {
-        if (chat.id === isExist.accountId) chat.counter = 3;
-        chat.counter = 3;
-        chat.lastMessage = new Date();
-        chat.data.date = getDate;
+        if (chat.id === isExist.accountId) {
+          chat.counter = 3;
+          chat.lastMessage = new Date();
+          chat.data.date = getDate;
+        }
       });
       Chat.save();
 
@@ -253,18 +252,18 @@ const updateBlockedDatesResolve = async (
       client.sendMessage(message.from, msg);
       return;
     } else {
-      const blockedDates = await getBlockedDates();
+      const blockedDates = BlockedDates.fetchAll();
+
       const isExistedDate = blockedDates.filter((dt) => {
         return compareDate(getDate, dt.date);
       });
 
-      await localDb.push("/rules/blockedDates", blockedDates, true);
-
       Chat.update((chat) => {
-        if (chat.id === isExist.accountId) chat.counter = 2;
-        chat.counter = 3;
-        chat.lastMessage = new Date();
-        chat.data.date = getDate;
+        if (chat.id === isExist.accountId) {
+          chat.counter = 3;
+          chat.lastMessage = new Date();
+          chat.data.date = getDate;
+        }
       });
       Chat.save();
 
@@ -309,18 +308,22 @@ const updateBlockedDatesResolve = async (
     const query = message.body.trim();
     if (/[اأإآ]ضاف[ةه]/.test(query)) {
       Chat.update((chat) => {
-        if (chat.id === isExist.accountId) chat.counter = 2;
-        chat.lastMessage = new Date();
-        chat.data.status = "add";
+        if (chat.id === isExist.accountId) {
+          chat.counter = 2;
+          chat.lastMessage = new Date();
+          chat.data.status = "add";
+        }
       });
       Chat.save();
       client.sendMessage(message.from, `اخبرنا ما هو التاريخ المطلوب`);
       return;
     } else if (/حذف/.test(query)) {
       Chat.update((chat) => {
-        if (chat.id === isExist.accountId) chat.counter = 2;
-        chat.lastMessage = new Date();
-        chat.data.status = "remove";
+        if (chat.id === isExist.accountId) {
+          chat.counter = 2;
+          chat.lastMessage = new Date();
+          chat.data.status = "remove";
+        }
       });
       Chat.save();
       client.sendMessage(
@@ -347,7 +350,7 @@ const updateBlockedDatesResolve = async (
       taskSyntax: "!حجب تاريخ",
     });
     Chat.save();
-    const blockedDates = await getBlockedDates();
+    const blockedDates = BlockedDates.fetchAll();
     const array = blockedDates.length
       ? blockedDates
           .map((dateCase) => {

@@ -1,39 +1,22 @@
-import localDb from "../../config/localDb";
+import db from "../../database/setup";
 
-const stopBookingAvailability = async (BookingAvailabilityDate?: Date) => {
+const stopBookingAvailability = (BookingAvailabilityDate?: Date) => {
   try {
     if (!BookingAvailabilityDate) {
-      await localDb.push(
-        "/rules/BookingAvailability",
-        {
-          SuspendedIndefinitely: true,
-          SuspendedUntilDate: false,
-        },
-        false
-      );
-      // Save the data (useful if you disable the saveOnPush)
-      await localDb.save();
-
-      // In case you have an exterior change to the databse file and want to reload it
-      // use this method
-      await localDb.reload();
+      db.set("BookingAvailability.SuspendedIndefinitely", true);
+      db.set("BookingAvailability.SuspendedUntilDate", false);
+      db.save();
       return;
     }
-    const rulesData = localDb.push(
-      "/rules/BookingAvailability",
-      {
-        SuspendedIndefinitely: false,
-        SuspendedUntilDate: true,
-        BookingAvailabilityDate: BookingAvailabilityDate,
-      },
-      true
-    );
-    // Save the data (useful if you disable the saveOnPush)
-    await localDb.save();
 
-    // In case you have an exterior change to the databse file and want to reload it
-    // use this method
-    await localDb.reload();
+    db.set("BookingAvailability.SuspendedIndefinitely", false);
+    db.set("BookingAvailability.SuspendedUntilDate", true);
+    db.set(
+      "BookingAvailability.BookingAvailabilityDate",
+      BookingAvailabilityDate.toISOString()
+    );
+
+    db.save();
     return;
   } catch (error: any) {
     console.log(error.message);

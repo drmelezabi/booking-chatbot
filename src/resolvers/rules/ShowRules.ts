@@ -22,7 +22,7 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
       BookingAvailabilityDate: string;
     } = db.get("BookingAvailability");
     if (blockedDays)
-      return `* تعليق الحجز :\n    - متوقف لأجل غير مسمى : ${
+      return `◈ *تعليق الحجز* :\n    - متوقف لأجل غير مسمى : ${
         blockedDays.SuspendedIndefinitely ? "نشط" : "غير نشط"
       }\n    - متوقف لتاريخ محدد : ${
         blockedDays.SuspendedUntilDate ? "نشط" : "غير نشط"
@@ -46,14 +46,14 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const maxTimeToBookAfterItsStartInMin = () => {
     const blockedDays = db.get("maxTimeToBookAfterItsStartInMin");
     if (blockedDays)
-      return `* الحد الأقصى لحجز موعد بعد بدايته : ${`${blockedDays}`.replace(
+      return `◈ *اخر موعد لحجز موعد بعد بدءه* : ${`${blockedDays}`.replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
       )} دقائق`;
     else {
       db.set("maxTimeToBookAfterItsStartInMin", 5);
       db.save();
-      return `* موعد متاح للحجز اليومي: ${5} دقائق`;
+      return `◈ *اخر موعد لحجز موعد بعد بدءه* : ${5} دقائق`;
     }
   };
 
@@ -62,14 +62,14 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     if (blockedDays) {
       const h24 = parseInt(blockedDays as unknown as string, 10);
       const hour = h24 > 12 ? `${h24 - 12} مساء` : `${h24} صباحا`;
-      return `* أول موعد متاح للحجز اليومي : ${`${hour}`.replace(
+      return `◈ *أول موعد متاح للحجز اليومي* : ${`${hour}`.replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
       )}`;
     } else {
       db.save();
       db.set("bookingOpen", 7);
-      return `* أول موعد متاح للحجز اليومي : ${"7 صباحا".replace(
+      return `◈ *أول موعد متاح للحجز اليومي* : ${"7 صباحا".replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
       )}`;
@@ -81,14 +81,14 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     if (blockedDays) {
       const h24 = parseInt(blockedDays as unknown as string, 10);
       const hour = h24 > 12 ? `${h24 - 12} مساء` : `${h24} صباحا`;
-      return `* أخر موعد متاح للحجز اليومي : ${`${hour}`.replace(
+      return `◈ *أخر موعد متاح للحجز اليومي* : ${`${hour}`.replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
       )}`;
     } else {
       db.save();
       db.set("bookingClose", 17);
-      return `* أخر موعد متاح للحجز اليومي : ${"5 مساءً".replace(
+      return `◈ *أخر موعد متاح للحجز اليومي* : ${"5 مساءً".replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
       )}`;
@@ -98,27 +98,28 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const punishmentUnit = () => {
     const blockedDays = db.get("punishmentUnit");
     if (blockedDays)
-      return `* معدل أيام الجزاء: ${`${blockedDays}`.replace(/[\d]/g, (match) =>
-        starkString(match).arabicNumber().toString()
+      return `◈ *معدل أيام الجزاء* : ${`${blockedDays}`.replace(
+        /[\d]/g,
+        (match) => starkString(match).arabicNumber().toString()
       )} أيام`;
     else {
       db.save();
       db.set("punishmentUnit", 3);
-      return `* معدل أيام الجزاء: ${3} أيام جزاء`;
+      return `◈ *معدل أيام الجزاء* : ${3} أيام جزاء`;
     }
   };
 
   const maxTimeBeforeDelete = () => {
     const blockedDays = db.get("maxTimeBeforeDelete");
     if (blockedDays)
-      return `* الحد الاقصى المسموح لحذف الحجز قبل بدءه : ${`${blockedDays}`.replace(
+      return `◈ *الحد الاقصى المسموح لحذف الحجز قبل بدءه* : ${`${blockedDays}`.replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
       )}`;
     else {
       db.save();
       db.set("maxTimeBeforeDelete", 2);
-      return `* الحد الاقصى المسموح لحذف الحجز قبل بدءه : ${2}`;
+      return `◈ *الحد الاقصى المسموح لحذف الحجز قبل بدءه* : ${2}`;
     }
   };
 
@@ -126,14 +127,14 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     const blockedDays = db.get("blockedDays");
     type weekDay = ("Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat")[];
     if (blockedDays)
-      return "*الأيام المحجوبة:\n - ".concat(
-        (blockedDays as weekDay).map((d) => arabicName[d]).join(" - ")
+      return "◈ *الأيام المحجوبة* : ".concat(
+        (blockedDays as weekDay).map((d) => arabicName[d]).join(" ~ ")
       );
     else {
       db.save();
       db.set("blockedDays", ["Fri"]);
-      return "*الأيام المحجوبة:\n-    ".concat(
-        ["Fri"].map((d) => arabicName[d]).join(" - ")
+      return "◈ *الأيام المحجوبة* : ".concat(
+        ["Fri"].map((d) => arabicName[d]).join(" ~ ")
       );
     }
   };
@@ -141,7 +142,7 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const rooms = () => {
     const rooms = db.get("rooms");
     if (rooms)
-      return "*الغرف المتاحة للحجز: ".concat(
+      return "◈ *الغرف المتاحة للحجز* : ".concat(
         (rooms as string[])
           .map((r) =>
             r.replace(/[\d]/g, (match) =>
@@ -166,11 +167,11 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
       );
       db.save();
       db.set("rooms", data);
-      return "*الغرف المتاحة للحجز: ".concat(data.join(" ~ "));
+      return "◈ *الغرف المتاحة للحجز* : ".concat(data.join(" ~ "));
     }
   };
 
-  const msg = `*الفواعد العامة للمنظومة*\n\n${BookingAvailability()}\n${maxTimeToBookAfterItsStartInMin()}\n${bookingOpen()}\n${bookingClose()}\n${blockedDays()}\n${punishmentUnit()}\n${maxTimeBeforeDelete()}\n${rooms()}\n`;
+  const msg = `*القواعد العامة للمنظومة*\n\n${BookingAvailability()}\n\n${maxTimeBeforeDelete()}\n${maxTimeToBookAfterItsStartInMin()}\n\n${bookingOpen()}\n${bookingClose()}\n\n${punishmentUnit()}\n${blockedDays()}\n${rooms()}\n`;
   await client.sendMessage(chatId, msg);
 };
 

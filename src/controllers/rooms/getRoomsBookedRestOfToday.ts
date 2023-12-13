@@ -12,7 +12,6 @@ import { getRestOfToday } from "../date/getRestOfToday";
 
 export const getRoomsBookedRestOfToday = async () => {
   const range = getRestOfToday();
-  console.log({ range });
   if (!range) return [];
 
   try {
