@@ -1,11 +1,5 @@
 import { firebaseApp } from "./config/firebase";
-import {
-  Client,
-  LocalAuth,
-  GroupChat,
-  InviteV4Data,
-  MessageMedia,
-} from "whatsapp-web.js";
+import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import router from "./resolvers";
 import db from "./database/setup";
@@ -14,9 +8,17 @@ import RegisteredPhone from "./database/RegisteredPhone";
 import groupCreations from "./controllers/GroupManager/groupCreations";
 import bookingGroup from "./controllers/GroupManager/getGroup";
 import configGroup from "./controllers/GroupManager/configuerGroup";
-import util from "util";
+import onJoin from "./controllers/GroupManager/newGroupJoin";
 
-(async () => {
+const client = new Client({
+  authStrategy: new LocalAuth(),
+});
+
+client.on("qr", (qr) => {
+  qrcode.generate(qr, { small: true });
+});
+
+client.on("ready", async () => {
   appSchedule();
 
   const initializeFirebaseApp = () => {
@@ -28,30 +30,12 @@ import util from "util";
     }
   };
   initializeFirebaseApp();
-})();
 
-const client = new Client({
-  authStrategy: new LocalAuth(),
-});
-
-client.on("qr", (qr) => {
-  qrcode.generate(qr, { small: true });
-});
-
-client.on("ready", async () => {
-  const NewGroup = await groupCreations(client);
-  if (NewGroup) {
+  const newGroupCreated = await groupCreations(client);
+  if (newGroupCreated) {
     await configGroup(client);
+    console.log("Group created & configured!");
   }
-  const group = await bookingGroup(client);
-
-  // client.sendMessage("201020205256@c.us",)
-  // const participants = groupChat.participants.map(
-  //   (account) => account.id._serialized
-  // );
-  // const admins = participants.filter((participant) => participant.isAdmin);
-  // const isMeAdmin = admins.some((admin) => admin.userId === MY_USER_ID);
-
   console.log("Client is ready!");
 });
 
@@ -61,37 +45,40 @@ client.on("authenticated", () => {
 });
 
 client.on("message", async (message) => {
-  db.save();
+  if (message.hasMedia) {
+    message.delete();
+    client.sendMessage(message.from, "غير مسموج باستقبال وسائط");
+    return;
+  }
 
   await router(client, message);
 });
 
 client.on("group_join", async (notification) => {
-  console.log(
-    util.inspect(notification, { showHidden: false, depth: null, colors: true })
-  );
-
-  const memberChatId = await notification.chatId;
-  const isExist = RegisteredPhone.fetch(
-    (account) => account.chatId === memberChatId
-  );
-
-  notification.id.p;
-
-  if (!isExist) {
-    const msgToContactWhoJoined =
-      "❌ انت تستخدم هاتف خارج المنظومه لا يمكنك الانضمام إلى المجموعة";
-    client.sendMessage(memberChatId, msgToContactWhoJoined);
-    return;
-  }
-
-  const contact = await client.getContactById(memberChatId);
-  const group = await bookingGroup(client);
-  const account = RegisteredPhone.fetch(
-    (account) => account.chatId === memberChatId
-  )!;
-  console.log({ memberChatId, contact });
-  group.sendMessage(`مرحبا ${account.name}`, { mentions: [contact] });
+  await onJoin(notification, client);
 });
 
+client.on("message_edit", async (message) => {
+  await router(client, message);
+});
+
+client.on("call", (message) => {
+  message.reject();
+});
+
+client.on("change_state", () => {
+  client.resetState();
+});
+
+client.on(
+  "message_edit",
+  async (
+    _message: WAWebJS.Message,
+    oldId: String,
+    _newId: String,
+    _isContact: Boolean
+  ) => {
+    RegisteredPhone.remove((account) => account.chatId === oldId);
+  }
+);
 client.initialize();

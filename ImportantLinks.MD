@@ -14,15 +14,24 @@ https://simpldb.js.org/documentation/database/set
 ```
 
 
-
+```
+import util from "util";
 {
-  groupId: {
-    title: 'Booking',
-    gid: {
-      server: 'g.us',
-      user: '120363187457753946',
-      _serialized: '120363187457753946@g.us'
-    },
-    participants: { '201026100681@c.us': [Object], '201020205256@c.us': [Object] }
-  }
+    console.log(
+      util.inspect(notification, {
+        showHidden: false,
+        depth: null,
+        colors: true,
+      })
+    );
 }
+```
+
+```
+  // client.sendMessage("201020205256@c.us",)
+  // const participants = groupChat.participants.map(
+  //   (account) => account.id._serialized
+  // );
+  // const admins = participants.filter((participant) => participant.isAdmin);
+  // const isMeAdmin = admins.some((admin) => admin.userId === MY_USER_ID);
+  ```
