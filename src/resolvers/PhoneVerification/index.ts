@@ -4,7 +4,6 @@ import { recoveryCodeGen } from "../../config/IDs";
 import { updateCloudAccount } from "../../controllers/accounts/updateCloudAccount";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import invitationLink from "../../controllers/GroupManager/getInvitationLink";
-import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const phoneVerification = async (
   client: WAWebJS.Client,
@@ -35,7 +34,7 @@ const phoneVerification = async (
       accountId: accountData.id,
       name: accountData.data.name,
       chatId: chatId,
-      admin: accountData.data.admin,
+      permissions: accountData.data.permissions,
       type: accountData.data.type,
       recoveryId: recoveryCode,
     });
@@ -67,7 +66,7 @@ const phoneVerification = async (
   RegisteredPhone.update((account) => {
     if (account.accountId === accountData.id) {
       account.chatId = chatId;
-      account.admin = accountData.data.admin;
+      account.permissions = accountData.data.permissions;
       account.type = accountData.data.type;
       account.recoveryId = recoveryCode;
     }
@@ -86,7 +85,7 @@ const phoneVerification = async (
   await client.sendMessage(chatId, recoveryCode);
 
   const invitationURL = await invitationLink(client);
-  const invitationMsg = `نرجو الانضمام إلى الجموعة التالية لمتابعة كل الإشعارات المهمة\n\n ${invitationURL}`;
+  const invitationMsg = `تستطيع الأن الانضمام إلى المجموعة لمتابعة كل الإشعارات الهامة\n\n ${invitationURL}`;
   await client.sendMessage(chatId, invitationMsg);
   return;
 };

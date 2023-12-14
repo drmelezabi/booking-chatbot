@@ -22,7 +22,7 @@ const avail = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     } else {
       await colleagueAvail(client, message, registeredData, str);
     }
-  } else if (registeredData.type === "teacher" || registeredData.admin) {
+  } else if (registeredData.type === "teacher" || registeredData.permissions) {
     await teacherAvail(client, message, registeredData, str);
   } else {
     client.sendMessage(message.from, "❌ لا تملك صلاحية التنشيط");

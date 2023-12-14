@@ -1,18 +1,15 @@
 // Import the functions you need from the SDKs you need
-import { FirebaseApp, initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app";
 import config from "./globalVariables";
 import {
-  Firestore,
   doc,
   getFirestore,
   setDoc,
   collection,
   getDocs,
   query,
-  QueryDocumentSnapshot,
   DocumentData,
 } from "firebase/firestore";
-import genId from "./IDs";
 
 const {
   apiKey,
@@ -56,24 +53,5 @@ export const addDocument = async (
   } catch (error) {
     console.log("add", error);
     return false;
-  }
-};
-
-export const getAll = async (
-  collectionName: string,
-  from?: Date,
-  to?: Date
-) => {
-  try {
-    const collectionRef = collection(firestoreDb, collectionName);
-    const finalData: DocumentData[] = [];
-    const q = query(collectionRef);
-    const docSnap = await getDocs(q);
-    docSnap.forEach((doc) => {
-      finalData.push(doc.data());
-    });
-    return finalData;
-  } catch (error) {
-    console.log("get", error);
   }
 };

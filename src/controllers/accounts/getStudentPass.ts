@@ -8,7 +8,7 @@ import {
 import { firestoreDb } from "../../config/firebase";
 
 export interface studentData {
-  admin: boolean;
+  permissions: "user" | "admin" | "superAdmin";
   name: string;
   pass: string;
   type: "student" | "teacher" | "security" | "employee" | undefined;

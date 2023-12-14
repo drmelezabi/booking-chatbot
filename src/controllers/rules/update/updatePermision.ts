@@ -11,10 +11,10 @@ const updateAccountPermissions = async (
     Promise.all(
       add.map(async (pass) => {
         const accountId = await getAccountIdByPass(pass);
-        await updateCloudAccount(accountId, { admin: true });
+        await updateCloudAccount(accountId, { permissions: "admin" });
         RegisteredPhone.update((account) => {
           if (account.recoveryId === pass) {
-            account.admin = true;
+            account.permissions = "admin";
           }
         });
         RegisteredPhone.save();
@@ -24,10 +24,10 @@ const updateAccountPermissions = async (
     Promise.all(
       remove.map(async (pass) => {
         const accountId = await getAccountIdByPass(pass);
-        await updateCloudAccount(accountId, { admin: false });
+        await updateCloudAccount(accountId, { permissions: "user" });
         RegisteredPhone.update((account) => {
           if (account.recoveryId === pass) {
-            account.admin = false;
+            account.permissions = "user";
           }
         });
         RegisteredPhone.save();

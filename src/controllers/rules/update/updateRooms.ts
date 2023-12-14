@@ -1,4 +1,3 @@
-import { arabicName } from "../../../config/diff";
 import db from "../../../database/setup";
 
 const updateRooms = async (

@@ -2,7 +2,6 @@ import WAWebJS from "whatsapp-web.js";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
 import checkTimeIsFitToActiveReservation from "../../controllers/accounts/checkTimeIsOkForActivateBooked";
 import { activatingPin } from "../../config/IDs";
-import removeActivationPin from "../../controllers/rules/removeActivationPin";
 import Reservation from "../../database/reservation";
 import ActivationPin from "../../database/activationPin";
 
@@ -31,7 +30,11 @@ const studentVerify = async (
       msg = "🕒 **الحجز الخاص بك لم يدخل حيز التنشيط حتى الآن** 🕒";
 
     if (readyForActivating === 2) {
-      await removeActivationPin(getRes.reservationId);
+      ActivationPin.remove(
+        (activationObj) => activationObj.reservationId != getRes.reservationId
+      );
+      ActivationPin.save();
+
       msg = `🚨 **انتهت المهلة المتاحة لتنشيط الحجز** 🚨\n\nسيتم احتساب مخالفة للتخلف عن الحضور.\n\nيمكنك تجاوز المخالفة إذا دعوت أحد زملائك للاستفادة من الفترة المتبقية من الحجز وذلك من خلال:\nاستخدام رسالة " *موعد مهدر* " ⏰`;
     }
     client.sendMessage(message.from, msg);

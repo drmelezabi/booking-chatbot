@@ -1,5 +1,4 @@
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../../controllers/accounts/isAdmin";
 import { cancelTodaysCloudReservations } from "../../../controllers/rooms/cancelTodaysCloudReservations";
 import Reservation from "../../../database/reservation";
 import { getRestOfToday } from "../../../controllers/date/getRestOfToday";

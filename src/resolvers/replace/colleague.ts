@@ -2,9 +2,9 @@ import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
 import { dtOptions } from "../../config/diff";
 import getStudentViolations from "../../controllers/accounts/getStudentViolations";
-import getStudentsSuspension from "../../controllers/rules/getStudentsSuspension";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
 import Avail from "../../database/avail";
+import SuspendedStudent from "../../database/suspendedStudent";
 
 const colleagueAvail = async (
   client: WAWebJS.Client,
@@ -20,24 +20,26 @@ const colleagueAvail = async (
 
     const accountId = registeredData.accountId;
 
-    const isExistedInSuspensionList = (await getStudentsSuspension()).filter(
+    const isExistedInSuspensionList = SuspendedStudent.fetch(
       (sus) => sus.accountId === registeredData.accountId
     );
 
-    if (isExistedInSuspensionList.length) {
+    if (isExistedInSuspensionList) {
       await getStudentViolations(accountId);
-      const suspension = (await getStudentsSuspension()).filter(
-        (stdCase) => stdCase.accountId === accountId && stdCase
+
+      const suspension = SuspendedStudent.fetch(
+        (stdCase) =>
+          stdCase.accountId === accountId && stdCase.suspensionCase === true
       );
 
-      if (suspension.length && suspension[0].suspensionCase) {
-        const dt = suspension[0].BookingAvailabilityDate;
+      if (suspension && suspension.suspensionCase) {
+        const dt = suspension.BookingAvailabilityDate;
         const sticker = MessageMedia.fromFilePath("./src/imgs/rejected.png");
         client.sendMessage(message.from, sticker, {
           sendMediaAsSticker: true,
         });
         const msg = `يبدو أنك موقوف عن حجز قاعات المذاكرة وفقا لتجاوز عدد مرات المخالفات\n حيث أن عدد مخالفاتك وصلت ${
-          suspension[0].ViolationCounter
+          suspension.ViolationCounter
         } مرات\nالإيقف ينتهي في ${dt.toLocaleDateString("ar-EG", dtOptions)}`;
         client.sendMessage(message.from, msg);
         return;

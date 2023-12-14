@@ -8,7 +8,9 @@ const isAdmin = async (messageFrom: string) => {
   if (!existedRegisteredPhones)
     return "انت تستخدم هاتف خارج المنظومه" as string;
 
-  const IsAdmin = existedRegisteredPhones.admin === true;
+  const IsAdmin = ["admin", "superAdmin"].includes(
+    existedRegisteredPhones.permissions
+  );
 
   if (!IsAdmin) return "❌ لا تملك صلاحية تنفيذ الأمر" as string;
 

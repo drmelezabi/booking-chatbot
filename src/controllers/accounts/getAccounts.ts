@@ -21,20 +21,22 @@ const getAccountsString = async (): Promise<string> => {
       finalData.push({
         code: doc.data().pass,
         name: doc.data().name,
-        admin: doc.data().admin,
+        permissions: doc.data().admin,
       });
     });
 
     if (!finalData.length) return "لا يوجد أي حسابات";
 
     const array = (
-      finalData as { code: string; name: string; admin: boolean }[]
+      finalData as {
+        code: string;
+        name: string;
+        permissions: "user" | "admin" | "superAdmin";
+      }[]
     )
       .map(
         (account) =>
-          `الاسم: ${account.name}\nرمز التحكم: ${account.code}\nإدارة: ${
-            account.admin ? "نعم" : "لا"
-          }\n`
+          `الاسم: ${account.name}\nرمز التحكم: ${account.code}\nإدارة: ${account.permissions}\n`
       )
       .join("\n~~~~~~~~~~~~~~~`\n");
 

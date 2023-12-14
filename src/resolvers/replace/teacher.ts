@@ -24,7 +24,12 @@ const teacherAvail = async (
     return;
   }
 
-  if (!(registeredData.type === "teacher" || registeredData.admin === true)) {
+  if (
+    !(
+      registeredData.type === "teacher" ||
+      registeredData.permissions === "admin"
+    )
+  ) {
     client.sendMessage(message.from, "❌ لا تملك صلاحية التنشيط");
     return;
   }
@@ -85,7 +90,7 @@ const teacherAvail = async (
 
   const group = await bookingGroup(client);
   group.sendMessage(
-    `قام الطالب ${avail.availName} بالاستجابة لتمرير حجز الطالب ${avail.host} ومن الآن الحجز خاضع للتنفيذ من الطالب ${avail.availName}\nالمشرف هو ${registeredData.name}`
+    `قام الطالب ${avail.availName} بالاستجابة لتمرير حجز الطالب ${avail.host} ومن الآن الحجز خاضع للتنفيذ من الطالب ${avail.availName} تحت إشراف ${registeredData.name}`
   );
 
   await client.sendMessage(message.from, "تم التنشيط");

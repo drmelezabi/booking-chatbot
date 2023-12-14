@@ -1,7 +1,6 @@
-import localDb from "../../config/localDb";
 import Reservation from "../../database/reservation";
 
-export interface IReservation {
+interface IReservation {
   accountId: string;
   reservationId: string;
   Date: Date;

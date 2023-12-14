@@ -28,7 +28,7 @@ const verify = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     return;
   }
   //
-  else if (isExist.type === "teacher" || isExist.admin === true) {
+  else if (isExist.type === "teacher" || isExist.permissions === "admin") {
     await supervisorVerify(client, message);
     return;
   }

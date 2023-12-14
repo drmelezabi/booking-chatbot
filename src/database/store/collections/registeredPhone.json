@@ -2,9 +2,9 @@
   {
     "accountId": "gouaZqpCRlk9KXkuhxHZ",
     "chatId": "201020205256@c.us",
-    "admin": true,
-    "type": "student",
-    "recoveryId": "123456789",
+    "permissions": "superAdmin",
+    "type": "teacher",
+    "recoveryId": "26217417",
     "name": "محمد العزبي"
   }
 ]

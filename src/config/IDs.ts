@@ -1,7 +1,5 @@
-import { customAlphabet, nanoid } from "nanoid";
-export const genId = () => nanoid(20);
+import { customAlphabet } from "nanoid";
 
-export default genId;
 const alphabet =
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const num = "0123456789";

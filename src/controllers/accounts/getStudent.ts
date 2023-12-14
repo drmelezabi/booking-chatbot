@@ -2,7 +2,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { firestoreDb } from "../../config/firebase";
 
 export interface accountData {
-  admin: boolean;
+  permissions: "user" | "admin" | "superAdmin";
   name: string;
   pass: string;
   type: "student" | "teacher" | "security" | "employee" | undefined;

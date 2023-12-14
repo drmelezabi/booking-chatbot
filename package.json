@@ -20,7 +20,8 @@
     "db:clean": "cross-env NODE_ENV=test ts-node testDbClean.ts",
     "Prisma:Create:Drop": "prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --script > prisma/down.sql",
     "prisma:down": "prisma db execute --file ./prisma/down.sql --schema prisma/schema.prisma",
-    "reset:db": "pnpm exec cross-env NODE_ENV=\"test\" db-migrate db:drop table_dev -e test && pnpm exec db-migrate db:create table_dev -e test && cross-env NODE_ENV=development ts-node testDbUp.ts"
+    "reset:db": "pnpm exec cross-env NODE_ENV=\"test\" db-migrate db:drop table_dev -e test && pnpm exec db-migrate db:create table_dev -e test && cross-env NODE_ENV=development ts-node testDbUp.ts",
+    "find-deadcode": "ts-prune"
   },
   "keywords": [],
   "author": "Dr Mohamed El-Ezabi",
@@ -36,29 +37,26 @@
     "eslint-plugin-prettier": "^5.0.1",
     "nodemon": "^3.0.1",
     "prettier": "^3.1.0",
-    "prisma": "^5.6.0",
     "rimraf": "^5.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "util": "^0.12.5"
   },
   "dependencies": {
-    "@prisma/client": "^5.7.0",
     "@types/qrcode-terminal": "^0.12.2",
-    "acebase": "^1.29.5",
     "better-sqlite3": "^9.2.2",
     "child_process": "^1.0.2",
-    "db-local": "^3.1.0",
     "dotenv": "^16.3.1",
     "firebase": "^10.7.0",
+    "google-auth-library": "^9.4.1",
+    "google-spreadsheet": "^4.1.1",
     "moment-timezone": "^0.5.43",
     "nanoid": "3.3.6",
-    "node-json-db": "^2.3.0",
     "node-schedule": "^2.1.1",
     "qrcode-terminal": "^0.12.0",
-    "quick.db": "^9.1.7",
     "simpl.db": "^2.12.1",
     "starkstring": "^0.4.4",
+    "ts-prune": "^0.10.3",
     "whatsapp-web.js": "^1.23.0"
   }
 }

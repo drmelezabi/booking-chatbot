@@ -2,13 +2,18 @@ import { firebaseApp } from "./config/firebase";
 import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import router from "./resolvers";
-import db from "./database/setup";
 import appSchedule from "./controllers/schedual";
 import RegisteredPhone from "./database/RegisteredPhone";
 import groupCreations from "./controllers/GroupManager/groupCreations";
-import bookingGroup from "./controllers/GroupManager/getGroup";
 import configGroup from "./controllers/GroupManager/configuerGroup";
 import onJoin from "./controllers/GroupManager/newGroupJoin";
+import db from "./database/setup";
+import spreed from "./config/googleSheet";
+import bookingGroup from "./controllers/GroupManager/getGroup";
+
+(async () => {
+  // await spreed();
+})();
 
 const client = new Client({
   authStrategy: new LocalAuth(),

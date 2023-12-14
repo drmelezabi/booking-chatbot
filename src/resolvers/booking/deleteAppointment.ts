@@ -5,7 +5,6 @@ import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
 import formatDateTime from "../../controllers/date/formateTimestamp";
-import starkString from "starkstring";
 
 const deleteAppointment = async (
   client: WAWebJS.Client,
@@ -66,7 +65,14 @@ const deleteAppointment = async (
 
   const group = await bookingGroup(client);
   group.sendMessage(
-    `قام الطالب ${isExist.name} بإلغاء حجز بهذا التوقيت\n*يوم:* ${dt.Day}\n*تاريخ:* ${dt.Date}\n*التوقيت:* ${dt.Time}\nوعليه فالموعد لم يعد محجوز`
+    `🚫 **قام الطالب ${isExist.name} بإلغاء حجز بهذا التوقيت** 🚫
+
+*يوم:* ${dt.Day}
+*تاريخ:* ${dt.Date}
+*التوقيت:* ${dt.Time}
+
+وعليه، الموعد لم يعد محجوز
+  `
   );
   return;
 };
