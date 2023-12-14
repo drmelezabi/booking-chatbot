@@ -3,6 +3,9 @@ import checkTimeIsFitToCancelReservation from "../../controllers/accounts/checkT
 import deleteCloudReservation from "../../controllers/rules/deleteReservation";
 import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";
+import bookingGroup from "../../controllers/GroupManager/getGroup";
+import formatDateTime from "../../controllers/date/formateTimestamp";
+import starkString from "starkstring";
 
 const deleteAppointment = async (
   client: WAWebJS.Client,
@@ -41,6 +44,9 @@ const deleteAppointment = async (
     client.sendMessage(message.from, "❌ لم يعد متاح إلغاء الحجز");
     return;
   }
+  const reservation = Reservation.fetch(
+    (reservation) => reservation.reservationId === existedRes.reservationId
+  )!;
 
   Reservation.remove(
     (reservation) => reservation.reservationId === existedRes.reservationId
@@ -55,6 +61,13 @@ const deleteAppointment = async (
   });
 
   client.sendMessage(message.from, "🗑 تم إلغاء الحجز");
+
+  const dt = formatDateTime(new Date(reservation.Date));
+
+  const group = await bookingGroup(client);
+  group.sendMessage(
+    `قام الطالب ${isExist.name} بإلغاء حجز بهذا التوقيت\n*يوم:* ${dt.Day}\n*تاريخ:* ${dt.Date}\n*التوقيت:* ${dt.Time}\nوعليه فالموعد لم يعد محجوز`
+  );
   return;
 };
 //

@@ -4,6 +4,7 @@ import { cancelTodaysCloudReservations } from "../../../controllers/rooms/cancel
 import Reservation from "../../../database/reservation";
 import { getRestOfToday } from "../../../controllers/date/getRestOfToday";
 import stopBookingAvailability from "../../../controllers/rules/stopBookingAvailability";
+import bookingGroup from "../../../controllers/GroupManager/getGroup";
 
 const cancelRestOfDayReservations = async (
   client: WAWebJS.Client,
@@ -31,6 +32,10 @@ const cancelRestOfDayReservations = async (
     stopBookingAvailability(end);
     const msg = "تم حذف كل المواعيد المحجوزة من هذه الساعة وحتى نهاية اليوم";
     client.sendMessage(chatId, msg);
+    const group = await bookingGroup(client);
+    group.sendMessage(
+      "تم تعليق المذاكرة حتى نهاية اليوم وتم إلغاء كافة المواعيد المحجوزة ولن تحتسب أية مخالفات على المواعيد الملغاة"
+    );
     return;
   }
 };

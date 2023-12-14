@@ -5,6 +5,7 @@ import Avail from "../../database/avail";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import Reservation from "../../database/reservation";
 import { updateCloudAppointmentById } from "../../controllers/rooms/updateAppointmentById";
+import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const teacherAvail = async (
   client: WAWebJS.Client,
@@ -81,6 +82,11 @@ const teacherAvail = async (
 
   Avail.remove((avail) => avail.pin === +match[1]);
   Avail.save();
+
+  const group = await bookingGroup(client);
+  group.sendMessage(
+    `قام الطالب ${avail.availName} بالاستجابة لتمرير حجز الطالب ${avail.host} ومن الآن الحجز خاضع للتنفيذ من الطالب ${avail.availName}\nالمشرف هو ${registeredData.name}`
+  );
 
   await client.sendMessage(message.from, "تم التنشيط");
 };

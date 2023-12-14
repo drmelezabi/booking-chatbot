@@ -3,6 +3,9 @@ import { activatingPin } from "../../config/IDs";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
 import Avail from "../../database/avail";
 import Reservation from "../../database/reservation";
+import RegisteredPhone from "../../database/RegisteredPhone";
+import formatDateTime from "../../controllers/date/formateTimestamp";
+import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const hostAvail = async (
   client: WAWebJS.Client,
@@ -71,6 +74,16 @@ const hostAvail = async (
 
     const msg = `شارك الرمز مع زميلك وأحد المشرفين\n${genPin}`;
     client.sendMessage(message.from, msg);
+
+    const student = RegisteredPhone.fetch(
+      (account) => account.accountId === getRes.accountId
+    )!;
+    const dt = formatDateTime(getRes.Date);
+
+    const group = await bookingGroup(client);
+    group.sendMessage(
+      `قام الطالب ${student.name} بالإعلان عن استعداده لتمرير الموعد التالي\n*يوم:* ${dt.Day}\n*تاريخ:* ${dt.Date}\n*التوقيت:* ${dt.Time} حيث في حالة وجود أحد الطلاب في حالة رغبتك في الاستفادة من الحجز استخدم الرمز التالي|\n !تمرير ${genPin}\n في أسرع وقت الرمز صالح لمدة 3 دقائق`
+    );
 
     return;
   } catch (error: any) {

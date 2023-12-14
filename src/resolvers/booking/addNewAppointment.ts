@@ -10,10 +10,10 @@ import starkString from "starkstring";
 import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import SuspendedStudent from "../../database/suspendedStudent";
-import Appointment from "../../database/appointment";
 import db from "../../database/setup";
 import BlockedDates from "../../database/blockedDates";
 import createNewAppointment from "../../controllers/rooms/addAppointment";
+import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const addNewAppointment = async (
   client: WAWebJS.Client,
@@ -148,10 +148,11 @@ const addNewAppointment = async (
   const { start, end } = stamp;
 
   const isBlockedDate = blockedDates.filter((d) => {
+    const dt = new Date(d.date);
     const IsNotAvailable =
-      d.date.getDate() === start.getDate() &&
-      d.date.getMonth() === start.getMonth() &&
-      (d.annually || d.date.getFullYear() === start.getFullYear());
+      dt.getDate() === start.getDate() &&
+      dt.getMonth() === start.getMonth() &&
+      (d.annually || dt.getFullYear() === start.getFullYear());
     return IsNotAvailable;
   });
 
@@ -256,5 +257,13 @@ const addNewAppointment = async (
     sendMediaAsSticker: true,
   });
   client.sendMessage(message.from, `${succeedMsg}`);
+  const group = await bookingGroup(client);
+  group.sendMessage(
+    `قام الطالب ${isExist.name} بحجز الموعد التالي\n*يوم:* ${
+      arabicName[day]
+    }\n*تاريخ:* ${dt.Date}\n*التوقيت:* ${dt.Time}\n*الغرفة:* ${starkString(room)
+      .arabicNumber()
+      .toString()}`
+  );
 };
 export default addNewAppointment;

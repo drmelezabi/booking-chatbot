@@ -3,6 +3,8 @@ import getCloudStudentIdByPass from "../../controllers/accounts/getStudentPass";
 import { recoveryCodeGen } from "../../config/IDs";
 import { updateCloudAccount } from "../../controllers/accounts/updateCloudAccount";
 import RegisteredPhone from "../../database/RegisteredPhone";
+import invitationLink from "../../controllers/GroupManager/getInvitationLink";
+import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const phoneVerification = async (
   client: WAWebJS.Client,
@@ -82,6 +84,10 @@ const phoneVerification = async (
   await client.sendMessage(chatId, firstMessageBody);
   await client.sendMessage(chatId, secondMessageBody);
   await client.sendMessage(chatId, recoveryCode);
+
+  const invitationURL = await invitationLink(client);
+  const invitationMsg = `نرجو الانضمام إلى الجموعة التالية لمتابعة كل الإشعارات المهمة\n\n ${invitationURL}`;
+  await client.sendMessage(chatId, invitationMsg);
   return;
 };
 
