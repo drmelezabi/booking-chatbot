@@ -3,7 +3,7 @@ import { updateCloudAppointmentById } from "../../controllers/rooms/updateAppoin
 import starkString from "starkstring";
 import Reservation from "../../database/reservation";
 import ActivationPin from "../../database/activationPin";
-import getCloudReservationById from "../../controllers/accounts/getCloudReservation";
+import getCloudReservationById from "../../controllers/reservations/getCloudReservation";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const studentActive = async (

@@ -1,6 +1,6 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import checkTimeIsFitToCancelReservation from "../../controllers/accounts/checkTimeIsFitToCancelReservation";
-import deleteCloudReservation from "../../controllers/rules/deleteReservation";
+import checkTimeIsFitToCancelReservation from "../../controllers/reservations/checkTimeIsFitToCancelReservation";
+import deleteCloudReservation from "../../controllers/reservations/deleteReservation";
 import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import bookingGroup from "../../controllers/GroupManager/getGroup";

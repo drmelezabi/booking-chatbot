@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/accounts/isAdmin";
+import isAdmin from "../../controllers/rules/isAdmin";
 
 export const menu = async (
   client: WAWebJS.Client,

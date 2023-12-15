@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
-import checkTimeIsFitToActiveReservation from "../../controllers/accounts/checkTimeIsOkForActivateBooked";
+import checkTimeIsFitToActiveReservation from "../../controllers/reservations/checkTimeIsOkForActivateBooked";
 import { activatingPin } from "../../config/IDs";
 import Reservation from "../../database/reservation";
 import ActivationPin from "../../database/activationPin";

@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/accounts/isAdmin";
-import reservationsTracking from "../../controllers/accounts/getReservations";
+import isAdmin from "../../controllers/rules/isAdmin";
+import reservationsTracking from "../../controllers/reservations/getReservations";
 
 const getReservations = async (
   client: WAWebJS.Client,

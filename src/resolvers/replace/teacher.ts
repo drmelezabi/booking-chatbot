@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import deleteCloudReservation from "../../controllers/rules/deleteReservation";
+import deleteCloudReservation from "../../controllers/reservations/deleteReservation";
 import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
 import Avail from "../../database/avail";
 import RegisteredPhone from "../../database/RegisteredPhone";

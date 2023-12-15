@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/accounts/isAdmin";
+import isAdmin from "../../controllers/rules/isAdmin";
 import starkString from "starkstring";
 import updateRooms from "../../controllers/rules/update/updateRooms";
 

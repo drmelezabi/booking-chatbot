@@ -1,7 +1,7 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 import prepareBookingMessage from "../../controllers/rules/phraseBokkingmessage";
 import getStudentViolations from "../../controllers/accounts/getStudentViolations";
-import checkBookingAvailability from "../../controllers/rules/checkBookingAvailability";
+import checkBookingAvailability from "../../controllers/reservations/checkBookingAvailability";
 import { arabicName, dtOptions } from "../../config/diff";
 import { checkRoomAvailability } from "../../controllers/rooms/checkRoomIsNotBusy";
 import { getDayRangeWithTime } from "../../controllers/date/getDayRangeWithTime";
@@ -12,7 +12,7 @@ import RegisteredPhone from "../../database/RegisteredPhone";
 import SuspendedStudent from "../../database/suspendedStudent";
 import db from "../../database/setup";
 import BlockedDates from "../../database/blockedDates";
-import createNewAppointment from "../../controllers/rooms/addAppointment";
+import createNewAppointment from "../../controllers/reservations/addAppointment";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const addNewAppointment = async (

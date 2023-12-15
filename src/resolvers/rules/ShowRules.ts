@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/accounts/isAdmin";
+import isAdmin from "../../controllers/rules/isAdmin";
 import db from "../../database/setup";
 import { arabicName } from "../../config/diff";
 import formatDateTime from "../../controllers/date/formateTimestamp";

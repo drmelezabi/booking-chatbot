@@ -56,10 +56,15 @@ const getStudentViolations = async (accountId: string) => {
       });
 
     if (EditedStudentData.violations.length) {
-      SuspendedStudent.remove((account) => account.accountId === accountId);
-      SuspendedStudent.save();
-      SuspendedStudent.create(EditedStudentData);
-      SuspendedStudent.save();
+      SuspendedStudent.update((account) => {
+        if (account.accountId === accountId) {
+          account.ViolationCounter = EditedStudentData.ViolationCounter;
+          account.suspensionCase = EditedStudentData.suspensionCase;
+          account.suspensionCase = EditedStudentData.suspensionCase;
+          account.BookingAvailabilityDate =
+            EditedStudentData.BookingAvailabilityDate;
+        }
+      });
       await updateCloudStudentViolations(
         accountId,
         EditedStudentData.violations

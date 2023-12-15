@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/accounts/isAdmin";
+import isAdmin from "../../controllers/rules/isAdmin";
 import updateBlockedDays from "../../controllers/rules/update/updateBlockedDay";
 type blockedDays = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 const rephrase: { [key: string]: blockedDays } = {
