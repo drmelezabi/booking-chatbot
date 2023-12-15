@@ -1,10 +1,10 @@
 import WAWebJS from "whatsapp-web.js";
-import deleteCloudReservation from "../../controllers/reservations/deleteReservation";
-import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
+import deleteCloudReservation from "../../controllers/reservations/delete/deleteReservation";
+import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
 import Avail from "../../database/avail";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import Reservation from "../../database/reservation";
-import { updateCloudAppointmentById } from "../../controllers/rooms/updateAppointmentById";
+import { updateCloudReservationById } from "../../controllers/reservations/update/updateReservationById";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const teacherAvail = async (
@@ -71,7 +71,7 @@ const teacherAvail = async (
     return;
   }
 
-  await updateCloudAppointmentById(avail.reservationId, {
+  await updateCloudReservationById(avail.reservationId, {
     stdId: avail.availId,
     student: avail.availName,
     case: 1,

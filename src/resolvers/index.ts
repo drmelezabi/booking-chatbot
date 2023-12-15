@@ -13,10 +13,10 @@ import getReservations from "./advanced/getReservations";
 import mySchedule from "./personal/mySchedule";
 import myViolations from "./personal/myViolations";
 import { convertArToEnDigits as ArToEnNum } from "../config/diff";
-import addNewAppointment from "./booking/addNewAppointment";
+import addNewReservation from "./booking/addNewReservation";
 import verify from "./verify";
 import studentActive from "./verify/active";
-import deleteAppointment from "./booking/deleteAppointment";
+import deleteReservation from "./booking/deleteReservation";
 import avail from "./replace";
 import updateBlockedDaysResolve from "./rules/updateBlockedDays";
 import updateBlockedDatesResolve from "./rules/updateBlockedDates";
@@ -96,7 +96,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   //
   //
   else if (/^![إاأ]لغاء\s*$/.test(body))
-    await deleteAppointment(client, message);
+    await deleteReservation(client, message);
   //
   //
   else if (/^!توثيق\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
@@ -132,7 +132,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   else if (body === "!مخالفات") await myViolations(client, message);
   //
   //
-  else if (/^!حجز\s/.test(body)) await addNewAppointment(client, message);
+  else if (/^!حجز\s/.test(body)) await addNewReservation(client, message);
   //
   //
   else if (/^![إأا]دار[ةه]\s*$/.test(body)) await AdvancedMenu(client, message);

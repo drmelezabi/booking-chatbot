@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import getCloudAccount from "../../controllers/accounts/getStudent";
+import getCloudAccount from "../../controllers/accounts/get/getStudent";
 import studentVerify from "./studentVerify";
 import supervisorVerify from "./supervisorVerify";
 import RegisteredPhone from "../../database/RegisteredPhone";

@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
 import { activatingPin } from "../../config/IDs";
-import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
+import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
 import Avail from "../../database/avail";
 import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";

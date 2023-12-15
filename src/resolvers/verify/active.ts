@@ -1,9 +1,9 @@
 import WAWebJS from "whatsapp-web.js";
-import { updateCloudAppointmentById } from "../../controllers/rooms/updateAppointmentById";
+import { updateCloudReservationById } from "../../controllers/reservations/update/updateReservationById";
 import starkString from "starkstring";
 import Reservation from "../../database/reservation";
 import ActivationPin from "../../database/activationPin";
-import getCloudReservationById from "../../controllers/reservations/getCloudReservation";
+import getCloudReservationById from "../../controllers/reservations/get/getCloudReservation";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
 
 const studentActive = async (
@@ -54,7 +54,7 @@ const studentActive = async (
   }
 
   if (new Date() <= upperBound) {
-    await updateCloudAppointmentById(ExistedActivationObj.reservationId, {
+    await updateCloudReservationById(ExistedActivationObj.reservationId, {
       case: 1,
     });
 

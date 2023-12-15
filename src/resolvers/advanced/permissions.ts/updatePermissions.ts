@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import isAdmin from "../../../controllers/rules/isAdmin";
 import starkString from "starkstring";
-import updateAccountPermissions from "../../../controllers/rules/update/updatePermision";
+import updateAccountPermissions from "../../../controllers/rules/update/updatePermission";
 
 const updatePermissions = async (
   client: WAWebJS.Client,

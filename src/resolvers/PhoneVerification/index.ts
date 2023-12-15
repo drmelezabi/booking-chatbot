@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
-import getCloudStudentIdByPass from "../../controllers/accounts/getStudentPass";
+import getCloudStudentIdByPass from "../../controllers/accounts/get/getStudentPass";
 import { recoveryCodeGen } from "../../config/IDs";
-import { updateCloudAccount } from "../../controllers/accounts/updateCloudAccount";
+import { updateCloudAccount } from "../../controllers/accounts/update/updateCloudAccount";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import invitationLink from "../../controllers/GroupManager/getInvitationLink";
 

@@ -1,6 +1,6 @@
 import schedule from "node-schedule";
 import Reservation from "../../database/reservation";
-import getStudentViolations from "../accounts/getStudentViolations";
+import getStudentViolations from "../accounts/get/getStudentViolations";
 
 export default function appSchedule() {
   const tz = "Africa/Cairo";

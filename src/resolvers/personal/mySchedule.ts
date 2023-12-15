@@ -1,5 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import { getStudentWeekBooked } from "../../controllers/rooms/getStudentWeekBooked";
+import { getStudentWeekBooked } from "../../controllers/rooms/get/getStudentWeekBooked";
 import RegisteredPhone from "../../database/RegisteredPhone";
 
 const mySchedule = async (client: WAWebJS.Client, message: WAWebJS.Message) => {

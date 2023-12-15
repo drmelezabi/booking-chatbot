@@ -7,7 +7,7 @@ import cancelRestOfDayReservations from "./cancelRestOfDay";
 import startBookingAvailability from "../../../controllers/rules/startBookingAvailability";
 import starkString from "starkstring";
 import detectDateFromString from "../../../controllers/date/detectDateFromString";
-import { cancelResFromNowToDate } from "../../../controllers/rooms/cancelResFromNowToDate";
+import { cancelResFromNowToDate } from "../../../controllers/rooms/cancel/cancelResFromNowToDate";
 import Reservation from "../../../database/reservation";
 import stopBookingAvailability from "../../../controllers/rules/stopBookingAvailability";
 

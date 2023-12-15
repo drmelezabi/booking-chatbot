@@ -1,8 +1,8 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
-import createMultipleCloudAccounts from "../controllers/accounts/AddAccountsToCloud";
-import { accountData } from "../controllers/accounts/getCloudAccounts";
-import deleteAccounts from "../controllers/accounts/deleteCloudAccounts";
+import createMultipleCloudAccounts from "../controllers/accounts/add/AddAccountsToCloud";
+import { accountData } from "../controllers/accounts/get/getCloudAccounts";
+import deleteAccounts from "../controllers/accounts/delete/deleteCloudAccounts";
 
 // Initialize auth - see https://theoephraim.github.io/node-google-spreadsheet/#/guides/authentication
 const serviceAccountAuth = new JWT({

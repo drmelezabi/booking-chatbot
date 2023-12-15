@@ -1,8 +1,8 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
 import { dtOptions } from "../../config/diff";
-import getStudentViolations from "../../controllers/accounts/getStudentViolations";
-import { registeredData } from "../../controllers/accounts/createRegisteredPhone";
+import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
+import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
 import Avail from "../../database/avail";
 import SuspendedStudent from "../../database/suspendedStudent";
 
