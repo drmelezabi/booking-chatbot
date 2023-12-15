@@ -5,7 +5,7 @@
     "BookingAvailabilityDate": "2023-12-14T05:00:00.000Z"
   },
   "maxTimeToBookAfterItsStartInMin": 5,
-  "groupId": "120363189861544305@g.us",
+  "groupId": "120363208873528248@g.us",
   "bookingOpen": 7,
   "bookingClose": 17,
   "blockedDays": ["Fri"],

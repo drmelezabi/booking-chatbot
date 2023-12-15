@@ -6,86 +6,31 @@ import {
   getRec,
   trackingInfo,
   personalInfo,
-} from "./menu";
-import phoneVerification from "./PhoneVerification";
-import getRecovery from "./advanced/getRecovery";
-import getReservations from "./advanced/getReservations";
-import mySchedule from "./personal/mySchedule";
-import myViolations from "./personal/myViolations";
+} from "../resolvers/menu";
+import phoneVerification from "../resolvers/PhoneVerification";
+import getRecovery from "../resolvers/advanced/getRecovery";
+import getReservations from "../resolvers/advanced/getReservations";
+import mySchedule from "../resolvers/personal/mySchedule";
+import myViolations from "../resolvers/personal/myViolations";
 import { convertArToEnDigits as ArToEnNum } from "../config/diff";
-import addNewReservation from "./booking/addNewReservation";
-import verify from "./verify";
-import studentActive from "./verify/active";
-import deleteReservation from "./booking/deleteReservation";
-import avail from "./replace";
-import updateBlockedDaysResolve from "./rules/updateBlockedDays";
-import updateBlockedDatesResolve from "./rules/updateBlockedDates";
-import Chat from "../database/chat";
-import showRules from "./rules/ShowRules";
-import RegisteredPhone from "../database/RegisteredPhone";
-import reservationAvailabilityControl from "./advanced/stopBooking";
-import updateRoomsResolve from "./rules/updateRooms";
-import EditBookingRules from "./advanced/EditBookingRules";
-import permissionsResolvers from "./advanced/permissions.ts";
-
-const remove = (accountId: string) => {
-  const length = Chat.fetchMany((c) => c.id === accountId).length;
-  for (let index = 0; index < length; index++) {
-    Chat.remove((c) => c.id === accountId);
-    Chat.save();
-  }
-};
+import addNewReservation from "../resolvers/booking/addNewReservation";
+import verify from "../resolvers/verify";
+import studentActive from "../resolvers/verify/active";
+import deleteReservation from "../resolvers/booking/deleteReservation";
+import avail from "../resolvers/replace";
+import updateBlockedDaysResolve from "../resolvers/rules/updateBlockedDays";
+import updateBlockedDatesResolve from "../resolvers/rules/updateBlockedDates";
+import showRules from "../resolvers/rules/ShowRules";
+import reservationAvailabilityControl from "../resolvers/advanced/stopBooking";
+import updateRoomsResolve from "../resolvers/rules/updateRooms";
+import EditBookingRules from "../resolvers/advanced/EditBookingRules";
+import permissionsResolvers from "../resolvers/advanced/permissions.ts";
+import chat from "../controllers/chat";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
-  let counter = 0;
-  let data: { [key: string]: unknown } = {};
-  let lastMessage: Date = new Date();
-  let taskSyntax: string = "";
-  let accountId: string = "";
-
-  if (message.body.startsWith("!")) {
-    const isExist = RegisteredPhone.fetch(
-      (account) => account.chatId === message.from
-    );
-    Chat.save();
-    if (isExist) {
-      accountId = isExist.accountId;
-      remove(accountId);
-    }
-  } else {
-    const isExist = RegisteredPhone.fetch(
-      (account) => account.chatId === message.from
-    );
-    Chat.save();
-    if (isExist) accountId = isExist.accountId;
-    const chanData = Chat.fetch((u) => u.id === accountId);
-    Chat.save();
-    if (/^[إآأا]لغاء/.test(message.body)) {
-      if (chanData) {
-        remove(accountId);
-        const msg = `تم الإلغاء`;
-        client.sendMessage(message.from, msg);
-        return;
-      }
-    } else {
-      const oneMinutes = 1 * 60 * 1000;
-      if (chanData) {
-        if (
-          new Date() > new Date(new Date(lastMessage).getTime() + oneMinutes)
-        ) {
-          if (chanData) taskSyntax = chanData.taskSyntax;
-          remove(accountId);
-        } else {
-          counter = chanData.counter;
-          data = chanData.data;
-          lastMessage = chanData.lastMessage;
-          taskSyntax = chanData.taskSyntax;
-        }
-      }
-    }
-  }
-
-  Chat.save();
+  const checkChat = chat(client, message);
+  if (!checkChat) return;
+  const { counter, data, taskSyntax } = checkChat;
 
   const { body, from } = message;
   //

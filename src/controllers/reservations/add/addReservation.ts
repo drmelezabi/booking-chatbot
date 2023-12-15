@@ -1,5 +1,5 @@
 import { genId20 } from "../../../config/IDs";
-import { addDocument } from "../../../config/firebase";
+import addDocument from "../../addCloudDoc";
 import addLocalReservations from "./addLocalReservation";
 
 interface IReservation {

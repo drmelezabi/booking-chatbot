@@ -38,7 +38,9 @@ const colleagueAvail = async (
         client.sendMessage(message.from, sticker, {
           sendMediaAsSticker: true,
         });
-        const msg = `يبدو أنك موقوف عن حجز قاعات المذاكرة وفقا لتجاوز عدد مرات المخالفات\n حيث أن عدد مخالفاتك وصلت ${
+        const msg = `يبدو أنك ${
+          registeredData.gender === "male" ? "موقوف" : "موقوفة"
+        } عن حجز قاعات المذاكرة وفقا لتجاوز عدد مرات المخالفات\n حيث أن عدد مخالفاتك وصلت ${
           suspension.ViolationCounter
         } مرات\nالإيقف ينتهي في ${dt.toLocaleDateString("ar-EG", dtOptions)}`;
         client.sendMessage(message.from, msg);
@@ -96,7 +98,9 @@ const colleagueAvail = async (
   } catch (error: any) {
     client.sendMessage(
       message.from,
-      "حدث خطأ غير متوقع إذا استمرت المشكلة تواصل مع الإدارة"
+      `حدث خطأ غير متوقع إذا استمرت المشكلة ${
+        registeredData.gender === "male" ? "تواصل" : "تواصلي"
+      } مع الإدارة`
     );
     console.log(error.message);
     return;

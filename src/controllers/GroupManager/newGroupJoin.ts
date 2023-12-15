@@ -1,4 +1,4 @@
-import WAWebJS from "whatsapp-web.js";
+import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 import db from "../../database/setup";
 import bookingGroup from "./getGroup";
 import RegisteredPhone from "../../database/RegisteredPhone";
@@ -30,10 +30,19 @@ export default async function onJoin(
     }
 
     const contact = await client.getContactById(memberChatId);
+    console.log({ contact, memberChatId });
     const account = RegisteredPhone.fetch(
       (account) => account.chatId === memberChatId
     )!;
-    group.sendMessage(`مرحبا ${account.name}`, { mentions: [contact] });
+    await group.sendMessage(
+      `مرحبا ${account.name} في منظومة المذاكرة والمتابعة لقسم التربية الموسيقية\n @${account.contact.user}`,
+      {
+        mentions: [contact],
+      }
+    );
+    const sticker = MessageMedia.fromFilePath("./src/imgs/rejected.png");
+    await group.sendMessage(sticker);
+
     return;
   }
   return;

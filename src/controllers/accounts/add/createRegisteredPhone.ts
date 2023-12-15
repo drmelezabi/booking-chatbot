@@ -6,4 +6,5 @@ export interface registeredData {
   name: string;
   type: "student" | "teacher" | "security" | "employee" | undefined;
   permissions: "user" | "admin" | "superAdmin";
+  gender: "male" | "female";
 }

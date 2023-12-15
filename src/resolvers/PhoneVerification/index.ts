@@ -28,6 +28,7 @@ const phoneVerification = async (
   const IsActivated = RegisteredPhone.fetch(
     (account) => account.recoveryId === match[1]
   );
+  const contactData = (await message.getContact()).id;
 
   if (!IsActivated) {
     RegisteredPhone.create({
@@ -37,6 +38,7 @@ const phoneVerification = async (
       permissions: accountData.data.permissions,
       type: accountData.data.type,
       recoveryId: recoveryCode,
+      contact: contactData,
     });
     RegisteredPhone.save();
 
@@ -50,6 +52,11 @@ const phoneVerification = async (
     await client.sendMessage(chatId, firstMessageBody);
     await client.sendMessage(chatId, secondMessageBody);
     await client.sendMessage(chatId, recoveryCode);
+
+    const invitationURL = await invitationLink(client);
+    const invitationMsg = `تستطيع الأن الانضمام إلى المجموعة لمتابعة كل الإشعارات الهامة\n\n ${invitationURL}`;
+    await client.sendMessage(chatId, invitationMsg);
+
     return;
   }
 
@@ -69,6 +76,7 @@ const phoneVerification = async (
       account.permissions = accountData.data.permissions;
       account.type = accountData.data.type;
       account.recoveryId = recoveryCode;
+      account.contact = contactData;
     }
   });
   RegisteredPhone.save();

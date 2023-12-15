@@ -65,7 +65,9 @@ const deleteReservation = async (
 
   const group = await bookingGroup(client);
   group.sendMessage(
-    `🚫 **قام الطالب ${isExist.name} بإلغاء حجز بهذا التوقيت** 🚫
+    `🚫 **${isExist.gender === "male" ? "قام الطالب" : "قامت الطالبة"} ${
+      isExist.name
+    } بإلغاء حجز بهذا التوقيت** 🚫
 
 *يوم:* ${dt.Day}
 *تاريخ:* ${dt.Date}

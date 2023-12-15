@@ -5,6 +5,7 @@ import Reservation from "../../database/reservation";
 import ActivationPin from "../../database/activationPin";
 import getCloudReservationById from "../../controllers/reservations/get/getCloudReservation";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const studentActive = async (
   client: WAWebJS.Client,
@@ -37,6 +38,19 @@ const studentActive = async (
 
   const resDate = new Date(ExistedActivationObj.creationDate);
 
+  const account = Reservation.fetch(
+    (res) => res.reservationId === ExistedActivationObj.reservationId
+  )!;
+
+  if (!account) {
+    client.sendMessage(message.from, "حدث خطأ تواصل مع الإدارة");
+    return;
+  }
+
+  const student = RegisteredPhone.fetch(
+    (std) => std.accountId === account.accountId
+  )!;
+
   // Calculate the range
   const upperBound = new Date(resDate.getTime() + oneMinute);
 
@@ -47,8 +61,13 @@ const studentActive = async (
         activationObj.reservationId === ExistedActivationObj.reservationId
     );
     ActivationPin.save();
-    const msg =
-      '🚀 **انتهيت الآن من الخطوة الأولى من خطوات التنفيذ** 🚀\n\nالآن، توجه إلى أقرب مشرف لإعطاءك رمز التفعيل. بعد الحصول على رمز التنشيط، ارسل كلمة "!رمز التنشيط" متبوعة بالرمز.';
+    const msg = `🚀 **${
+      student.gender === "male" ? "انتهيت" : "انتهيتي"
+    } الآن من الخطوة الأولى من خطوات التنفيذ** 🚀\n\nالآن، ${
+      student.gender === "male" ? "توجه" : "توجهي"
+    } إلى أقرب مشرف لإعطاءك رمز التفعيل. بعد الحصول على رمز التنشيط، ${
+      student.gender === "male" ? "أرسل" : "أرسلي"
+    } كلمة "!رمز التنشيط" متبوعة بالرمز.`;
     client.sendMessage(message.from, msg);
     return;
   }
@@ -68,13 +87,14 @@ const studentActive = async (
 
     const group = await bookingGroup(client);
     group.sendMessage(
-      `🎉 **تم تنشيط الحجز الخاص بالطالب ${reservationData.student} تحت إشراف ${
-        reservationData.supervisor
-      }** 🎉
+      `🎉 **تم تنشيط الحجز الخاص ${
+        student.gender === "male" ? "بالطالب" : "بالطالبة"
+      } ${reservationData.student} تحت إشراف ${reservationData.supervisor}** 🎉
 
-الطالب حالياً يتواجد للمذاكرة في الغرفة ${reservationData.room.replace(
-        /[\d]/g,
-        (match) => starkString(match).arabicNumber().toString()
+${student.gender === "male" ? "الطالب" : "الطالبة"} حالياً ${
+        student.gender === "male" ? "يتواجد" : "تتواجد"
+      } للمذاكرة في الغرفة ${reservationData.room.replace(/[\d]/g, (match) =>
+        starkString(match).arabicNumber().toString()
       )}`
     );
 

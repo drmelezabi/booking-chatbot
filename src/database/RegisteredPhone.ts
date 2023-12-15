@@ -1,3 +1,4 @@
+import { ContactId } from "whatsapp-web.js";
 import db from "./setup";
 
 type registeredPhone = {
@@ -8,6 +9,8 @@ type registeredPhone = {
   type: "student" | "teacher" | "security" | "employee" | undefined;
   recoveryId: string;
   name: string;
+  contact: ContactId;
+  gender: "male" | "female";
 };
 
 const RegisteredPhone = db.createCollection<registeredPhone>("registeredPhone");

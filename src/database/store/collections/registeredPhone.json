@@ -1,10 +1,15 @@
 [
   {
-    "accountId": "gouaZqpCRlk9KXkuhxHZ",
-    "chatId": "201020205256@c.us",
-    "permissions": "superAdmin",
+    "accountId": "P2VnXNBdTLa7lMc3p01f",
+    "name": "د محمد العزبى",
+    "chatId": "201013975256@c.us",
+    "permissions": "user",
     "type": "teacher",
-    "recoveryId": "26217417",
-    "name": "محمد العزبي"
+    "recoveryId": "22781927",
+    "contact": {
+      "server": "c.us",
+      "user": "201013975256",
+      "_serialized": "201013975256@c.us"
+    }
   }
 ]

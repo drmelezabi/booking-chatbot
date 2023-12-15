@@ -49,7 +49,12 @@ const myViolations = async (
   }
 
   if (!studentData.violations.length) {
-    client.sendMessage(message.from, "✔ لم ترتكب أي مخالفات حتى الآن أحسنت");
+    client.sendMessage(
+      message.from,
+      `✔ لم ${
+        isExist.gender === "male" ? "تقم" : "تقومي بارتكاب"
+      } أي مخالفات حتى الآن أحسنت`
+    );
     return;
   }
 

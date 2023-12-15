@@ -33,7 +33,10 @@ const verify = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     return;
   }
   //
-  client.sendMessage(message.from, "❌ لا تملك صلاحية التنشيط");
+  client.sendMessage(
+    message.from,
+    `❌ لا ${isExist.gender === "male" ? "تمتلك" : "تمتلكين"} صلاحية التنشيط`
+  );
   return;
 };
 

@@ -1,4 +1,3 @@
-import { Timestamp } from "firebase/firestore";
 import { firestoreDb } from "../../../config/firebase";
 import { writeBatch, doc } from "firebase/firestore";
 import { genId20, recoveryCodeGen } from "../../../config/IDs";
@@ -11,11 +10,15 @@ type accountName = {
   violations: string[];
   whatsappId: string;
   type: "teacher" | "student" | "manager" | "security";
+  gender: "male" | "female";
 };
 
 const createMultipleCloudAccounts = async (
   accounts: {
-    [key: string]: any;
+    shortName: string;
+    fullName: string;
+    gender: "male" | "female";
+    permissions: "user" | "admin" | "superAdmin";
   }[],
   type: "teacher" | "student" | "manager" | "security"
 ) => {
@@ -23,9 +26,10 @@ const createMultipleCloudAccounts = async (
 
   accounts.forEach((account) => {
     const newAccount: accountName = {
-      permissions: "user",
+      permissions: account.permissions,
       fullName: account.fullName,
       name: account.shortName,
+      gender: account.gender,
       pass: recoveryCodeGen(),
       violations: [],
       whatsappId: "",

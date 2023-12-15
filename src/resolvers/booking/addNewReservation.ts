@@ -97,9 +97,9 @@ const addNewReservation = async (
     if (!time) info.push("التوقيت");
     if (!room) info.push("القاعة");
 
-    const msg = `❓ **معلومات ${info.join(
-      " و "
-    )} غير واضحة** ❓\n\nببساطة، حاول التعبير عن هذه المعلومات`;
+    const msg = `❓ **معلومات ${info.join(" و ")} غير واضحة** ❓\n\nببساطة، ${
+      isExist.gender === "male" ? "حاول" : "حاولي"
+    } التعبير عن هذه المعلومات`;
     const sticker = MessageMedia.fromFilePath("./src/imgs/lost.png");
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,
@@ -218,7 +218,9 @@ const addNewReservation = async (
     new Date().getHours() === now.getHours() &&
     new Date().getMinutes() - now.getMinutes() > maxTimeToBookAfterItsStartInMin
   ) {
-    const msg = `⏰ **يبدو أنه قد مر وقت يزيد عن ${maxAfterStarts} دقيقة ولم يعد الموعد متاحًا للحجز** ⏰\n\nحاول حجز المواعيد قبل بدء الحجز بوقت كافٍ`;
+    const msg = `⏰ **يبدو أنه قد مر وقت يزيد عن ${maxAfterStarts} دقيقة ولم يعد الموعد متاحًا للحجز** ⏰\n\ ${
+      isExist.gender === "male" ? "حاول" : "حاولي"
+    } حجز المواعيد قبل بدء الحجز بوقت كافٍ`;
     client.sendMessage(message.from, msg);
     return;
   }
