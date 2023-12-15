@@ -3,9 +3,7 @@ import client from "./config/whatsapp";
 import appSchedule from "./schedule";
 
 (async () => {
-  // await spreed();
   initializeFirebase();
-  const cl = client.initialize();
+  client.initialize();
   appSchedule();
-  setTimeout(async () => {}, 25000);
 })();

@@ -1,6 +1,6 @@
 import db from "./setup";
 
-interface IAvail {
+export interface IAvail {
   hostId: string;
   pin: number;
   reservationId: string;

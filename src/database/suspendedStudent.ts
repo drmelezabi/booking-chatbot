@@ -1,6 +1,6 @@
 import db from "./setup";
 
-type suspendedStudent = {
+export type ISuspendedStudent = {
   accountId: string; // studentId
   ViolationCounter: number;
   suspensionCase: Boolean;
@@ -9,6 +9,6 @@ type suspendedStudent = {
 };
 
 const SuspendedStudent =
-  db.createCollection<suspendedStudent>("suspendedStudent");
+  db.createCollection<ISuspendedStudent>("suspendedStudent");
 
 export default SuspendedStudent;

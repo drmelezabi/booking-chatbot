@@ -1,7 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
 import isAdmin from "../../controllers/rules/isAdmin";
 import db from "../../database/setup";
-import { arabicName } from "../../config/diff";
+import { arabicName, dict } from "../../config/diff";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import starkString from "starkstring";
 
@@ -35,8 +35,8 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         SuspendedUntilDate: false,
         BookingAvailabilityDate: "2023-12-09T21:12:37.789Z",
       };
-      db.save();
       db.set("BookingAvailability", data);
+      db.save();
       return `* تعليق الحجز :\n    - متوقف لأجل غير مسمى ${"غير نشط"}\n    - متوقف لتاريخ محدد ${"غير نشط"}\n    - تاريخ إعادة الإتاحة${
         formatDateTime(new Date("2023-12-09T21:12:37.789Z")).Date
       }`;
@@ -67,8 +67,8 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         (match) => starkString(match).arabicNumber().toString()
       )}`;
     } else {
-      db.save();
       db.set("bookingOpen", 7);
+      db.save();
       return `◈ *أول موعد متاح للحجز اليومي* : ${"7 صباحا".replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
@@ -86,8 +86,8 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         (match) => starkString(match).arabicNumber().toString()
       )}`;
     } else {
-      db.save();
       db.set("bookingClose", 17);
+      db.save();
       return `◈ *أخر موعد متاح للحجز اليومي* : ${"5 مساءً".replace(
         /[\d]/g,
         (match) => starkString(match).arabicNumber().toString()
@@ -103,8 +103,8 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         (match) => starkString(match).arabicNumber().toString()
       )} أيام`;
     else {
-      db.save();
       db.set("punishmentUnit", 3);
+      db.save();
       return `◈ *معدل أيام الجزاء* : ${3} أيام جزاء`;
     }
   };
@@ -117,8 +117,8 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         (match) => starkString(match).arabicNumber().toString()
       )}`;
     else {
-      db.save();
       db.set("maxTimeBeforeDelete", 2);
+      db.save();
       return `◈ *الحد الاقصى المسموح لحذف الحجز قبل بدءه* : ${2}`;
     }
   };
@@ -131,8 +131,8 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         (blockedDays as weekDay).map((d) => arabicName[d]).join(" ~ ")
       );
     else {
-      db.save();
       db.set("blockedDays", ["Fri"]);
+      db.save();
       return "◈ *الأيام المحجوبة* : ".concat(
         ["Fri"].map((d) => arabicName[d]).join(" ~ ")
       );
@@ -165,11 +165,21 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
           starkString(match).arabicNumber().toString()
         )
       );
-      db.save();
       db.set("rooms", data);
+      db.save();
       return "◈ *الغرف المتاحة للحجز* : ".concat(data.join(" ~ "));
     }
   };
+
+  const dictionary = () => {
+    const dic = db.get("dictionary");
+    if (!dic) {
+      db.set("dictionary", dict);
+      db.save();
+    }
+  };
+
+  dictionary();
 
   const msg = `*القواعد العامة للمنظومة*\n\n${BookingAvailability()}\n\n${maxTimeBeforeDelete()}\n${maxTimeToBookAfterItsStartInMin()}\n\n${bookingOpen()}\n${bookingClose()}\n\n${punishmentUnit()}\n${blockedDays()}\n${rooms()}\n`;
   await client.sendMessage(chatId, msg);

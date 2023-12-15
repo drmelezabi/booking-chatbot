@@ -1,18 +1,19 @@
 import { ContactId } from "whatsapp-web.js";
 import db from "./setup";
 
-type registeredPhone = {
+export type IRegisteredPhone = {
   accountId: string; // studentId
   chatId: string;
   permissions: "user" | "admin" | "superAdmin";
   fullName: string;
-  type: "student" | "teacher" | "security" | "employee" | undefined;
+  type: "student" | "teacher" | "security" | "manager" | undefined;
   recoveryId: string;
   name: string;
   contact: ContactId;
   gender: "male" | "female";
 };
 
-const RegisteredPhone = db.createCollection<registeredPhone>("registeredPhone");
+const RegisteredPhone =
+  db.createCollection<IRegisteredPhone>("registeredPhone");
 
 export default RegisteredPhone;

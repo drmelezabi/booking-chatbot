@@ -1,6 +1,6 @@
 import db from "./setup";
 
-type chat = {
+export type IChat = {
   id: string;
   lastMessage: Date;
   taskSyntax: string;
@@ -8,6 +8,6 @@ type chat = {
   data: { [key: string]: unknown };
 };
 
-const Chat = db.createCollection<chat>("chat");
+const Chat = db.createCollection<IChat>("chat");
 
 export default Chat;

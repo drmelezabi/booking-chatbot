@@ -1,12 +1,12 @@
 import db from "./setup";
 
-type activationPin = {
+export type IActivationPin = {
   reservationId: string;
   pin: number;
   creationDate: Date;
   name: string;
 };
 
-const ActivationPin = db.createCollection<activationPin>("activationPin");
+const ActivationPin = db.createCollection<IActivationPin>("activationPin");
 
 export default ActivationPin;

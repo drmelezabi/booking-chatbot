@@ -1,11 +1,11 @@
 import db from "./setup";
 
-type blockedDates = {
+export type IBlockedDates = {
   date: Date;
   reason: string;
   annually: boolean;
 };
 
-const BlockedDates = db.createCollection<blockedDates>("blockedDates");
+const BlockedDates = db.createCollection<IBlockedDates>("blockedDates");
 
 export default BlockedDates;

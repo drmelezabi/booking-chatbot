@@ -1,11 +1,11 @@
 import db from "./setup";
 
-type reservation = {
+export type IReservation = {
   accountId: string; // studentId
   reservationId: string;
   Date: Date;
 };
 
-const Reservation = db.createCollection<reservation>("reservation");
+const Reservation = db.createCollection<IReservation>("reservation");
 
 export default Reservation;
