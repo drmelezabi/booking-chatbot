@@ -3,6 +3,7 @@ import Reservation from "../database/reservation";
 import getStudentViolations from "../controllers/accounts/get/getStudentViolations";
 import RegisteredPhone from "../database/RegisteredPhone";
 import client from "../config/whatsapp";
+import backup from "../backup/backup";
 
 export default function appSchedule() {
   const tz = "Africa/Cairo";
@@ -62,4 +63,14 @@ export default function appSchedule() {
       );
     });
   }
+
+  const rule_backup = new schedule.RecurrenceRule();
+  rule_backup.dayOfWeek = 4; // Thursday
+  rule_backup.hour = 16; // 4 PM
+  rule_backup.minute = 45; // 45 minutes past the hour
+  rule_backup.tz = tz;
+
+  schedule.scheduleJob(rule_backup, async () => {
+    await backup("Email");
+  });
 }

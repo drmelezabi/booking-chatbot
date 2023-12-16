@@ -1,7 +1,16 @@
+import path from "path";
 import fs from "fs";
 import addDocument from "../controllers/addCloudDoc";
+import backupMessageTemplate from "../Email/backupTemplate";
+import { levels } from "../config/enums";
+import Sendmail from "../config/email";
+import client from "../config/whatsapp";
+import { MessageMedia } from "whatsapp-web.js";
 
-const backup = async () => {
+const backup = async (
+  type: "FireBase" | "whatsapp" | "Email",
+  chatId?: string
+) => {
   try {
     const database = JSON.parse(
       fs.readFileSync("./src/database/store/database.json", "utf8")
@@ -50,7 +59,7 @@ const backup = async () => {
       )
     );
 
-    const backupObject = {
+    const JSONs = {
       database,
       activationPin,
       avail,
@@ -59,6 +68,10 @@ const backup = async () => {
       reservation,
       suspendedStudent,
       registeredPhone,
+    };
+
+    const backupObject = {
+      ...JSONs,
       backup: new Date(),
     };
 
@@ -73,9 +86,61 @@ const backup = async () => {
       .replace(/\//g, "-")
       .split("-");
 
-    const dateString = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
+    const dateString = `${dateArray[2]}-${dateArray[0]}-${dateArray[1]}`;
+    if (type === "FireBase") {
+      await addDocument("backup", dateString, backupObject);
+      return;
+    } else if (type === "Email") {
+      const messageTemplate = backupMessageTemplate(
+        levels.info,
+        `${dateString} backup`
+      );
 
-    await addDocument("backup", dateString, backupObject);
+      const files: { filename: string; path: string }[] = [];
+
+      for await (const [key, value] of Object.entries(JSONs)) {
+        const dirPath: string = path.join(process.cwd(), "src", "backup");
+        const attachmentPath = path.join(dirPath, `${key}.json`);
+
+        files.push({ filename: `${key}.json`, path: attachmentPath });
+
+        const jsonString = JSON.stringify(value);
+
+        fs.writeFile(attachmentPath, jsonString, (err) => {
+          if (err) {
+            console.log("Error writing file:", err);
+            return false;
+          }
+        });
+      }
+      Sendmail(
+        undefined,
+        `backup-${dateString}`,
+        messageTemplate,
+        true,
+        undefined,
+        undefined,
+        files
+      );
+      return;
+    } else if (type === "whatsapp" && chatId) {
+      await client.sendMessage(chatId, "↻ جاري اعداد النسخة الاحطياطية");
+
+      for await (const [key, value] of Object.entries(JSONs)) {
+        const jsonString = JSON.stringify(value);
+
+        // Encode the file contents as Base64
+        const base64Data = Buffer.from(jsonString).toString("base64");
+
+        const media = new MessageMedia(
+          "application/json",
+          base64Data,
+          `${key}`
+        );
+        await client.sendMessage(chatId, media);
+      }
+      return;
+    }
 
     return true;
   } catch (error) {

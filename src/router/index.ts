@@ -26,6 +26,8 @@ import updateRoomsResolve from "../resolvers/rules/updateRooms";
 import EditBookingRules from "../resolvers/advanced/EditBookingRules";
 import permissionsResolvers from "../resolvers/advanced/permissions.ts";
 import chat from "../controllers/chat";
+import createBackUp from "../resolvers/backup/backup";
+import restoreLocalDB from "../resolvers/backup/restore";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const checkChat = chat(client, message);
@@ -113,6 +115,17 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     taskSyntax === "!حالة المنظومة"
   )
     await reservationAvailabilityControl(client, message, counter, data);
+  //
+  //
+  else if (
+    /^!نسخ[ةه] [إأا]حتياطي[ةه]/.test(body) ||
+    taskSyntax === "!نسخة احتياطية"
+  )
+    await createBackUp(client, message, counter);
+  //
+  //
+  else if (/^!استعاد[ةه] نسخ[ةه]/.test(body) || taskSyntax === "!استعادة نسخة")
+    await restoreLocalDB(client, message, counter);
   //
   //
   else {
