@@ -1,15 +1,1 @@
-[
-  {
-    "accountId": "uhj3ZvNKXq6wjPRFs4HP",
-    "name": "د محمد العزبى",
-    "chatId": "201013975256@c.us",
-    "permissions": "superAdmin",
-    "type": "teacher",
-    "recoveryId": "64824638",
-    "contact": {
-      "server": "c.us",
-      "user": "201013975256",
-      "_serialized": "201013975256@c.us"
-    }
-  }
-]
+[{"accountId":"uhj3ZvNKXq6wjPRFs4HP","name":"د محمد العزبى","chatId":"201013975256@c.us","permissions":"superAdmin","type":"teacher","recoveryId":"64824638","contact":{"server":"c.us","user":"201013975256","_serialized":"201013975256@c.us"}},{"ok":"ok"}]

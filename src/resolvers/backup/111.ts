@@ -4,7 +4,7 @@ import RegisteredPhone from "../../database/RegisteredPhone";
 import Chat from "../../database/chat";
 import restore from "../../backup/restore";
 
-const restoreLocalDB = async (
+const restoreLocal = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message,
   counter: number
@@ -74,4 +74,4 @@ const restoreLocalDB = async (
   }
 };
 
-export default restoreLocalDB;
+export default restoreLocal;

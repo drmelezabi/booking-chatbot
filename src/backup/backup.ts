@@ -98,7 +98,10 @@ const backup = async (
 
       const files: { filename: string; path: string }[] = [];
 
-      for await (const [key, value] of Object.entries(JSONs)) {
+      for await (const [key, value] of Object.entries({
+        ...JSONs,
+        Restore: JSONs,
+      })) {
         const dirPath: string = path.join(process.cwd(), "src", "backup");
         const attachmentPath = path.join(dirPath, `${key}.json`);
 
@@ -126,7 +129,10 @@ const backup = async (
     } else if (type === "whatsapp" && chatId) {
       await client.sendMessage(chatId, "↻ جاري اعداد النسخة الاحطياطية");
 
-      for await (const [key, value] of Object.entries(JSONs)) {
+      for await (const [key, value] of Object.entries({
+        ...JSONs,
+        Restore: JSONs,
+      })) {
         const jsonString = JSON.stringify(value);
 
         // Encode the file contents as Base64

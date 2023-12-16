@@ -6,6 +6,7 @@ import configGroup from "../controllers/GroupManager/configureGroup";
 import onJoin from "../controllers/GroupManager/newGroupJoin";
 import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
 import StudentDataHandler from "../controllers/sheet/DatabaseSeed";
+import isSuperAdmin from "../controllers/rules/isSuperAdmin";
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -38,10 +39,12 @@ client.on("authenticated", () => {
 });
 
 client.on("message", async (message) => {
-  if (message.hasMedia) {
-    message.delete();
-    client.sendMessage(message.from, "غير مسموج باستقبال وسائط");
-    return;
+  if (!(await isSuperAdmin(message.from))) {
+    if (message.hasMedia) {
+      message.delete();
+      client.sendMessage(message.from, "غير مسموج باستقبال وسائط");
+      return;
+    }
   }
 
   await router(client, message);

@@ -91,22 +91,6 @@ export function isIRegisteredPhoneArray(
     return false;
   }
 
-  for (let item of obj) {
-    if (
-      typeof item.accountId !== "string" ||
-      typeof item.chatId !== "string" ||
-      typeof item.permissions !== "string" ||
-      typeof item.fullName !== "string" ||
-      typeof item.type !== "string" ||
-      typeof item.recoveryId !== "string" ||
-      typeof item.name !== "string" ||
-      typeof item.contact !== "object" ||
-      typeof item.gender !== "string"
-    ) {
-      return false;
-    }
-  }
-
   return true;
 }
 

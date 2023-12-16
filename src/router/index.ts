@@ -27,7 +27,7 @@ import EditBookingRules from "../resolvers/advanced/EditBookingRules";
 import permissionsResolvers from "../resolvers/advanced/permissions.ts";
 import chat from "../controllers/chat";
 import createBackUp from "../resolvers/backup/backup";
-import restoreLocalDB from "../resolvers/backup/restore";
+import restoreLocalDB from "../resolvers/backup/retore";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const checkChat = chat(client, message);
@@ -125,7 +125,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   //
   //
   else if (/^!استعاد[ةه] نسخ[ةه]/.test(body) || taskSyntax === "!استعادة نسخة")
-    await restoreLocalDB(client, message, counter);
+    await restoreLocalDB(client, message, counter, data);
   //
   //
   else {

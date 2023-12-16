@@ -50,6 +50,11 @@ const chat = (client: WAWebJS.Client, message: WAWebJS.Message) => {
           if (chanData) taskSyntax = chanData.taskSyntax;
           remove(accountId);
         } else {
+          if (message.hasMedia && !chanData.data.waitFile) {
+            message.delete(true);
+            client.sendMessage(message.from, `لسنا في انتظار أي ملفات`);
+            return;
+          }
           counter = chanData.counter;
           data = chanData.data;
           lastMessage = chanData.lastMessage;

@@ -23,7 +23,7 @@ const restore = async () => {
     const restoredData: unknown[] = [];
 
     const q = query(
-      collection(firestoreDb, "account"),
+      collection(firestoreDb, "backup"),
       orderBy("backup", "desc"),
       limit(1)
     );
