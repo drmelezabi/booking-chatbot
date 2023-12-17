@@ -43,24 +43,38 @@ export const arabicHours = (h: number) => {
   const hour = starkString(`${h}`).arabicNumber().toString(); //returns: 345 45
   if (h === 1) return "ساعة واحدة";
   else if (h === 2) return "ساعتان";
-  else if ([3, 4, 5, 6, 7, 8, 9, 10].includes(h)) return `${hour} ساعات`;
-  else return `${hour} ساعة`;
+  else if ([3, 4, 5, 6, 7, 8, 9, 10].includes(h))
+    return `${enToAr(hour)} ساعات`;
+  else return `${enToAr(hour)} ساعة`;
 };
 
 export const arabicMinuets = (m: number) => {
   const minuet = starkString(`${m}`).arabicNumber().toString(); //returns: 345 45
   if (m === 1) return "دقيقة واحدة";
   else if (m === 2) return "دقيقتان";
-  else if ([3, 4, 5, 6, 7, 8, 9, 10].includes(m)) return `${minuet} دقائق`;
-  else return `${minuet} دقيقة`;
+  else if ([3, 4, 5, 6, 7, 8, 9, 10].includes(m))
+    return `${enToAr(minuet)} دقائق`;
+  else return `${enToAr(minuet)} دقيقة`;
 };
 
 export const arabicDays = (d: number) => {
   const minuet = starkString(`${d}`).arabicNumber().toString(); //returns: 345 45
   if (d === 1) return "يوم واحد";
   else if (d === 2) return "يومان";
-  else if ([3, 4, 5, 6, 7, 8, 9, 10].includes(d)) return `${minuet} ايام`;
-  else return `${minuet} يوم`;
+  else if ([3, 4, 5, 6, 7, 8, 9, 10].includes(d))
+    return `${enToAr(minuet)} ايام`;
+  else return `${enToAr(minuet)} يوم`;
+};
+
+export const enToAr = (inp: string) => {
+  let str = starkString(` ${inp} `).toString();
+  const letterBeforeNumberArabic = /(?<=\p{L})(?=\p{N})|(?<=\p{N})(?=\p{L})/gu;
+  return str
+    .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, (match) =>
+      starkString(match).arabicNumber().toString()
+    )
+    .replace(letterBeforeNumberArabic, " ")
+    .trim();
 };
 
 export const dict = {

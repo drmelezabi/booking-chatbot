@@ -6,6 +6,7 @@ import RegisteredPhone from "../../database/RegisteredPhone";
 import Reservation from "../../database/reservation";
 import { updateCloudReservationById } from "../../controllers/reservations/update/updateReservationById";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
+import db from "../../database/setup";
 
 const teacherAvail = async (
   client: WAWebJS.Client,
@@ -53,20 +54,21 @@ const teacherAvail = async (
     return;
   }
 
-  const threeMinutes = 3 * 60 * 1000;
+  const tenMinutes =
+    (db.get<number>("verifyPickupAvailDeadLine") || 10) * 60 * 1000; // Convert 10 minutes to milliseconds
   const thirtyMinutes = 30 * 60 * 1000;
 
-  const afterResStarted = new Date() > new Date(avail.availCreatedDate);
-  const before3MinuetsOfAvailCreation =
+  const afterResStarted = new Date() > new Date(avail.reservationDate);
+  const verifyPickupAvailDeadLine =
     new Date() <
-    new Date(new Date(avail.availCreatedDate).getTime() + threeMinutes);
+    new Date(new Date(avail.availCreatedDate).getTime() + tenMinutes);
   const beforeReservationEnds =
     new Date() <
     new Date(new Date(avail.reservationDate).getTime() + thirtyMinutes);
 
   const readyForReplacement =
     afterResStarted && // after start
-    before3MinuetsOfAvailCreation && // before 3m of avail creation
+    verifyPickupAvailDeadLine && // before 3m of avail creation
     beforeReservationEnds; // before reservation Ends
 
   if (!readyForReplacement) {

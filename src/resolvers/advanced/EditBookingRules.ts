@@ -65,7 +65,7 @@ const EditBookingRules = async (
     }
 
     if (/^حجز بعد البدء/.test(message.body)) {
-      const num = message.body.replace(/^ّحجز بعد البدء/, "");
+      const num = message.body.replace(/^حذف بعد البدء/, "");
       db.set<number>("maxTimeToBookAfterItsStartInMin", parseInt(num, 10));
       db.save();
       remove(isExist.accountId);
@@ -73,33 +73,66 @@ const EditBookingRules = async (
       return;
     }
 
-    if (/^بداية المذاكرة/.test(message.body)) {
-      const num = message.body.replace(/^بداية المذاكرة/, "");
+    if (/^بداي[ةه] المذاكر[ةه]/.test(message.body)) {
+      const num = message.body.replace(/^بداي[ةه] المذاكر[ةه]/, "");
       db.set<number>("bookingOpen", parseInt(num, 10));
       db.save();
       remove(isExist.accountId);
-      const msg = `حجز مواعيد أصبح متاح من الآن وصاعدا`;
-      client.sendMessage(message.from, msg);
+      client.sendMessage(message.from, "تم التعديل بنجاح");
       return;
     }
 
-    if (/^نهاية المذاكرة/.test(message.body)) {
-      const num = message.body.replace(/^نهاية المذاكرة/, "");
+    if (/^نهاي[ةه] المذاكر[ةه]/.test(message.body)) {
+      const num = message.body.replace(/^نهاي[ةه] المذاكر[ةه]/, "");
       db.set<number>("bookingClose", parseInt(num, 10));
       db.save();
       remove(isExist.accountId);
-      const msg = `حجز مواعيد أصبح متاح من الآن وصاعدا`;
-      client.sendMessage(message.from, msg);
+      client.sendMessage(message.from, "تم التعديل بنجاح");
       return;
     }
 
     if (/^[اإآأ]يام الجزاءات/.test(message.body)) {
-      const num = message.body.replace(/^نهاية المذاكرة/, "");
+      const num = message.body.replace(/^[اإآأ]يام الجزاءات/, "");
       db.set<number>("punishmentUnit", parseInt(num, 10));
       db.save();
       remove(isExist.accountId);
-      const msg = `حجز مواعيد أصبح متاح من الآن وصاعدا`;
-      client.sendMessage(message.from, msg);
+      client.sendMessage(message.from, "تم التعديل بنجاح");
+      return;
+    }
+
+    if (/^نطاق التفعيل قبل البدء/.test(message.body)) {
+      const num = message.body.replace(/^نطاق التفعيل قبل البدء/, "");
+      db.set<number>("activatingPeriodBeforeStart", parseInt(num, 10));
+      db.save();
+      remove(isExist.accountId);
+      client.sendMessage(message.from, "تم التعديل بنجاح");
+      return;
+    }
+
+    if (/^نطاق التفعيل بعد البدء/.test(message.body)) {
+      const num = message.body.replace(/^نطاق التفعيل بعد البدء/, "");
+      db.set<number>("activatingPeriodAfterStart", parseInt(num, 10));
+      db.save();
+      remove(isExist.accountId);
+      client.sendMessage(message.from, "تم التعديل بنجاح");
+      return;
+    }
+
+    if (/^بداية نطاق التمرير/.test(message.body)) {
+      const num = message.body.replace(/^نطاق التفعيل قبل البدء/, "");
+      db.set<number>("availPeriodStarts", parseInt(num, 10));
+      db.save();
+      remove(isExist.accountId);
+      client.sendMessage(message.from, "تم التعديل بنجاح");
+      return;
+    }
+
+    if (/^نهاية نطاق التمرير/.test(message.body)) {
+      const num = message.body.replace(/^نطاق التفعيل بعد البدء/, "");
+      db.set<number>("availPeriodEnds", parseInt(num, 10));
+      db.save();
+      remove(isExist.accountId);
+      client.sendMessage(message.from, "تم التعديل بنجاح");
       return;
     }
   }

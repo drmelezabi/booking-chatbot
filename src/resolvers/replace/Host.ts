@@ -6,6 +6,7 @@ import Reservation from "../../database/reservation";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
+import db from "../../database/setup";
 
 const hostAvail = async (
   client: WAWebJS.Client,
@@ -26,14 +27,15 @@ const hostAvail = async (
       );
       return;
     }
-    const tenMinutes = 10 * 60 * 1000; // Convert 15 minutes to milliseconds
-    const threeMinutes = 3 * 60 * 1000; // Convert 18 minutes to milliseconds
+    const twoMinutes = (db.get<number>("availPeriodDeadLine") || 2) * 60 * 1000; // Convert 2 minutes to milliseconds
+    const fiveMinuets =
+      (db.get<number>("availPeriodDeadLine") || 5) * 60 * 1000; // Convert 3 minutes to milliseconds
 
     const resDate = new Date(getRes.Date);
 
     // Calculate the range
-    const firstUpperBound = new Date(resDate.getTime() + tenMinutes);
-    const secondUpperBound = new Date(firstUpperBound.getTime() + threeMinutes);
+    const availPeriodStarts = new Date(resDate.getTime() + twoMinutes);
+    const availPeriodDeadLine = new Date(resDate.getTime() + fiveMinuets);
 
     const isNotStartYet = new Date() < resDate;
     if (isNotStartYet) {
@@ -42,7 +44,7 @@ const hostAvail = async (
     }
 
     const isِAbleToActive =
-      new Date() > resDate && new Date() < firstUpperBound;
+      new Date() > resDate && new Date() < availPeriodStarts;
     if (isِAbleToActive) {
       const msg = `الموعد لا زال قابل للتفعيل .. يإمكانك الاستفادة منه`;
       client.sendMessage(message.from, msg);
@@ -50,7 +52,7 @@ const hostAvail = async (
     }
 
     const isAbleForAvail =
-      new Date() > firstUpperBound && new Date() < secondUpperBound;
+      new Date() > availPeriodStarts && new Date() < availPeriodDeadLine;
     if (!isAbleForAvail) {
       const msg = "نأسف لقد انتهت مهلة التمرير المحددة لإنقاذ الحجز من الإهدار";
       client.sendMessage(message.from, msg);

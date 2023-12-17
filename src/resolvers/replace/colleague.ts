@@ -5,6 +5,7 @@ import getStudentViolations from "../../controllers/accounts/get/getStudentViola
 import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
 import Avail from "../../database/avail";
 import SuspendedStudent from "../../database/suspendedStudent";
+import db from "../../database/setup";
 
 const colleagueAvail = async (
   client: WAWebJS.Client,
@@ -62,20 +63,23 @@ const colleagueAvail = async (
       return;
     }
 
-    const threeMinutes = 3 * 60 * 1000;
+    const availPeriodDeadLine =
+      (db.get<number>("availPeriodDeadLine") || 5) * 60 * 1000; // Convert 3 minutes to milliseconds
     const thirtyMinutes = 30 * 60 * 1000;
 
-    const afterResStarted = new Date() > new Date(avail.availCreatedDate);
-    const before3MinuetsOfAvailCreation =
+    const afterResStarted = new Date() > new Date(avail.reservationDate);
+    const availDeadLine =
       new Date() <
-      new Date(new Date(avail.availCreatedDate).getTime() + threeMinutes);
+      new Date(
+        new Date(avail.availCreatedDate).getTime() + availPeriodDeadLine
+      );
     const beforeReservationEnds =
       new Date() <
       new Date(new Date(avail.reservationDate).getTime() + thirtyMinutes);
 
     const readyForReplacement =
       afterResStarted && // after start
-      before3MinuetsOfAvailCreation && // before 3m of avail creation
+      availDeadLine && // before 3m of avail creation
       beforeReservationEnds; // before reservation Ends
 
     if (!readyForReplacement) {

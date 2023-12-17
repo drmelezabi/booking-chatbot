@@ -16,7 +16,7 @@ const updateRoomsResolve = async (
   }
   // ------------------------------------------
   const query = message.body
-    .substring("!حجب".length)
+    .substring("!غرف".length)
     .trim()
     .replace(/\s+/g, " ");
 

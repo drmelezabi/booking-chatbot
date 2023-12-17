@@ -4,6 +4,7 @@ import getStudentViolations from "../controllers/accounts/get/getStudentViolatio
 import RegisteredPhone from "../database/RegisteredPhone";
 import client from "../config/whatsapp";
 import backup from "../backup/backup";
+import getAvailViolations from "../controllers/accounts/get/getAvailViolations";
 
 export default function appSchedule() {
   const tz = "Africa/Cairo";
@@ -20,7 +21,8 @@ export default function appSchedule() {
 
   for (let hour = startHour; hour <= endHour; hour++) {
     rule_waste.hour = hour;
-    schedule.scheduleJob(rule_waste, () => {
+    schedule.scheduleJob(rule_waste, async () => {
+      await getAvailViolations();
       const violateReservations = Reservation.fetchMany((reservation) => {
         const deadline = new Date(reservation.Date);
         deadline.setTime(deadline.getTime() + 15 * 60 * 1000);

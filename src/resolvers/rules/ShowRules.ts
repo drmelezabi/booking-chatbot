@@ -1,7 +1,13 @@
 import WAWebJS from "whatsapp-web.js";
 import isAdmin from "../../controllers/rules/isAdmin";
 import db from "../../database/setup";
-import { arabicName, dict } from "../../config/diff";
+import {
+  arabicDays,
+  arabicHours,
+  arabicMinuets,
+  arabicName,
+  dict,
+} from "../../config/diff";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import starkString from "starkstring";
 
@@ -46,14 +52,13 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const maxTimeToBookAfterItsStartInMin = () => {
     const blockedDays = db.get("maxTimeToBookAfterItsStartInMin");
     if (blockedDays)
-      return `◈ *اخر موعد لحجز موعد بعد بدءه* : ${`${blockedDays}`.replace(
-        /[\d]/g,
-        (match) => starkString(match).arabicNumber().toString()
-      )} دقائق`;
+      return `◈ *اخر موعد لحجز موعد بعد بدءه* : ${arabicMinuets(
+        parseInt(`${blockedDays}`, 10)
+      )}`;
     else {
       db.set("maxTimeToBookAfterItsStartInMin", 5);
       db.save();
-      return `◈ *اخر موعد لحجز موعد بعد بدءه* : ${5} دقائق`;
+      return `◈ *اخر موعد لحجز موعد بعد بدءه* : ${arabicMinuets(5)}`;
     }
   };
 
@@ -98,28 +103,99 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const punishmentUnit = () => {
     const blockedDays = db.get("punishmentUnit");
     if (blockedDays)
-      return `◈ *معدل أيام الجزاء* : ${`${blockedDays}`.replace(
-        /[\d]/g,
-        (match) => starkString(match).arabicNumber().toString()
-      )} أيام`;
+      return `◈ *معدل أيام الجزاء* : ${arabicDays(
+        parseInt(`${blockedDays}`, 10)
+      )}`;
     else {
       db.set("punishmentUnit", 3);
       db.save();
-      return `◈ *معدل أيام الجزاء* : ${3} أيام جزاء`;
+      return `◈ *معدل أيام الجزاء* : ${arabicDays(3)} جزاء`;
     }
   };
 
   const maxTimeBeforeDelete = () => {
     const blockedDays = db.get("maxTimeBeforeDelete");
     if (blockedDays)
-      return `◈ *الحد الاقصى المسموح لحذف الحجز قبل بدءه* : ${`${blockedDays}`.replace(
-        /[\d]/g,
-        (match) => starkString(match).arabicNumber().toString()
+      return `◈ *الحد الاقصى المسموح لحذف الحجز قبل بدءه* : ${arabicHours(
+        parseInt(`${blockedDays}`, 10)
       )}`;
     else {
       db.set("maxTimeBeforeDelete", 2);
       db.save();
-      return `◈ *الحد الاقصى المسموح لحذف الحجز قبل بدءه* : ${2}`;
+      return `◈ *الحد الاقصى المسموح لحذف الحجز قبل بدءه* : ${arabicHours(2)}`;
+    }
+  };
+
+  const activatingPeriodBeforeStart = () => {
+    const minutes = db.get("activatingPeriodBeforeStart");
+    if (minutes)
+      return `◈ *يبدأ نطاق تفعيل الحجز قبل بدء الموعد بـ* : ${arabicMinuets(
+        parseInt(`${minutes}`, 10)
+      )}`;
+    else {
+      db.set("activatingPeriodBeforeStart", 5);
+      db.save();
+      return `◈ *يبدأ نطاق تفعيل الحجز قبل بدء الموعد بـ* : ${arabicMinuets(
+        5
+      )}`;
+    }
+  };
+
+  const activatingPeriodAfterStart = () => {
+    const minutes = db.get("activatingPeriodAfterStart");
+    if (minutes)
+      return `◈ *ينتهي نطاق تفعيل الحجز بعد بدء الموعد بـ* : ${arabicMinuets(
+        parseInt(`${minutes}`, 10)
+      )}`;
+    else {
+      db.set("activatingPeriodAfterStart", 10);
+      db.save();
+      return `◈ *ينتهي نطاق تفعيل الحجز بعد بدء الموعد بـ* : ${arabicMinuets(
+        10
+      )}`;
+    }
+  };
+
+  const availPeriodStarts = () => {
+    const minutes = db.get("availPeriodStarts");
+    if (minutes)
+      return `◈ *يبدأ نطاق تمرير الحجز بعد بدء الموعد بـ* : ${arabicMinuets(
+        parseInt(`${minutes}`, 10)
+      )}`;
+    else {
+      db.set("availPeriodStarts", 2);
+      db.save();
+      return `◈ *يبدأ نطاق تمرير الحجز بعد بدء الموعد بـ* : ${arabicMinuets(
+        2
+      )}`;
+    }
+  };
+
+  const availPeriodEnds = () => {
+    const minutes = db.get("availPeriodEnds");
+    if (minutes)
+      return `◈ *ينتهي نطاق تمرير الحجز بعد بدء الموعد بـ* : ${arabicMinuets(
+        parseInt(`${minutes}`, 10)
+      )}`;
+    else {
+      db.set("availPeriodEnds", 3);
+      db.save();
+      return `◈ *ينتهي نطاق تمرير الحجز بعد بدء الموعد بـ* : ${arabicMinuets(
+        3
+      )}`;
+    }
+  };
+
+  const verifyPickupAvailDeadLine = () => {
+    const minutes = db.get("verifyPickupAvailDeadLine");
+    if (minutes)
+      return `◈ *الحد الأقصي لتفعيل حجز تم تمريره هو* : ${arabicMinuets(
+        parseInt(`${minutes}`, 10)
+      )}`;
+    else {
+      db.set("verifyPickupAvailDeadLine", 3);
+      db.save();
+      return `◈ *الحد الأقصي لتفعيل حجز تم تمريره هو* : ${arabicMinuets(3)}`;
     }
   };
 
@@ -181,7 +257,7 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
 
   dictionary();
 
-  const msg = `*القواعد العامة للمنظومة*\n\n${BookingAvailability()}\n\n${maxTimeBeforeDelete()}\n${maxTimeToBookAfterItsStartInMin()}\n\n${bookingOpen()}\n${bookingClose()}\n\n${punishmentUnit()}\n${blockedDays()}\n${rooms()}\n`;
+  const msg = `*القواعد العامة للمنظومة*\n\n${BookingAvailability()}\n\n${maxTimeBeforeDelete()}\n${maxTimeToBookAfterItsStartInMin()}\n\n${activatingPeriodBeforeStart()}\n${activatingPeriodAfterStart()}\n\n${availPeriodStarts()}\n${availPeriodEnds()}\n${verifyPickupAvailDeadLine()}\n\n${bookingOpen()}\n${bookingClose()}\n\n${punishmentUnit()}\n${blockedDays()}\n${rooms()}`;
   await client.sendMessage(chatId, msg);
 };
 
