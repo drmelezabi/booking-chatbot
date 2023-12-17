@@ -252,8 +252,7 @@ const addNewReservation = async (
 *التوقيت:* ${dt.Time}
 *الغرفة:* ${starkString(room).arabicNumber().toString()}
 
-ننتظر منك الالتزام بالحضور في الموعد وسرعة تنشيط الحجز مع المشرف. 🕒
-                      `;
+ننتظر منك الالتزام بالحضور في الموعد وسرعة تنشيط الحجز مع المشرف. 🕒`;
   const sticker = MessageMedia.fromFilePath("./src/imgs/calendar.png");
   client.sendMessage(message.from, sticker, {
     sendMediaAsSticker: true,

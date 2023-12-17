@@ -1,8 +1,8 @@
 import WAWebJS from "whatsapp-web.js";
 import starkString from "starkstring";
 import RegisteredPhone from "../../../database/RegisteredPhone";
-import isAdmin from "../../../controllers/rules/isAdmin";
 import getAccountsString from "../../../controllers/accounts/get/getAccounts";
+import isSuperAdmin from "../../../controllers/rules/isSuperAdmin";
 
 const getPermissionList = async (
   client: WAWebJS.Client,
@@ -17,7 +17,7 @@ const getPermissionList = async (
   }
   const { from: chatId } = message;
   // ---------------- Is Admin ----------------
-  const errorMessage = await isAdmin(chatId);
+  const errorMessage = await isSuperAdmin(chatId);
   if (typeof errorMessage === "string") {
     await client.sendMessage(chatId, errorMessage);
     return;

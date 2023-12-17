@@ -11,7 +11,7 @@ export interface studentData {
   permissions: "user" | "admin" | "superAdmin";
   name: string;
   pass: string;
-  type: "student" | "teacher" | "security" | "employee" | undefined;
+  type: "student" | "teacher" | "security" | "manager";
   whatsappId: string;
   violations: string[];
 }

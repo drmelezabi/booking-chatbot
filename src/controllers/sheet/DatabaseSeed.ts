@@ -1,8 +1,11 @@
 import createMultipleCloudAccounts from "../../controllers/accounts/add/AddAccountsToCloud";
-import { accountData } from "../../controllers/accounts/get/getCloudAccounts";
+import getAccounts, {
+  accountData,
+} from "../../controllers/accounts/get/getCloudAccounts";
 import deleteAccounts from "../../controllers/accounts/delete/deleteCloudAccounts";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { accountsLists } from "../../config/googleSheet";
+import getAccountsNoFilter from "../accounts/get/getCloudAccountsNoFilter";
 interface SheetData {
   shortName: string;
   fullName: string;
@@ -27,6 +30,7 @@ class StudentDataHandler {
     "fourth-grade-y",
   ];
 
+  private allAccounts: SheetData[] = [];
   private allStudents: SheetData[] = [];
   private allTeachers: SheetData[] = [];
   private allManagers: SheetData[] = [];
@@ -46,6 +50,13 @@ class StudentDataHandler {
     await this.loadTeachers(max);
     await this.loadManagers(max);
     await this.loadSecurities(max);
+
+    this.allAccounts = [
+      ...this.allStudents,
+      ...this.allTeachers,
+      ...this.allManagers,
+      ...this.allSecurities,
+    ];
   }
 
   public async loadStudents(max: number = 100): Promise<void> {
@@ -122,32 +133,30 @@ class StudentDataHandler {
   }
 
   public async uploadStudentsToFirebase(): Promise<boolean> {
+    await this.loadStudents();
     return await createMultipleCloudAccounts(this.allStudents, "student");
   }
 
   public async uploadTeachersToFirebase(): Promise<boolean> {
+    await this.loadTeachers();
     return await createMultipleCloudAccounts(this.allTeachers, "teacher");
   }
 
   public async uploadManagersToFirebase(): Promise<boolean> {
+    await this.loadManagers();
     return await createMultipleCloudAccounts(this.allManagers, "manager");
   }
 
   public async uploadSecuritiesToFirebase(): Promise<boolean> {
+    await this.loadSecurities();
     return await createMultipleCloudAccounts(this.allSecurities, "security");
   }
 
-  public async addAndDeleteSheet(): Promise<void> {
-    const newSheet = await this.doc.addSheet({ title: "another sheet" });
-    await newSheet.delete();
-  }
-
-  public async updateStudentsInFirebase(
-    sheetAccounts: SheetData[],
-    firebaseAccount: accountData[]
-  ): Promise<number> {
-    this.noneExitedStudents = sheetAccounts.filter((gAccount) => {
-      const isExistsAccount = firebaseAccount.find(
+  public async updateStudentsInFirebase(): Promise<number> {
+    const studentFirebase = await getAccounts("student");
+    await this.loadStudents();
+    this.noneExitedStudents = this.allStudents.filter((gAccount) => {
+      const isExistsAccount = studentFirebase.find(
         (fAccount) => fAccount.fullName === gAccount.fullName
       );
       if (!isExistsAccount) return true;
@@ -157,12 +166,11 @@ class StudentDataHandler {
     return this.noneExitedStudents.length;
   }
 
-  public async updateTeachersInFirebase(
-    sheetAccounts: SheetData[],
-    firebaseAccount: accountData[]
-  ): Promise<number> {
-    this.noneExitedTeachers = sheetAccounts.filter((gAccount) => {
-      const isExistsAccount = firebaseAccount.find(
+  public async updateTeachersInFirebase(): Promise<number> {
+    const teacherFirebase = await getAccounts("teacher");
+    await this.loadTeachers();
+    this.noneExitedTeachers = this.allTeachers.filter((gAccount) => {
+      const isExistsAccount = teacherFirebase.find(
         (fAccount) => fAccount.fullName === gAccount.fullName
       );
       if (!isExistsAccount) return true;
@@ -172,12 +180,11 @@ class StudentDataHandler {
     return this.noneExitedTeachers.length;
   }
 
-  public async updateManagersInFirebase(
-    sheetAccounts: SheetData[],
-    firebaseAccount: accountData[]
-  ): Promise<number> {
-    this.noneExitedManagers = sheetAccounts.filter((gAccount) => {
-      const isExistsAccount = firebaseAccount.find(
+  public async updateManagersInFirebase(): Promise<number> {
+    const managerFirebase = await getAccounts("manager");
+    await this.loadManagers();
+    this.noneExitedManagers = this.allManagers.filter((gAccount) => {
+      const isExistsAccount = managerFirebase.find(
         (fAccount) => fAccount.fullName === gAccount.fullName
       );
       if (!isExistsAccount) return true;
@@ -187,12 +194,25 @@ class StudentDataHandler {
     return this.noneExitedManagers.length;
   }
 
-  public async updateSecuritiesInFirebase(
-    sheetAccounts: SheetData[],
-    firebaseAccount: accountData[]
-  ): Promise<number> {
-    this.noneExitedSecurities = sheetAccounts.filter((gAccount) => {
-      const isExistsAccount = firebaseAccount.find(
+  public async updateSecuritiesInFirebase(): Promise<number> {
+    const securityFirebase = await getAccounts("security");
+    await this.loadSecurities();
+    this.noneExitedSecurities = this.allSecurities.filter((gAccount) => {
+      const isExistsAccount = securityFirebase.find(
+        (fAccount) => fAccount.fullName === gAccount.fullName
+      );
+      if (!isExistsAccount) return true;
+    });
+    if (!this.noneExitedSecurities.length) return 0;
+    createMultipleCloudAccounts(this.noneExitedSecurities, "manager");
+    return this.noneExitedSecurities.length;
+  }
+
+  public async updateAllAccountsInFirebase(): Promise<number> {
+    const securityFirebase = await getAccountsNoFilter();
+    await this.loadAllAccounts();
+    this.noneExitedSecurities = this.allAccounts.filter((gAccount) => {
+      const isExistsAccount = securityFirebase.find(
         (fAccount) => fAccount.fullName === gAccount.fullName
       );
       if (!isExistsAccount) return true;
@@ -232,4 +252,6 @@ class StudentDataHandler {
   }
 }
 
-export default StudentDataHandler;
+const studentDataHandlers = new StudentDataHandler();
+
+export default studentDataHandlers;

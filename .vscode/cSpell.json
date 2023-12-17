@@ -11,7 +11,13 @@
         "streetsidesoftware",
         "tsmerge",
         "visualstudio",
-        "vsmarketplacebadge"
+        "vsmarketplacebadge",
+        "إلغاء",
+        "استعاده",
+        "تنشيط",
+        "توثيق",
+        "متابعة",
+        "ملفي"
     ],
     // flagWords - list of words to be always considered incorrect
     // This is useful for offensive words and common spelling errors.

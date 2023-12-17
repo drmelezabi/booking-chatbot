@@ -15,6 +15,17 @@ export const accountsLists = new GoogleSpreadsheet(
 
 export default serviceAccountAuth;
 
+const doc = new GoogleSpreadsheet(
+  config.accountListsSheets,
+  serviceAccountAuth
+);
+
+// doc.share("email", {
+//   role: "writer",
+//   emailMessage:
+//     "ندعوك للمشاركة على متابعة قوائم الحسابات المشتركة في منظومة المشاركة",
+// });
+
 // const spreed = async (): Promise<void> => {
 // const doc = new GoogleSpreadsheet(
 //   process.env.ACCOUNT_LISTS_SHEETS as string,

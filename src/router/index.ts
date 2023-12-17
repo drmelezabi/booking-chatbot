@@ -28,6 +28,7 @@ import permissionsResolvers from "../resolvers/advanced/permissions.ts";
 import chat from "../controllers/chat";
 import createBackUp from "../resolvers/backup/backup";
 import restoreLocalDB from "../resolvers/backup/retore";
+import seed from "../resolvers/seed";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const checkChat = chat(client, message);
@@ -128,8 +129,13 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     await restoreLocalDB(client, message, counter, data);
   //
   //
+  else if (/^!بناء/.test(body) || taskSyntax === "!بناء")
+    await seed(client, message, counter);
+  //
+  //
   else {
-    const msg = `لا أفهم ما تحاول قوله يمكنك كتابة "مساعدة" لتلقي معلومات حول كيفية الاستفادة من منظومة المذاكرة`;
+    const msg =
+      "❓ **لست متأكد مما تقصده. اكتب** *!مساعدة* **للوصول إلى دليل استخدام منظومة المذاكرة** ❓";
     client.sendMessage(from, msg);
   }
 };

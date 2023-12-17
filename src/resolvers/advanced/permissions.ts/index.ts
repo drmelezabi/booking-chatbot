@@ -4,6 +4,7 @@ import isAdmin from "../../../controllers/rules/isAdmin";
 import Chat from "../../../database/chat";
 import updatePermissions from "./updatePermissions";
 import getPermissionList from "./getPermissionsList";
+import isSuperAdmin from "../../../controllers/rules/isSuperAdmin";
 
 const permissionsResolvers = async (
   client: WAWebJS.Client,
@@ -18,7 +19,7 @@ const permissionsResolvers = async (
   }
   const { from: chatId } = message;
   // ---------------- Is Admin ----------------
-  const errorMessage = await isAdmin(chatId);
+  const errorMessage = await isSuperAdmin(chatId);
   if (typeof errorMessage === "string") {
     await client.sendMessage(chatId, errorMessage);
     return;

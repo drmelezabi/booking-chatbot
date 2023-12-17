@@ -1,20 +1,32 @@
 import RegisteredPhone from "../../../database/RegisteredPhone";
 import getAccountIdByPass from "../../accounts/get/getAccountByPass";
-import getAccountsString from "../../accounts/get/getAccounts";
 import { updateCloudAccount } from "../../accounts/update/updateCloudAccount";
 
 const updateAccountPermissions = async (
-  add: string[],
-  remove: string[]
+  upgrade: string[],
+  downgrade: string[]
 ): Promise<boolean> => {
   try {
     Promise.all(
-      add.map(async (pass) => {
+      upgrade.map(async (pass) => {
         const accountId = await getAccountIdByPass(pass);
-        await updateCloudAccount(accountId, { permissions: "admin" });
+        const accountData = RegisteredPhone.fetch(
+          (account) => account.accountId === accountId
+        )!;
+        let NewStatus: "user" | "admin" | "superAdmin";
+
+        switch (accountData.permissions) {
+          case "user":
+            NewStatus = "admin";
+            break;
+          default:
+            NewStatus = "superAdmin";
+            break;
+        }
+        await updateCloudAccount(accountId, { permissions: NewStatus });
         RegisteredPhone.update((account) => {
           if (account.recoveryId === pass) {
-            account.permissions = "admin";
+            account.permissions = NewStatus;
           }
         });
         RegisteredPhone.save();
@@ -22,12 +34,25 @@ const updateAccountPermissions = async (
     );
 
     Promise.all(
-      remove.map(async (pass) => {
+      downgrade.map(async (pass) => {
         const accountId = await getAccountIdByPass(pass);
-        await updateCloudAccount(accountId, { permissions: "user" });
+        const accountData = RegisteredPhone.fetch(
+          (account) => account.accountId === accountId
+        )!;
+        let NewStatus: "user" | "admin" | "superAdmin";
+
+        switch (accountData.permissions) {
+          case "superAdmin":
+            NewStatus = "admin";
+            break;
+          default:
+            NewStatus = "user";
+            break;
+        }
+        await updateCloudAccount(accountId, { permissions: NewStatus });
         RegisteredPhone.update((account) => {
           if (account.recoveryId === pass) {
-            account.permissions = "user";
+            account.permissions = NewStatus;
           }
         });
         RegisteredPhone.save();

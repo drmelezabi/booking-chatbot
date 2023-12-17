@@ -6,7 +6,7 @@ export type IRegisteredPhone = {
   chatId: string;
   permissions: "user" | "admin" | "superAdmin";
   fullName: string;
-  type: "student" | "teacher" | "security" | "manager" | undefined;
+  type: "student" | "teacher" | "security" | "manager";
   recoveryId: string;
   name: string;
   contact: ContactId;

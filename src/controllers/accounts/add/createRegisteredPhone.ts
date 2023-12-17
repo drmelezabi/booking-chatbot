@@ -1,10 +1,13 @@
+import { ContactId } from "whatsapp-web.js";
+
 export interface registeredData {
-  accountId: string;
+  accountId: string; // studentId
   chatId: string;
-  recoveryId: string;
-  fullName: string;
-  name: string;
-  type: "student" | "teacher" | "security" | "employee" | undefined;
   permissions: "user" | "admin" | "superAdmin";
+  fullName: string;
+  type: "student" | "teacher" | "security" | "manager";
+  recoveryId: string;
+  name: string;
+  contact: ContactId;
   gender: "male" | "female";
 }

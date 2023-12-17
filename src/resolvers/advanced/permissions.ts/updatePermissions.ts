@@ -26,9 +26,11 @@ const updatePermissions = async (
   const table = query.split(" ").map((account) => account.replace(/-/g, " "));
 
   const addMainIndex = table.findIndex((value) =>
-    /^(?:و)?[إأآا]ضاف[ةه]/.test(value)
+    /^(?:و)?ترقي[ةه]/.test(value)
   );
-  const removeMainIndex = table.findIndex((value) => /^(?:و)?حذف/.test(value));
+  const removeMainIndex = table.findIndex((value) =>
+    /^(?:و)?تنزيل/.test(value)
+  );
 
   for (let index = 0; index < table.length; index++) {
     const element = table[index];

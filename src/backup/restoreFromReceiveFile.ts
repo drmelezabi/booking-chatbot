@@ -78,11 +78,8 @@ const restoreFromReceiveFile = async (file: unknown) => {
       "registeredPhone" in RestoredObject &&
       RestoredObject.registeredPhone
     ) {
-      console.log({ hello: 1 });
       const RESRegisteredPhone = RestoredObject.registeredPhone;
       if (isIRegisteredPhoneArray(RESRegisteredPhone)) {
-        console.log({ hello: 2 });
-
         RegisteredPhone.remove();
         RegisteredPhone.createBulk(RESRegisteredPhone);
       }

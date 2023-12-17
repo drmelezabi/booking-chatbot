@@ -4,6 +4,12 @@ import SuspendedStudent from "../../../database/suspendedStudent";
 import { ISuspendedStudent } from "./getStudentsSuspension";
 import { updateCloudStudentViolations } from "../update/updateCloudStudentViolations";
 
+const deadline = (date: Date) => {
+  const deadline = new Date(date);
+  deadline.setTime(deadline.getTime() + 14 * 60 * 1000);
+  return deadline;
+};
+
 const getStudentViolations = async (accountId: string) => {
   const reservations = Reservation.fetchAll();
   const studentCase = SuspendedStudent.fetch(
@@ -27,7 +33,7 @@ const getStudentViolations = async (accountId: string) => {
       .filter(
         (reservation) =>
           reservation.accountId === accountId &&
-          new Date(reservation.Date) < new Date()
+          deadline(reservation.Date) < new Date()
       )
       .map((reservation) => {
         if (
