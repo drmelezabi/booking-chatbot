@@ -115,6 +115,10 @@ const reservationAvailabilityControl = async (
       }
 
       await cancelResFromNowToDate(getDate);
+      Reservation.remove(
+        (reservation) =>
+          new Date(reservation.Date) >= new Date() && new Date() < getDate
+      );
 
       stopBookingAvailability(getDate);
 

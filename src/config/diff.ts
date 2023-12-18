@@ -67,12 +67,10 @@ export const arabicDays = (d: number) => {
 };
 
 export const enToAr = (inp: string) => {
-  const str = starkString(` ${inp} `).toString();
+  let str = starkString(` ${inp} `).toString();
   const letterBeforeNumberArabic = /(?<=\p{L})(?=\p{N})|(?<=\p{N})(?=\p{L})/gu;
   return str
-    .replace(/[\u0660-\u0669\u06F0-\u06F9]/g, (match) =>
-      starkString(match).arabicNumber().toString()
-    )
+    .replace(/\d+/g, (match) => starkString(match).arabicNumber().toString())
     .replace(letterBeforeNumberArabic, " ")
     .trim();
 };

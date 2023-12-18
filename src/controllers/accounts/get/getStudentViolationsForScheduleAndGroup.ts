@@ -11,8 +11,6 @@ import SuspendedStudent from "../../../database/suspendedStudent";
 import formatDateTime from "../../date/formateTimestamp";
 import bookingGroup from "../../GroupManager/getGroup";
 
-
-
 const getStudentViolationsForScheduleAndGroup = async () => {
   const reservations = Reservation.fetchMany(
     (reservation) => new Date() > new Date(reservation.Date)
@@ -92,7 +90,8 @@ const getStudentViolationsForScheduleAndGroup = async () => {
           const sfRef = doc(firestoreDb, "account", reservation.accountId);
           batch.update(sfRef, { violations });
 
-          await group.sendMessage(
+          client.sendMessage(
+            db.get<string>("groupId"),
             `ارتكب الطالب ${student.name} مخالفة رقم ${vio} وذلك بتخلفه عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}`
           );
           client.sendMessage(

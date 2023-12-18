@@ -4,13 +4,18 @@
     "SuspendedIndefinitely": false,
     "BookingAvailabilityDate": "2023-12-14T05:00:00.000Z"
   },
-  "maxTimeToBookAfterItsStartInMin": 5,
   "groupId": "120363208873528248@g.us",
   "bookingOpen": 7,
   "bookingClose": 17,
-  "blockedDays": ["Fri"],
-  "punishmentUnit": 3,
+  "maxTimeToBookAfterItsStartInMin": 5,
   "maxTimeBeforeDelete": 2,
+  "activatingPeriodBeforeStart": 5,
+  "activatingPeriodAfterStart": 10,
+  "availPeriodStarts": 2,
+  "availPeriodEnds": 5,
+  "verifyPickupAvailDeadLine": 10,
+  "punishmentUnit": 3,
+  "blockedDays": ["Fri"],
   "rooms": ["107", "109", "معمل أ", "معمل ب", "106 ب", "106 أ"],
   "dictionary": {
     "105": " 105 ",
@@ -417,10 +422,5 @@
     "أوضه": "",
     " الاربعة والنصف ": " 04:30 ",
     "المساء": "pm"
-  },
-  "activatingPeriodBeforeStart": 5,
-  "activatingPeriodAfterStart": 10,
-  "availPeriodStarts": 2,
-  "availPeriodEnds": 5,
-  "verifyPickupAvailDeadLine": 10
+  }
 }

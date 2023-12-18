@@ -1,13 +1,13 @@
 import qrcode from "qrcode-terminal";
-import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
+import WAWebJS, { Client, LocalAuth, MessageMedia } from "whatsapp-web.js";
 
 import configGroup from "../controllers/GroupManager/configureGroup";
 import groupCreations from "../controllers/GroupManager/groupCreations";
 import onJoin from "../controllers/GroupManager/newGroupJoin";
 import isSuperAdmin from "../controllers/rules/isSuperAdmin";
-import StudentDataHandler from "../controllers/sheet/DatabaseSeed";
 import RegisteredPhone from "../database/RegisteredPhone";
 import router from "../router";
+import fs from "fs";
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -26,11 +26,6 @@ client.on("ready", async () => {
     console.log("Group created & configured!");
   }
 
-  // const handler = new StudentDataHandler();
-  // await handler.loadInfo();
-  // await handler.loadAllAccounts();
-  // await handler.uploadAllAccounts();
-
   console.log("Client is ready!");
 });
 
@@ -40,15 +35,20 @@ client.on("authenticated", () => {
 });
 
 client.on("message", async (message) => {
-  if (!(await isSuperAdmin(message.from))) {
-    if (message.hasMedia) {
-      message.delete();
-      client.sendMessage(message.from, "غير مسموج باستقبال وسائط");
-      return;
+  try {
+    if (!(await isSuperAdmin(message.from))) {
+      if (message.hasMedia) {
+        message.delete();
+        client.sendMessage(message.from, "غير مسموج باستقبال وسائط");
+        return;
+      }
     }
-  }
 
-  await router(client, message);
+    await router(client, message);
+  } catch (error) {
+    if (error instanceof Error) console.log(error.message);
+    else console.log(error);
+  }
 });
 
 client.on("group_join", async (notification) => {

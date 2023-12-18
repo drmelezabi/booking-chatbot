@@ -20,6 +20,7 @@ const doc = new GoogleSpreadsheet(
   config.accountListsSheets,
   serviceAccountAuth
 );
+// https://docs.google.com/spreadsheets/d/1nUWAeKmStaNt72iHPfW1D-0EfONJVMRYH6RUGfMM--g
 
 // doc.share("email", {
 //   role: "writer",

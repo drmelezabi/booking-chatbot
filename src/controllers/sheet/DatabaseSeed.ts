@@ -3,15 +3,14 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 import { accountsLists } from "../../config/googleSheet";
 import createMultipleCloudAccounts from "../../controllers/accounts/add/AddAccountsToCloud";
 import deleteAccounts from "../../controllers/accounts/delete/deleteCloudAccounts";
-import getAccounts, {
-  accountData,
-} from "../../controllers/accounts/get/getCloudAccounts";
+import getAccounts from "../../controllers/accounts/get/getCloudAccounts";
 import getAccountsNoFilter from "../accounts/get/getCloudAccountsNoFilter";
 interface SheetData {
   shortName: string;
   fullName: string;
   gender: "male" | "female";
   permissions: "user" | "admin" | "superAdmin";
+  type: "teacher" | "student" | "manager" | "security";
 }
 
 class StudentDataHandler {
@@ -37,6 +36,7 @@ class StudentDataHandler {
   private allManagers: SheetData[] = [];
   private allSecurities: SheetData[] = [];
 
+  private noneAllAccounts: SheetData[] = [];
   private noneExitedStudents: SheetData[] = [];
   private noneExitedTeachers: SheetData[] = [];
   private noneExitedManagers: SheetData[] = [];
@@ -67,7 +67,9 @@ class StudentDataHandler {
         await gradeSheet.loadCells(`A1:D${max}`);
         const rows = await gradeSheet.getRows();
         this.allStudents.push(
-          ...rows.map((row) => row.toObject() as SheetData)
+          ...rows.map((row) => {
+            return { ...row.toObject(), type: "student" } as SheetData;
+          })
         );
       }
     });
@@ -81,7 +83,9 @@ class StudentDataHandler {
         await gradeSheet.loadCells(`A1:D${max}`);
         const rows = await gradeSheet.getRows();
         this.allTeachers.push(
-          ...rows.map((row) => row.toObject() as SheetData)
+          ...rows.map((row) => {
+            return { ...row.toObject(), type: "teacher" } as SheetData;
+          })
         );
       }
     });
@@ -95,8 +99,10 @@ class StudentDataHandler {
       if (gradeSheet) {
         await gradeSheet.loadCells(`A1:D${max}`);
         const rows = await gradeSheet.getRows();
-        this.allManagers.push(
-          ...rows.map((row) => row.toObject() as SheetData)
+        this.allTeachers.push(
+          ...rows.map((row) => {
+            return { ...row.toObject(), type: "manager" } as SheetData;
+          })
         );
       }
     });
@@ -109,8 +115,10 @@ class StudentDataHandler {
       if (gradeSheet) {
         await gradeSheet.loadCells(`A1:D${max}`);
         const rows = await gradeSheet.getRows();
-        this.allSecurities.push(
-          ...rows.map((row) => row.toObject() as SheetData)
+        this.allTeachers.push(
+          ...rows.map((row) => {
+            return { ...row.toObject(), type: "security" } as SheetData;
+          })
         );
       }
     });
@@ -135,22 +143,27 @@ class StudentDataHandler {
 
   public async uploadStudentsToFirebase(): Promise<boolean> {
     await this.loadStudents();
-    return await createMultipleCloudAccounts(this.allStudents, "student");
+    return await createMultipleCloudAccounts(this.allStudents);
   }
 
   public async uploadTeachersToFirebase(): Promise<boolean> {
     await this.loadTeachers();
-    return await createMultipleCloudAccounts(this.allTeachers, "teacher");
+    return await createMultipleCloudAccounts(this.allTeachers);
   }
 
   public async uploadManagersToFirebase(): Promise<boolean> {
     await this.loadManagers();
-    return await createMultipleCloudAccounts(this.allManagers, "manager");
+    return await createMultipleCloudAccounts(this.allManagers);
   }
 
   public async uploadSecuritiesToFirebase(): Promise<boolean> {
     await this.loadSecurities();
-    return await createMultipleCloudAccounts(this.allSecurities, "security");
+    return await createMultipleCloudAccounts(this.allSecurities);
+  }
+
+  public async uploadAllAccounts(): Promise<boolean> {
+    await this.loadAllAccounts();
+    return await createMultipleCloudAccounts(this.allAccounts);
   }
 
   public async updateStudentsInFirebase(): Promise<number> {
@@ -163,7 +176,7 @@ class StudentDataHandler {
       if (!isExistsAccount) return true;
     });
     if (!this.noneExitedStudents.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedStudents, "student");
+    createMultipleCloudAccounts(this.noneExitedStudents);
     return this.noneExitedStudents.length;
   }
 
@@ -177,7 +190,7 @@ class StudentDataHandler {
       if (!isExistsAccount) return true;
     });
     if (!this.noneExitedTeachers.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedTeachers, "teacher");
+    createMultipleCloudAccounts(this.noneExitedTeachers);
     return this.noneExitedTeachers.length;
   }
 
@@ -191,7 +204,7 @@ class StudentDataHandler {
       if (!isExistsAccount) return true;
     });
     if (!this.noneExitedManagers.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedManagers, "manager");
+    createMultipleCloudAccounts(this.noneExitedManagers);
     return this.noneExitedManagers.length;
   }
 
@@ -205,31 +218,22 @@ class StudentDataHandler {
       if (!isExistsAccount) return true;
     });
     if (!this.noneExitedSecurities.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedSecurities, "manager");
+    createMultipleCloudAccounts(this.noneExitedSecurities);
     return this.noneExitedSecurities.length;
   }
 
   public async updateAllAccountsInFirebase(): Promise<number> {
     const securityFirebase = await getAccountsNoFilter();
     await this.loadAllAccounts();
-    this.noneExitedSecurities = this.allAccounts.filter((gAccount) => {
+    this.noneAllAccounts = this.allAccounts.filter((gAccount) => {
       const isExistsAccount = securityFirebase.find(
         (fAccount) => fAccount.fullName === gAccount.fullName
       );
       if (!isExistsAccount) return true;
     });
-    if (!this.noneExitedSecurities.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedSecurities, "manager");
-    return this.noneExitedSecurities.length;
-  }
-
-  public async uploadAllAccounts(): Promise<boolean> {
-    const studentsCount = await this.uploadStudentsToFirebase();
-    const TeachersCount = await this.uploadTeachersToFirebase();
-    const ManagersCount = await this.uploadManagersToFirebase();
-    const securitiesCount = await this.uploadSecuritiesToFirebase();
-
-    return studentsCount && TeachersCount && ManagersCount && securitiesCount;
+    if (!this.noneAllAccounts.length) return 0;
+    createMultipleCloudAccounts(this.noneAllAccounts);
+    return this.noneAllAccounts.length;
   }
 
   public async deleteAllStudents() {

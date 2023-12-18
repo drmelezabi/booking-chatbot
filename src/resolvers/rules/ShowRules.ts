@@ -9,18 +9,10 @@ import {
   dict,
 } from "../../config/diff";
 import formatDateTime from "../../controllers/date/formateTimestamp";
-import isAdmin from "../../controllers/rules/isAdmin";
 import db from "../../database/setup";
 
 const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const chatId = message.from;
-  // ---------------- Is Admin ----------------
-  const errorMessage = await isAdmin(chatId);
-  if (typeof errorMessage === "string") {
-    await client.sendMessage(chatId, errorMessage);
-    return;
-  }
-  // ------------------------------------------
 
   const BookingAvailability = () => {
     const blockedDays: {
@@ -258,7 +250,7 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
 
   dictionary();
 
-  const msg = `*القواعد العامة للمنظومة*\n\n${BookingAvailability()}\n\n${maxTimeBeforeDelete()}\n${maxTimeToBookAfterItsStartInMin()}\n\n${activatingPeriodBeforeStart()}\n${activatingPeriodAfterStart()}\n\n${availPeriodStarts()}\n${availPeriodEnds()}\n${verifyPickupAvailDeadLine()}\n\n${bookingOpen()}\n${bookingClose()}\n\n${punishmentUnit()}\n${blockedDays()}\n${rooms()}`;
+  const msg = `📋 *القواعد العامة للمنظومة* 📋\n\n${BookingAvailability()}\n\n${maxTimeBeforeDelete()}\n${maxTimeToBookAfterItsStartInMin()}\n\n${activatingPeriodBeforeStart()}\n${activatingPeriodAfterStart()}\n\n${availPeriodStarts()}\n${availPeriodEnds()}\n${verifyPickupAvailDeadLine()}\n\n${bookingOpen()}\n${bookingClose()}\n\n${punishmentUnit()}\n${blockedDays()}\n${rooms()}`;
   await client.sendMessage(chatId, msg);
 };
 

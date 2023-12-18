@@ -41,7 +41,7 @@ export default async function onJoin(
         mentions: [contact],
       }
     );
-    const sticker = MessageMedia.fromFilePath("./src/imgs/rejected.png");
+    const sticker = MessageMedia.fromFilePath("./src/imgs/welcome.png");
     await group.sendMessage(sticker);
 
     return;

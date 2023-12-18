@@ -1,6 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
 
-import { convertArToEnDigits as ArToEnNum } from "../config/diff";
+import { convertArToEnDigits as ArToEnNum, enToAr } from "../config/diff";
 import chat from "../controllers/chat";
 import RegisteredPhone from "../database/RegisteredPhone";
 import EditBookingRules from "../resolvers/advanced/EditBookingRules";
@@ -26,18 +26,25 @@ import verify from "../resolvers/verify";
 import studentActive from "../resolvers/verify/active";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
-  const checkChat = chat(client, message);
-
   const { body, from } = message;
+
+  if (/^!توثيق\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body)) {
+    await phoneVerification(client, message, ArToEnNum(body));
+    return;
+  }
+  const checkChat = chat(client, message);
 
   const isRegisteredAccount = RegisteredPhone.fetch(
     (account) => account.chatId === from
   );
 
   if (!isRegisteredAccount) {
+    client.sendMessage(from, `🛡 *أنت تستخدم هاتف خارج المنظومة* 🛡`);
     client.sendMessage(
       from,
-      `أنت تستخدم هاتف خارج المنظومة\n\n📱 *لتوثيق رقم هاتفك* 📱\nأرسل كلمة " *!توثيق* " متبوعة بالرقم الشخصي\n⚠ ملحوظة هامة: الأرقام يجب أن تكون بالأنجليزية\n\n*مثال*:\n\`\`\`!توثيق 12345\`\`\`96893565656`
+      `📱 *لتوثيق رقم هاتفك* 📱\n\nأرسل 👈 *!توثيق* 👉 متبوعة بالرقم الشخصي\n*مثال*:\n!توثيق ${enToAr(
+        "12345"
+      )}`
     );
     return;
   }
@@ -54,10 +61,6 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     await deleteReservation(client, message);
   //
   //
-  else if (/^!توثيق\s*$([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
-    await phoneVerification(client, message, ArToEnNum(body));
-  //
-  //
   else if (body === "!تنشيط") await verify(client, message);
   //
   //
@@ -65,7 +68,8 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     await studentActive(client, message, ArToEnNum(body));
   //
   //
-  else if (/^!متابع[ةه]\s*$/.test(body)) await getReservations(client, message);
+  else if (/^!متابع[ةه]\s*\w*/.test(body))
+    await getReservations(client, message);
   //
   //
   else if (
@@ -80,10 +84,10 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   else if (/^!مخالفات\s*$/.test(body)) await myViolations(client, message);
   //
   //
-  else if (/^!حجز\s*$/.test(body)) await addNewReservation(client, message);
+  else if (/^!حجز\s*/.test(body)) await addNewReservation(client, message);
   //
   //
-  else if (/^!تمرير\s*(\d+\s*)*$/.test(body)) await avail(client, message);
+  else if (/^!تمرير\s*(\d+\s*)*/.test(body)) await avail(client, message);
   //
   //
   else if (body === "!حجب تاريخ" || taskSyntax === "!حجب تاريخ")

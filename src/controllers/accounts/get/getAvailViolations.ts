@@ -102,9 +102,12 @@ const getAvailViolations = async () => {
         );
         const sfRef = doc(firestoreDb, "account", studentCase.accountId);
         batch.update(sfRef, { violations });
-        group.sendMessage(
+
+        client.sendMessage(
+          db.get<string>("groupId"),
           `ارتكب الطالب ${reservation.availName} مخالفة رقم ${vio} وذلك بتخلفه عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}`
         );
+
         client.sendMessage(
           chatId,
           `ارتكب المخالفة رقم ${vio} وذلك بتخلفك عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}`
