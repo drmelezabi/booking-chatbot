@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import config from "./globalVariables";
 import { getFirestore } from "firebase/firestore";
+
+import config from "./globalVariables";
 
 const {
   apiKey,

@@ -1,4 +1,5 @@
-import { updateDoc, doc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
+
 import { firestoreDb } from "../../../config/firebase";
 
 export interface accountData {

@@ -1,4 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
+
 import isAdmin from "../../controllers/rules/isAdmin";
 import updateBlockedDays from "../../controllers/rules/update/updateBlockedDay";
 type blockedDays = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
@@ -153,7 +154,7 @@ const updateBlockedDaysResolve = async (
 
   // Iterate through the array
   for (let i = 0; i < addRaw.length; i++) {
-    let currentItem = addRaw[i];
+    const currentItem = addRaw[i];
 
     // Check if the current item exists as a key in the replacement object
     if (rephrase[currentItem]) {
@@ -168,7 +169,7 @@ const updateBlockedDaysResolve = async (
 
   // Iterate through the array
   for (let i = 0; i < removeRaw.length; i++) {
-    let currentItem = removeRaw[i];
+    const currentItem = removeRaw[i];
 
     // Check if the current item exists as a key in the replacement object
     if (rephrase[currentItem]) {

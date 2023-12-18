@@ -1,12 +1,13 @@
 import qrcode from "qrcode-terminal";
-import router from "../router";
-import RegisteredPhone from "../database/RegisteredPhone";
-import groupCreations from "../controllers/GroupManager/groupCreations";
-import configGroup from "../controllers/GroupManager/configureGroup";
-import onJoin from "../controllers/GroupManager/newGroupJoin";
 import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
-import StudentDataHandler from "../controllers/sheet/DatabaseSeed";
+
+import configGroup from "../controllers/GroupManager/configureGroup";
+import groupCreations from "../controllers/GroupManager/groupCreations";
+import onJoin from "../controllers/GroupManager/newGroupJoin";
 import isSuperAdmin from "../controllers/rules/isSuperAdmin";
+import StudentDataHandler from "../controllers/sheet/DatabaseSeed";
+import RegisteredPhone from "../database/RegisteredPhone";
+import router from "../router";
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -78,9 +79,9 @@ client.on(
   "contact_changed",
   async (
     _message: WAWebJS.Message,
-    oldId: String,
-    _newId: String,
-    _isContact: Boolean
+    oldId: string,
+    _newId: string,
+    _isContact: boolean
   ) => {
     RegisteredPhone.remove((account) => account.chatId === oldId);
   }

@@ -8,4 +8,27 @@
         "الفعل",
         "تمرير"
     ],
+    "typescript.tsserver.enableTracing": true,
+    "editor.defaultFormatter": null,
+    "[typescript]": {
+       "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+       "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "workbench.colorTheme": "Dracula",
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "workbench.iconTheme": "material-icon-theme",
+    // "window.zoomLevel": -1,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "editor.minimap.size": "fill",
+    "editor.formatOnSave": true,
+    "eslint.codeActionsOnSave.rules": null,
+    "editor.codeActionsOnSave": {
+       "source.fixAll.eslint": true,
+       // "source.removeUnusedImports": true
+    },
 }

@@ -1,8 +1,8 @@
-import bugMessageTemplate from "./Email/bugsMailTemplate";
 import Sendmail from "./config/email";
 import { levels } from "./config/enums";
 import initializeFirebase from "./config/firebase";
 import client from "./config/whatsapp";
+import bugMessageTemplate from "./Email/bugsMailTemplate";
 import appSchedule from "./schedule";
 
 (async () => {

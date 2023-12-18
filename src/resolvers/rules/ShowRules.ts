@@ -1,6 +1,6 @@
+import starkString from "starkstring";
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/rules/isAdmin";
-import db from "../../database/setup";
+
 import {
   arabicDays,
   arabicHours,
@@ -9,7 +9,8 @@ import {
   dict,
 } from "../../config/diff";
 import formatDateTime from "../../controllers/date/formateTimestamp";
-import starkString from "starkstring";
+import isAdmin from "../../controllers/rules/isAdmin";
+import db from "../../database/setup";
 
 const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const chatId = message.from;

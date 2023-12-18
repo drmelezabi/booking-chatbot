@@ -1,5 +1,6 @@
+import { doc, writeBatch } from "firebase/firestore";
+
 import { firestoreDb } from "../../../config/firebase";
-import { writeBatch, doc } from "firebase/firestore";
 import { genId20, recoveryCodeGen } from "../../../config/IDs";
 
 type accountName = {

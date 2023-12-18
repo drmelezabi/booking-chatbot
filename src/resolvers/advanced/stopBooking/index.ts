@@ -1,15 +1,16 @@
+import starkString from "starkstring";
 import WAWebJS from "whatsapp-web.js";
-import RegisteredPhone from "../../../database/RegisteredPhone";
-import isAdmin from "../../../controllers/rules/isAdmin";
-import Chat from "../../../database/chat";
+
 import cancelAnyResFromNow from "./cancelAnyResFromNow";
 import cancelRestOfDayReservations from "./cancelRestOfDay";
-import startBookingAvailability from "../../../controllers/rules/startBookingAvailability";
-import starkString from "starkstring";
 import detectDateFromString from "../../../controllers/date/detectDateFromString";
 import { cancelResFromNowToDate } from "../../../controllers/rooms/cancel/cancelResFromNowToDate";
-import Reservation from "../../../database/reservation";
+import isAdmin from "../../../controllers/rules/isAdmin";
+import startBookingAvailability from "../../../controllers/rules/startBookingAvailability";
 import stopBookingAvailability from "../../../controllers/rules/stopBookingAvailability";
+import Chat from "../../../database/chat";
+import RegisteredPhone from "../../../database/RegisteredPhone";
+import Reservation from "../../../database/reservation";
 
 const reservationAvailabilityControl = async (
   client: WAWebJS.Client,

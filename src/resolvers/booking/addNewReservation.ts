@@ -1,19 +1,20 @@
-import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import prepareBookingMessage from "../../controllers/rules/phraseBookingMessage";
-import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
-import checkBookingAvailability from "../../controllers/reservations/check/checkBookingAvailability";
-import { arabicMinuets, arabicName, dtOptions } from "../../config/diff";
-import { checkRoomAvailability } from "../../controllers/rooms/check/checkRoomIsNotBusy";
-import { getDayRangeWithTime } from "../../controllers/date/getDayRangeWithTime";
-import formatDateTime from "../../controllers/date/formateTimestamp";
 import starkString from "starkstring";
-import Reservation from "../../database/reservation";
-import RegisteredPhone from "../../database/RegisteredPhone";
-import SuspendedStudent from "../../database/suspendedStudent";
-import db from "../../database/setup";
-import BlockedDates from "../../database/blockedDates";
-import createNewReservation from "../../controllers/reservations/add/addReservation";
+import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+
+import { arabicMinuets, arabicName, dtOptions } from "../../config/diff";
+import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
+import formatDateTime from "../../controllers/date/formateTimestamp";
+import { getDayRangeWithTime } from "../../controllers/date/getDayRangeWithTime";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
+import createNewReservation from "../../controllers/reservations/add/addReservation";
+import checkBookingAvailability from "../../controllers/reservations/check/checkBookingAvailability";
+import { checkRoomAvailability } from "../../controllers/rooms/check/checkRoomIsNotBusy";
+import prepareBookingMessage from "../../controllers/rules/phraseBookingMessage";
+import BlockedDates from "../../database/blockedDates";
+import RegisteredPhone from "../../database/RegisteredPhone";
+import Reservation from "../../database/reservation";
+import db from "../../database/setup";
+import SuspendedStudent from "../../database/suspendedStudent";
 
 const addNewReservation = async (
   client: WAWebJS.Client,
@@ -88,7 +89,7 @@ const addNewReservation = async (
     client.sendMessage(message.from, BookingIsAvailable);
     return;
   }
-  let restOfString: string = message.body.substring("!حجز".length);
+  const restOfString: string = message.body.substring("!حجز".length);
   const { day, room, time } = await prepareBookingMessage(restOfString);
   console.log({ time });
   if (!day || !time || !room) {
@@ -196,13 +197,13 @@ const addNewReservation = async (
   if (now.getMinutes() > 30) dayStarts.setHours(now.getHours(), 30, 0, 0);
   if (now.getMinutes() < 30) dayStarts.setHours(now.getHours(), 0, 0, 0);
 
-  let maxAfterStarts = arabicMinuets(maxTimeToBookAfterItsStartInMin);
+  const maxAfterStarts = arabicMinuets(maxTimeToBookAfterItsStartInMin);
 
   if (
     new Date().getHours() === now.getHours() &&
     new Date().getMinutes() - now.getMinutes() > maxTimeToBookAfterItsStartInMin
   ) {
-    const msg = `⏰ **يبدو أنه قد مر وقت يزيد عن ${maxAfterStarts} دقيقة ولم يعد الموعد متاحًا للحجز** ⏰\n\ ${
+    const msg = `⏰ **يبدو أنه قد مر وقت يزيد عن ${maxAfterStarts} دقيقة ولم يعد الموعد متاحًا للحجز** ⏰\n ${
       isExist.gender === "male" ? "حاول" : "حاولي"
     } حجز المواعيد قبل بدء الحجز بوقت كافٍ`;
     client.sendMessage(message.from, msg);

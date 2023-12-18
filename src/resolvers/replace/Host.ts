@@ -1,11 +1,12 @@
 import WAWebJS from "whatsapp-web.js";
+
 import { activatingPin } from "../../config/IDs";
 import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
-import Avail from "../../database/avail";
-import Reservation from "../../database/reservation";
-import RegisteredPhone from "../../database/RegisteredPhone";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
+import Avail from "../../database/avail";
+import RegisteredPhone from "../../database/RegisteredPhone";
+import Reservation from "../../database/reservation";
 import db from "../../database/setup";
 
 const hostAvail = async (

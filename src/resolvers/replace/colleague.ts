@@ -1,11 +1,11 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
 import { dtOptions } from "../../config/diff";
-import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
 import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
+import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
 import Avail from "../../database/avail";
-import SuspendedStudent from "../../database/suspendedStudent";
 import db from "../../database/setup";
+import SuspendedStudent from "../../database/suspendedStudent";
 
 const colleagueAvail = async (
   client: WAWebJS.Client,

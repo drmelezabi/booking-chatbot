@@ -1,7 +1,8 @@
 import WAWebJS from "whatsapp-web.js";
+
 import { getRoomsBookedByDay } from "../../rooms/get/getRoomsBookedByDay";
-import { getRoomsBookedRestOfToday } from "../../rooms/get/getRoomsBookedRestOfToday";
 import { getRoomsBookedNowToEndOfWeek } from "../../rooms/get/getRoomsBookedNowToEndOfWeek";
+import { getRoomsBookedRestOfToday } from "../../rooms/get/getRoomsBookedRestOfToday";
 const week = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس", "السبت"];
 const names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Sat"];
 

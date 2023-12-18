@@ -1,10 +1,10 @@
-import db from "../../database/setup";
 import {
   arabicDays,
   arabicHours,
   arabicMinuets,
   enToAr,
 } from "../../config/diff";
+import db from "../../database/setup";
 
 // القائمة الرئيسية
 // توثيق - ملفي - حجز - الغاء - تنشيط - متابعة - تمرير

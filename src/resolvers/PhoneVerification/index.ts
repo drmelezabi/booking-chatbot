@@ -1,9 +1,10 @@
 import WAWebJS from "whatsapp-web.js";
-import getCloudStudentIdByPass from "../../controllers/accounts/get/getStudentPass";
+
 import { recoveryCodeGen } from "../../config/IDs";
+import getCloudStudentIdByPass from "../../controllers/accounts/get/getStudentPass";
 import { updateCloudAccount } from "../../controllers/accounts/update/updateCloudAccount";
-import RegisteredPhone from "../../database/RegisteredPhone";
 import invitationLink from "../../controllers/GroupManager/getInvitationLink";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const phoneVerification = async (
   client: WAWebJS.Client,

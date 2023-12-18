@@ -3,7 +3,7 @@ import db from "./setup";
 export type ISuspendedStudent = {
   accountId: string; // studentId
   ViolationCounter: number;
-  suspensionCase: Boolean;
+  suspensionCase: boolean;
   BookingAvailabilityDate: Date;
   violations: string[];
 };

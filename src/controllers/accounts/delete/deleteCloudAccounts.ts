@@ -5,6 +5,7 @@ import {
   where,
   writeBatch,
 } from "firebase/firestore";
+
 import { firestoreDb } from "../../../config/firebase";
 
 type type = "teacher" | "student" | "manager" | "security";

@@ -1,15 +1,16 @@
+import { doc, writeBatch } from "firebase/firestore";
+import starkString from "starkstring";
+
+import { ISuspendedStudent } from "./getStudentsSuspension";
+import { firestoreDb } from "../../../config/firebase";
+import client from "../../../config/whatsapp";
+import Avail from "../../../database/avail";
+import RegisteredPhone from "../../../database/RegisteredPhone";
+import Reservation from "../../../database/reservation";
 import db from "../../../database/setup";
 import SuspendedStudent from "../../../database/suspendedStudent";
-import { ISuspendedStudent } from "./getStudentsSuspension";
-import Avail from "../../../database/avail";
-import Reservation from "../../../database/reservation";
-import client from "../../../config/whatsapp";
-import bookingGroup from "../../GroupManager/getGroup";
-import starkString from "starkstring";
 import formatDateTime from "../../date/formateTimestamp";
-import RegisteredPhone from "../../../database/RegisteredPhone";
-import { doc, writeBatch } from "firebase/firestore";
-import { firestoreDb } from "../../../config/firebase";
+import bookingGroup from "../../GroupManager/getGroup";
 
 const deadline = (date: Date) => {
   const deadline = new Date(date);
@@ -46,7 +47,7 @@ const getAvailViolations = async () => {
 
       const punishmentDays =
         (studentCase.ViolationCounter / 2) * punishmentUnit;
-      let availCreatedDate = new Date(reservation.availCreatedDate);
+      const availCreatedDate = new Date(reservation.availCreatedDate);
       const vio = starkString(studentCase.ViolationCounter + 1)
         .arabicNumber()
         .toString();

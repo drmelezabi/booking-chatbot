@@ -5,6 +5,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+
 import { firestoreDb } from "../../../config/firebase";
 
 export const checkRoomAvailability = async (room: string, start: Date) => {

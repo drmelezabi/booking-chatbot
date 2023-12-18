@@ -5,8 +5,9 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { firestoreDb } from "../../../config/firebase";
+
 import { caseTypeAR } from "../../../config/diff";
+import { firestoreDb } from "../../../config/firebase";
 import formatTimestamp from "../../date/formateFirebaseTimestamp";
 import { getRestOfToday } from "../../date/getRestOfToday";
 

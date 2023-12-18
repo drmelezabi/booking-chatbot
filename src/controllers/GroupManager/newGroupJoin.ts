@@ -1,7 +1,8 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import db from "../../database/setup";
+
 import bookingGroup from "./getGroup";
 import RegisteredPhone from "../../database/RegisteredPhone";
+import db from "../../database/setup";
 
 export default async function onJoin(
   notification: WAWebJS.GroupNotification,

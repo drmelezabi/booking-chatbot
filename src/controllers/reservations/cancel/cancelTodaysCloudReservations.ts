@@ -1,12 +1,13 @@
 import {
+  DocumentData,
   Timestamp,
   collection,
+  deleteDoc,
   getDocs,
   query,
   where,
-  DocumentData,
-  deleteDoc,
 } from "firebase/firestore";
+
 import { firestoreDb } from "../../../config/firebase";
 import { getRestOfToday } from "../../date/getRestOfToday";
 

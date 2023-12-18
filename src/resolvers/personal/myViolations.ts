@@ -1,6 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
-import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
+
 import getCloudAccount from "../../controllers/accounts/get/getStudent";
+import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
 import RegisteredPhone from "../../database/RegisteredPhone";
 
 function countValues(arr: string[]): string {

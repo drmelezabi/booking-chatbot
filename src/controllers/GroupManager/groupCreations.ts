@@ -1,6 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
-import db from "../../database/setup";
+
 import RegisteredPhone from "../../database/RegisteredPhone";
+import db from "../../database/setup";
 
 export default async function groupCreations(client: WAWebJS.Client) {
   const checkGroupCreated = db.get<string>("groupId");

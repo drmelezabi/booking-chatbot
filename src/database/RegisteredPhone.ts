@@ -1,4 +1,5 @@
 import { ContactId } from "whatsapp-web.js";
+
 import db from "./setup";
 
 export type IRegisteredPhone = {

@@ -1,7 +1,7 @@
 export interface ISuspendedStudent {
   accountId: string;
   ViolationCounter: number;
-  suspensionCase: Boolean;
+  suspensionCase: boolean;
   BookingAvailabilityDate: Date;
   violations: string[];
 }

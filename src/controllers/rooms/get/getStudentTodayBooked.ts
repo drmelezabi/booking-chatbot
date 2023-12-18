@@ -5,10 +5,11 @@ import {
   query,
   where,
 } from "firebase/firestore";
+
+import { caseTypeAR } from "../../../config/diff";
 import { firestoreDb } from "../../../config/firebase";
 import formatTimestamp from "../../date/formateFirebaseTimestamp";
 import { getTodayRange } from "../../date/getTodayRange";
-import { caseTypeAR } from "../../../config/diff";
 
 export const getStudentTodayBooked = async (studentId: string) => {
   const range = getTodayRange();

@@ -1,4 +1,5 @@
-import { getDoc, doc, Timestamp } from "firebase/firestore";
+import { Timestamp, doc, getDoc } from "firebase/firestore";
+
 import { firestoreDb } from "../../../config/firebase";
 
 type cloudReservation = {

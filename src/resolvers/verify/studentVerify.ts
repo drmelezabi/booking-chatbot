@@ -1,10 +1,11 @@
 import WAWebJS from "whatsapp-web.js";
+
+import { activatingPin } from "../../config/IDs";
 import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
 import checkTimeIsFitToActiveReservation from "../../controllers/reservations/check/checkTimeIsOkForActivateBooked";
-import { activatingPin } from "../../config/IDs";
-import Reservation from "../../database/reservation";
 import ActivationPin from "../../database/activationPin";
 import RegisteredPhone from "../../database/RegisteredPhone";
+import Reservation from "../../database/reservation";
 
 const studentVerify = async (
   client: WAWebJS.Client,

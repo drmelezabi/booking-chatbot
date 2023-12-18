@@ -1,10 +1,11 @@
 import schedule from "node-schedule";
-import Reservation from "../database/reservation";
-import RegisteredPhone from "../database/RegisteredPhone";
-import client from "../config/whatsapp";
+
 import backup from "../backup/backup";
+import client from "../config/whatsapp";
 import getAvailViolations from "../controllers/accounts/get/getAvailViolations";
 import getStudentViolationsForScheduleAndGroup from "../controllers/accounts/get/getStudentViolationsForScheduleAndGroup";
+import RegisteredPhone from "../database/RegisteredPhone";
+import Reservation from "../database/reservation";
 
 export default function appSchedule() {
   const tz = "Africa/Cairo";

@@ -1,8 +1,9 @@
+import SimplDB from "simpl.db";
 import WAWebJS from "whatsapp-web.js";
+
+import menu from "./menu";
 import Chat from "../../database/chat";
 import { IRegisteredPhone } from "../../database/RegisteredPhone";
-import menu from "./menu";
-import SimplDB from "simpl.db";
 
 export const mainMenu = async (
   client: WAWebJS.Client,

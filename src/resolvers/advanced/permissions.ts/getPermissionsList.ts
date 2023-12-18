@@ -1,8 +1,9 @@
-import WAWebJS from "whatsapp-web.js";
 import starkString from "starkstring";
-import RegisteredPhone from "../../../database/RegisteredPhone";
+import WAWebJS from "whatsapp-web.js";
+
 import getAccountsString from "../../../controllers/accounts/get/getAccounts";
 import isSuperAdmin from "../../../controllers/rules/isSuperAdmin";
+import RegisteredPhone from "../../../database/RegisteredPhone";
 
 const getPermissionList = async (
   client: WAWebJS.Client,

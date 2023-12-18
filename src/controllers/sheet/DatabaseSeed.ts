@@ -1,10 +1,11 @@
+import { GoogleSpreadsheet } from "google-spreadsheet";
+
+import { accountsLists } from "../../config/googleSheet";
 import createMultipleCloudAccounts from "../../controllers/accounts/add/AddAccountsToCloud";
+import deleteAccounts from "../../controllers/accounts/delete/deleteCloudAccounts";
 import getAccounts, {
   accountData,
 } from "../../controllers/accounts/get/getCloudAccounts";
-import deleteAccounts from "../../controllers/accounts/delete/deleteCloudAccounts";
-import { GoogleSpreadsheet } from "google-spreadsheet";
-import { accountsLists } from "../../config/googleSheet";
 import getAccountsNoFilter from "../accounts/get/getCloudAccountsNoFilter";
 interface SheetData {
   shortName: string;
@@ -45,7 +46,7 @@ class StudentDataHandler {
     await this.doc.loadInfo(); // loads document properties and worksheets
   }
 
-  public async loadAllAccounts(max: number = 100): Promise<void> {
+  public async loadAllAccounts(max = 100): Promise<void> {
     await this.loadStudents(max);
     await this.loadTeachers(max);
     await this.loadManagers(max);
@@ -59,7 +60,7 @@ class StudentDataHandler {
     ];
   }
 
-  public async loadStudents(max: number = 100): Promise<void> {
+  public async loadStudents(max = 100): Promise<void> {
     const promises = this.gradeSheets.map(async (sheet) => {
       const gradeSheet = this.doc.sheetsByTitle[sheet];
       if (gradeSheet) {
@@ -73,7 +74,7 @@ class StudentDataHandler {
 
     await Promise.all(promises);
   }
-  public async loadTeachers(max: number = 100): Promise<void> {
+  public async loadTeachers(max = 100): Promise<void> {
     const promises = this.teachers.map(async (sheet) => {
       const gradeSheet = this.doc.sheetsByTitle[sheet];
       if (gradeSheet) {
@@ -87,7 +88,7 @@ class StudentDataHandler {
     await Promise.all(promises);
   }
 
-  public async loadManagers(max: number = 100): Promise<void> {
+  public async loadManagers(max = 100): Promise<void> {
     await this.doc.loadInfo(); // loads document properties and worksheets
     const promises = this.managers.map(async (sheet) => {
       const gradeSheet = this.doc.sheetsByTitle[sheet];
@@ -102,7 +103,7 @@ class StudentDataHandler {
 
     await Promise.all(promises);
   }
-  public async loadSecurities(max: number = 100): Promise<void> {
+  public async loadSecurities(max = 100): Promise<void> {
     const promises = this.securities.map(async (sheet) => {
       const gradeSheet = this.doc.sheetsByTitle[sheet];
       if (gradeSheet) {

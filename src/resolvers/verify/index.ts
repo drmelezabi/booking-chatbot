@@ -1,7 +1,8 @@
 import WAWebJS from "whatsapp-web.js";
-import getCloudAccount from "../../controllers/accounts/get/getStudent";
+
 import studentVerify from "./studentVerify";
 import supervisorVerify from "./supervisorVerify";
+import getCloudAccount from "../../controllers/accounts/get/getStudent";
 import RegisteredPhone from "../../database/RegisteredPhone";
 
 const verify = async (client: WAWebJS.Client, message: WAWebJS.Message) => {

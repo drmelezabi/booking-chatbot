@@ -10,7 +10,7 @@ const checkBookingAvailability = async () => {
   if (SuspendedIndefinitely) return "الحجز متوقف لأجل غير مسمى";
   else if (SuspendedUntilDate) {
     if (new Date(BookingAvailabilityDate) > new Date()) {
-      var dateString = BookingAvailabilityDate.toLocaleDateString(
+      const dateString = BookingAvailabilityDate.toLocaleDateString(
         "ar-EG-u-nu-latn",
         { weekday: "long", year: "numeric", month: "short", day: "numeric" }
       );

@@ -1,7 +1,8 @@
 import WAWebJS from "whatsapp-web.js";
-import RegisteredPhone from "../../database/RegisteredPhone";
+
 import isAdmin from "../../controllers/rules/isAdmin";
 import Chat from "../../database/chat";
+import RegisteredPhone from "../../database/RegisteredPhone";
 import db from "../../database/setup";
 
 const remove = (accountId: string) =>

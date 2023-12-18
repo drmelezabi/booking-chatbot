@@ -1,11 +1,12 @@
 import WAWebJS from "whatsapp-web.js";
-import deleteCloudReservation from "../../controllers/reservations/delete/deleteReservation";
+
 import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
+import bookingGroup from "../../controllers/GroupManager/getGroup";
+import deleteCloudReservation from "../../controllers/reservations/delete/deleteReservation";
+import { updateCloudReservationById } from "../../controllers/reservations/update/updateReservationById";
 import Avail from "../../database/avail";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import Reservation from "../../database/reservation";
-import { updateCloudReservationById } from "../../controllers/reservations/update/updateReservationById";
-import bookingGroup from "../../controllers/GroupManager/getGroup";
 import db from "../../database/setup";
 
 const teacherAvail = async (

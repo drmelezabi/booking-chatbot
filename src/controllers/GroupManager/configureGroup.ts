@@ -1,4 +1,5 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
+
 import bookingGroup from "./getGroup";
 
 export default async function configGroup(client: WAWebJS.Client) {

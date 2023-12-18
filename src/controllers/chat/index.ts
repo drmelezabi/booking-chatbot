@@ -1,6 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
-import RegisteredPhone from "../../database/RegisteredPhone";
+
 import Chat from "../../database/chat";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const remove = (accountId: string) => {
   const length = Chat.fetchMany((c) => c.id === accountId).length;
@@ -14,8 +15,8 @@ const chat = (client: WAWebJS.Client, message: WAWebJS.Message) => {
   let counter = 0;
   let data: { [key: string]: unknown } = {};
   let lastMessage: Date = new Date();
-  let taskSyntax: string = "";
-  let accountId: string = "";
+  let taskSyntax = "";
+  let accountId = "";
 
   if (message.body.startsWith("!")) {
     const isExist = RegisteredPhone.fetch(

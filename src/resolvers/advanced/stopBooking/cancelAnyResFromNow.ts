@@ -1,8 +1,9 @@
 import WAWebJS from "whatsapp-web.js";
-import Reservation from "../../../database/reservation";
-import stopBookingAvailability from "../../../controllers/rules/stopBookingAvailability";
-import { cancelAllNextCloudReservations } from "../../../controllers/reservations/cancel/cancelAllNextCloudReservations";
+
 import bookingGroup from "../../../controllers/GroupManager/getGroup";
+import { cancelAllNextCloudReservations } from "../../../controllers/reservations/cancel/cancelAllNextCloudReservations";
+import stopBookingAvailability from "../../../controllers/rules/stopBookingAvailability";
+import Reservation from "../../../database/reservation";
 
 const cancelAnyResFromNow = async (
   client: WAWebJS.Client,

@@ -1,28 +1,29 @@
 import WAWebJS from "whatsapp-web.js";
-import { mainMenu } from "../resolvers/menu";
-import phoneVerification from "../resolvers/PhoneVerification";
+
+import { convertArToEnDigits as ArToEnNum } from "../config/diff";
+import chat from "../controllers/chat";
+import RegisteredPhone from "../database/RegisteredPhone";
+import EditBookingRules from "../resolvers/advanced/EditBookingRules";
 import getRecovery from "../resolvers/advanced/getRecovery";
 import getReservations from "../resolvers/advanced/getReservations";
-import mySchedule from "../resolvers/personal/mySchedule";
-import myViolations from "../resolvers/personal/myViolations";
-import { convertArToEnDigits as ArToEnNum } from "../config/diff";
-import addNewReservation from "../resolvers/booking/addNewReservation";
-import verify from "../resolvers/verify";
-import studentActive from "../resolvers/verify/active";
-import deleteReservation from "../resolvers/booking/deleteReservation";
-import avail from "../resolvers/replace";
-import updateBlockedDaysResolve from "../resolvers/rules/updateBlockedDays";
-import updateBlockedDatesResolve from "../resolvers/rules/updateBlockedDates";
-import showRules from "../resolvers/rules/ShowRules";
-import reservationAvailabilityControl from "../resolvers/advanced/stopBooking";
-import updateRoomsResolve from "../resolvers/rules/updateRooms";
-import EditBookingRules from "../resolvers/advanced/EditBookingRules";
 import permissionsResolvers from "../resolvers/advanced/permissions.ts";
-import chat from "../controllers/chat";
+import reservationAvailabilityControl from "../resolvers/advanced/stopBooking";
 import createBackUp from "../resolvers/backup/backup";
 import restoreLocalDB from "../resolvers/backup/retore";
+import addNewReservation from "../resolvers/booking/addNewReservation";
+import deleteReservation from "../resolvers/booking/deleteReservation";
+import { mainMenu } from "../resolvers/menu";
+import mySchedule from "../resolvers/personal/mySchedule";
+import myViolations from "../resolvers/personal/myViolations";
+import phoneVerification from "../resolvers/PhoneVerification";
+import avail from "../resolvers/replace";
+import showRules from "../resolvers/rules/ShowRules";
+import updateBlockedDatesResolve from "../resolvers/rules/updateBlockedDates";
+import updateBlockedDaysResolve from "../resolvers/rules/updateBlockedDays";
+import updateRoomsResolve from "../resolvers/rules/updateRooms";
 import seed from "../resolvers/seed";
-import RegisteredPhone from "../database/RegisteredPhone";
+import verify from "../resolvers/verify";
+import studentActive from "../resolvers/verify/active";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const checkChat = chat(client, message);

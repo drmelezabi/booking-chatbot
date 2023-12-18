@@ -1,6 +1,6 @@
+import addLocalReservations from "./addLocalReservation";
 import { genId20 } from "../../../config/IDs";
 import addDocument from "../../addCloudDoc";
-import addLocalReservations from "./addLocalReservation";
 
 interface IReservation {
   case: number;

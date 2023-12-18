@@ -1,8 +1,8 @@
-import { IRegisteredPhone } from "../database/RegisteredPhone";
 import { IActivationPin } from "../database/activationPin";
 import { IAvail } from "../database/avail";
 import { IBlockedDates } from "../database/blockedDates";
 import { IChat } from "../database/chat";
+import { IRegisteredPhone } from "../database/RegisteredPhone";
 import { IReservation } from "../database/reservation";
 import { ISuspendedStudent } from "../database/suspendedStudent";
 

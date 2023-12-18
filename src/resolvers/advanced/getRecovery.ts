@@ -1,6 +1,7 @@
 import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/rules/isAdmin";
+
 import getRecovery from "../../controllers/accounts/get/getRecovery";
+import isAdmin from "../../controllers/rules/isAdmin";
 
 const generateRecovery = async (
   client: WAWebJS.Client,

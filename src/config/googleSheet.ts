@@ -1,6 +1,7 @@
 import { JWT } from "google-auth-library";
-import config from "../config/globalVariables";
 import { GoogleSpreadsheet } from "google-spreadsheet";
+
+import config from "../config/globalVariables";
 
 const serviceAccountAuth = new JWT({
   email: config.googleServiceAccountEmail,

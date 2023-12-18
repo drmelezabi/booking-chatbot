@@ -1,5 +1,3 @@
-import ActivationPin from "../database/activationPin";
-import Avail from "../database/avail";
 import {
   isBlockedDateArray,
   isIAvailArray,
@@ -9,12 +7,14 @@ import {
   isISuspendedStudentArray,
   isReservationArray,
 } from "./validateRestoredData";
+import ActivationPin from "../database/activationPin";
+import Avail from "../database/avail";
 import BlockedDates from "../database/blockedDates";
 import Chat from "../database/chat";
 import RegisteredPhone from "../database/RegisteredPhone";
 import Reservation from "../database/reservation";
-import SuspendedStudent from "../database/suspendedStudent";
 import db from "../database/setup";
+import SuspendedStudent from "../database/suspendedStudent";
 
 const restoreFromReceiveFile = async (file: unknown) => {
   try {

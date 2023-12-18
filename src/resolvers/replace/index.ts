@@ -1,8 +1,9 @@
 import WAWebJS from "whatsapp-web.js";
-import { convertArToEnDigits as ArToEnNum } from "../../config/diff";
-import hostAvail from "./Host";
+
 import colleagueAvail from "./colleague";
+import hostAvail from "./Host";
 import teacherAvail from "./teacher";
+import { convertArToEnDigits as ArToEnNum } from "../../config/diff";
 import RegisteredPhone from "../../database/RegisteredPhone";
 
 const avail = async (client: WAWebJS.Client, message: WAWebJS.Message) => {

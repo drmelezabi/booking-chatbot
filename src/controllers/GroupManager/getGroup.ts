@@ -1,4 +1,5 @@
 import WAWebJS, { GroupChat } from "whatsapp-web.js";
+
 import db from "../../database/setup";
 
 export default async function bookingGroup(client: WAWebJS.Client) {

@@ -1,9 +1,10 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import isSuperAdmin from "../../controllers/rules/isSuperAdmin";
-import RegisteredPhone from "../../database/RegisteredPhone";
-import Chat from "../../database/chat";
+
 import restore from "../../backup/restore";
 import restoreFromReceiveFile from "../../backup/restoreFromReceiveFile";
+import isSuperAdmin from "../../controllers/rules/isSuperAdmin";
+import Chat from "../../database/chat";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const restoreLocalDB = async (
   client: WAWebJS.Client,

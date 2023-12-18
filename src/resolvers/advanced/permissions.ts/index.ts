@@ -1,10 +1,11 @@
 import WAWebJS from "whatsapp-web.js";
-import RegisteredPhone from "../../../database/RegisteredPhone";
-import isAdmin from "../../../controllers/rules/isAdmin";
-import Chat from "../../../database/chat";
-import updatePermissions from "./updatePermissions";
+
 import getPermissionList from "./getPermissionsList";
+import updatePermissions from "./updatePermissions";
+import isAdmin from "../../../controllers/rules/isAdmin";
 import isSuperAdmin from "../../../controllers/rules/isSuperAdmin";
+import Chat from "../../../database/chat";
+import RegisteredPhone from "../../../database/RegisteredPhone";
 
 const permissionsResolvers = async (
   client: WAWebJS.Client,

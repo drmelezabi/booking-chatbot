@@ -1,8 +1,9 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import isSuperAdmin from "../../controllers/rules/isSuperAdmin";
-import RegisteredPhone from "../../database/RegisteredPhone";
-import Chat from "../../database/chat";
+
 import backup from "../../backup/backup";
+import isSuperAdmin from "../../controllers/rules/isSuperAdmin";
+import Chat from "../../database/chat";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const createBackUp = async (
   client: WAWebJS.Client,

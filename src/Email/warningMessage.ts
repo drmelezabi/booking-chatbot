@@ -1,4 +1,5 @@
 import Handlebars from "handlebars";
+
 import { levelCode, levels } from "../config/enums";
 
 const noticeMessageTemplate = (level: levels, information: string): string => {

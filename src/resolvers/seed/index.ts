@@ -1,11 +1,12 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
-import Chat from "../../database/chat";
-import RegisteredPhone from "../../database/RegisteredPhone";
+
 import isSuperAdmin from "../../controllers/rules/isSuperAdmin";
 import studentDataHandlers from "../../controllers/sheet/DatabaseSeed";
-import SuspendedStudent from "../../database/suspendedStudent";
 import ActivationPin from "../../database/activationPin";
+import Chat from "../../database/chat";
+import RegisteredPhone from "../../database/RegisteredPhone";
 import Reservation from "../../database/reservation";
+import SuspendedStudent from "../../database/suspendedStudent";
 
 const seed = async (
   client: WAWebJS.Client,
@@ -49,7 +50,7 @@ const seed = async (
     client.sendMessage(message.from, sticker, {
       sendMediaAsSticker: true,
     });
-    const msg = `⚠️ *تنبيه هام* ⚠️\كن حذرًا أثناء استخدام قائمة البناء لتجنب حدوث مشاكل في المنظومة\n\nاستخدمها فقط في الحالات الضرورية`;
+    const msg = `⚠️ *تنبيه هام* ⚠️\nكن حذرًا أثناء استخدام قائمة البناء لتجنب حدوث مشاكل في المنظومة\n\nاستخدمها فقط في الحالات الضرورية`;
     const msg2 = `💭 *هل ترغب في الاستمرار؟* 💭`;
     client.sendMessage(message.from, msg);
     client.sendMessage(message.from, msg2);
@@ -196,7 +197,7 @@ const seed = async (
 
   if (counter === 4) {
     await studentDataHandlers.loadInfo();
-    let updateStatus = false;
+    const updateStatus = false;
     if (/طلاب/.test(message.body)) {
       await studentDataHandlers.updateStudentsInFirebase();
     }

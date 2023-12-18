@@ -1,7 +1,7 @@
+import { ISuspendedStudent } from "./getStudentsSuspension";
 import Reservation from "../../../database/reservation";
 import db from "../../../database/setup";
 import SuspendedStudent from "../../../database/suspendedStudent";
-import { ISuspendedStudent } from "./getStudentsSuspension";
 import { updateCloudStudentViolations } from "../update/updateCloudStudentViolations";
 
 const deadline = (date: Date) => {

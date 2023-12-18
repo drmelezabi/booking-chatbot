@@ -1,10 +1,11 @@
-import WAWebJS from "whatsapp-web.js";
-import isAdmin from "../../controllers/rules/isAdmin";
-import detectDateFromString from "../../controllers/date/detectDateFromString";
 import starkString from "starkstring";
+import WAWebJS from "whatsapp-web.js";
+
+import detectDateFromString from "../../controllers/date/detectDateFromString";
+import isAdmin from "../../controllers/rules/isAdmin";
+import BlockedDates from "../../database/blockedDates";
 import Chat from "../../database/chat";
 import RegisteredPhone from "../../database/RegisteredPhone";
-import BlockedDates from "../../database/blockedDates";
 
 const updateBlockedDatesResolve = async (
   client: WAWebJS.Client,
@@ -51,7 +52,7 @@ const updateBlockedDatesResolve = async (
   };
 
   //
-  // =======================================================================================================================================================
+  // ========================================================================================================
   if (counter === 5) {
     if (
       /نعم|[أاإآ]جل|yes|Yes|Y|y|موافق|بالت[أاإآ]كيد|[أاإآ]كيد|الفعل|[أاإآ]يو[ةه]|صح|حسنا/.test(
@@ -95,7 +96,7 @@ const updateBlockedDatesResolve = async (
   }
 
   //
-  // =======================================================================================================================================================
+  // ========================================================================================================
   //
   else if (counter === 4) {
     const collectedDate = new Date(collectingData["date"] as Date);
@@ -124,7 +125,7 @@ const updateBlockedDatesResolve = async (
   }
 
   //
-  // =======================================================================================================================================================
+  // ========================================================================================================
   //
   else if (counter === 3) {
     const collectedDate = new Date(collectingData["date"] as unknown as Date);
@@ -212,7 +213,7 @@ const updateBlockedDatesResolve = async (
     }
   }
   //
-  // =======================================================================================================================================================
+  // ========================================================================================================
   //
   else if (counter === 2) {
     const rePhrase = message.body.replace(
@@ -302,7 +303,7 @@ const updateBlockedDatesResolve = async (
     }
   }
   //
-  // =======================================================================================================================================================
+  // ========================================================================================================
   //
   else if (counter === 1) {
     const query = message.body.trim();
@@ -339,7 +340,7 @@ const updateBlockedDatesResolve = async (
     }
   }
   //
-  // =======================================================================================================================================================
+  // ========================================================================================================
   //
   else {
     Chat.create({

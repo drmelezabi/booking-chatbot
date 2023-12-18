@@ -5,10 +5,11 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { firestoreDb } from "../../../config/firebase";
-import { getDayRange } from "../../date/getDayRange";
+
 import { caseTypeAR } from "../../../config/diff";
+import { firestoreDb } from "../../../config/firebase";
 import formatTimestamp from "../../date/formateFirebaseTimestamp";
+import { getDayRange } from "../../date/getDayRange";
 
 export const getRoomsBookedByDay = async (day: string) => {
   const range = getDayRange(day);

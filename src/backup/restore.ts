@@ -1,7 +1,5 @@
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
-import { firestoreDb } from "../config/firebase";
-import ActivationPin from "../database/activationPin";
-import Avail from "../database/avail";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+
 import {
   isBlockedDateArray,
   isIAvailArray,
@@ -11,12 +9,15 @@ import {
   isISuspendedStudentArray,
   isReservationArray,
 } from "./validateRestoredData";
+import { firestoreDb } from "../config/firebase";
+import ActivationPin from "../database/activationPin";
+import Avail from "../database/avail";
 import BlockedDates from "../database/blockedDates";
 import Chat from "../database/chat";
 import RegisteredPhone from "../database/RegisteredPhone";
 import Reservation from "../database/reservation";
-import SuspendedStudent from "../database/suspendedStudent";
 import db from "../database/setup";
+import SuspendedStudent from "../database/suspendedStudent";
 
 const restore = async () => {
   try {

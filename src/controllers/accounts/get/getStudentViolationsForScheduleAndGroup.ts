@@ -1,14 +1,17 @@
+import { doc, writeBatch } from "firebase/firestore";
+import starkString from "starkstring";
+
+import { ISuspendedStudent } from "./getStudentsSuspension";
+import { firestoreDb } from "../../../config/firebase";
+import client from "../../../config/whatsapp";
+import RegisteredPhone from "../../../database/RegisteredPhone";
 import Reservation from "../../../database/reservation";
 import db from "../../../database/setup";
 import SuspendedStudent from "../../../database/suspendedStudent";
-import bookingGroup from "../../GroupManager/getGroup";
-import { ISuspendedStudent } from "./getStudentsSuspension";
-import RegisteredPhone from "../../../database/RegisteredPhone";
-import starkString from "starkstring";
 import formatDateTime from "../../date/formateTimestamp";
-import { doc, writeBatch } from "firebase/firestore";
-import { firestoreDb } from "../../../config/firebase";
-import client from "../../../config/whatsapp";
+import bookingGroup from "../../GroupManager/getGroup";
+
+
 
 const getStudentViolationsForScheduleAndGroup = async () => {
   const reservations = Reservation.fetchMany(
