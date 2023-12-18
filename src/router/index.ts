@@ -1,12 +1,5 @@
 import WAWebJS from "whatsapp-web.js";
-import {
-  menu,
-  verification,
-  AdvancedMenu,
-  getRec,
-  trackingInfo,
-  personalInfo,
-} from "../resolvers/menu";
+import { mainMenu } from "../resolvers/menu";
 import phoneVerification from "../resolvers/PhoneVerification";
 import getRecovery from "../resolvers/advanced/getRecovery";
 import getReservations from "../resolvers/advanced/getReservations";
@@ -29,61 +22,64 @@ import chat from "../controllers/chat";
 import createBackUp from "../resolvers/backup/backup";
 import restoreLocalDB from "../resolvers/backup/retore";
 import seed from "../resolvers/seed";
+import RegisteredPhone from "../database/RegisteredPhone";
 
 const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   const checkChat = chat(client, message);
+
+  const { body, from } = message;
+
+  const isRegisteredAccount = RegisteredPhone.fetch(
+    (account) => account.chatId === from
+  );
+
+  if (!isRegisteredAccount) {
+    client.sendMessage(
+      from,
+      `أنت تستخدم هاتف خارج المنظومة\n\n📱 *لتوثيق رقم هاتفك* 📱\nأرسل كلمة " *!توثيق* " متبوعة بالرقم الشخصي\n⚠ ملحوظة هامة: الأرقام يجب أن تكون بالأنجليزية\n\n*مثال*:\n\`\`\`!توثيق 12345\`\`\`96893565656`
+    );
+    return;
+  }
+
   if (!checkChat) return;
   const { counter, data, taskSyntax } = checkChat;
 
-  const { body, from } = message;
   //
-  if (/^!مساعد[ةه]\s*$/.test(body)) await menu(client, message);
-  //
-  //
-  else if (body === "!توثيق") await verification(client, message);
+  if (/^!مساعد[ةه]\s*$/.test(body) || taskSyntax === "!مساعدة")
+    await mainMenu(client, message, counter, isRegisteredAccount);
   //
   //
   else if (/^![إاأ]لغاء\s*$/.test(body))
     await deleteReservation(client, message);
   //
   //
-  else if (/^!توثيق\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
+  else if (/^!توثيق\s*$([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
     await phoneVerification(client, message, ArToEnNum(body));
   //
   //
   else if (body === "!تنشيط") await verify(client, message);
   //
   //
-  else if (/^!تنشيط\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
+  else if (/^!تنشيط\s*$([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
     await studentActive(client, message, ArToEnNum(body));
   //
   //
-  else if (/^!متابع[ةه]\s/.test(body)) await getReservations(client, message);
+  else if (/^!متابع[ةه]\s*$/.test(body)) await getReservations(client, message);
   //
   //
-  else if (/^!متابع[ةه]\s*$/.test(body)) await trackingInfo(client, message);
-  //
-  //
-  else if (/^![إأا]ستعاد[هة]\s*$/.test(body)) await getRec(client, message);
-  //
-  //
-  else if (/^![إأا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)$/.test(body))
+  else if (
+    /^![إأا]ستعاد[هة]\s*([0-9\u0660-\u0669\u06F0-\u06F9]+)\s*$/.test(body)
+  )
     await getRecovery(client, message, ArToEnNum(body));
   //
   //
   else if (/^!مواعيد[ىي]\s*$/.test(body)) await mySchedule(client, message);
   //
   //
-  else if (/^!ملف[ىي]\s*$/.test(body)) await personalInfo(client, message);
+  else if (/^!مخالفات\s*$/.test(body)) await myViolations(client, message);
   //
   //
-  else if (body === "!مخالفات") await myViolations(client, message);
-  //
-  //
-  else if (/^!حجز\s/.test(body)) await addNewReservation(client, message);
-  //
-  //
-  else if (/^![إأا]دار[ةه]\s*$/.test(body)) await AdvancedMenu(client, message);
+  else if (/^!حجز\s*$/.test(body)) await addNewReservation(client, message);
   //
   //
   else if (/^!تمرير\s*(\d+\s*)*$/.test(body)) await avail(client, message);
@@ -112,7 +108,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   //
   //
   else if (
-    /^!حال[ةه] المنظوم[ةه]/.test(body) ||
+    /^!حال[ةه] المنظوم[ةه]\s*$/.test(body) ||
     taskSyntax === "!حالة المنظومة"
   )
     await reservationAvailabilityControl(client, message, counter, data);

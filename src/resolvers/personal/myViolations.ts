@@ -48,6 +48,14 @@ const myViolations = async (
     return;
   }
 
+  if (studentData.type !== "student") {
+    client.sendMessage(
+      message.from,
+      "❌ الطالب فقط من يمتك إمكانية استخدام هذه الميزة"
+    );
+    return;
+  }
+
   if (!studentData.violations.length) {
     client.sendMessage(
       message.from,

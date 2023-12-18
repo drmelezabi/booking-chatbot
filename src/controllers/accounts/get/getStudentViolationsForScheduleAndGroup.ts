@@ -1,48 +1,39 @@
-import WAWebJS, { MessageSendOptions, Contact } from "whatsapp-web.js";
 import Reservation from "../../../database/reservation";
 import db from "../../../database/setup";
 import SuspendedStudent from "../../../database/suspendedStudent";
 import bookingGroup from "../../GroupManager/getGroup";
 import { ISuspendedStudent } from "./getStudentsSuspension";
-import { updateCloudStudentViolations } from "../update/updateCloudStudentViolations";
 import RegisteredPhone from "../../../database/RegisteredPhone";
 import starkString from "starkstring";
 import formatDateTime from "../../date/formateTimestamp";
+import { doc, writeBatch } from "firebase/firestore";
+import { firestoreDb } from "../../../config/firebase";
+import client from "../../../config/whatsapp";
 
-const getStudentViolationsForScheduleAndGroup = async (
-  accountId: string,
-  client: WAWebJS.Client
-) => {
-  const reservations = Reservation.fetchAll();
-  const studentCase = SuspendedStudent.fetch(
-    (studentCase) => studentCase.accountId === accountId
+const getStudentViolationsForScheduleAndGroup = async () => {
+  const reservations = Reservation.fetchMany(
+    (reservation) => new Date() > new Date(reservation.Date)
   );
+  const punishmentUnit = db.get<number>("punishmentUnit");
 
-  if (!studentCase) return false;
-
-  let EditedStudentData: ISuspendedStudent = {
-    accountId: accountId,
-    ViolationCounter: 0,
-    suspensionCase: false,
-    BookingAvailabilityDate: new Date(),
-    violations: [],
-  };
+  const editedList: ISuspendedStudent[] = [];
 
   if (reservations.length) {
-    const punishmentUnit = db.get<number>("punishmentUnit");
-
-    const filteredReservations = reservations.filter(
-      (reservation) =>
-        reservation.accountId === accountId &&
-        new Date(reservation.Date) < new Date()
-    );
-    const student = RegisteredPhone.fetch(
-      (account) => account.accountId === accountId
-    )!;
     const group = await bookingGroup(client);
 
+    const batch = writeBatch(firestoreDb);
+
     Promise.all(
-      filteredReservations.map(async (reservation) => {
+      reservations.map(async (reservation) => {
+        const studentCase = SuspendedStudent.fetch(
+          (studentCase) => studentCase.accountId === reservation.accountId
+        )!;
+
+        const student = RegisteredPhone.fetch(
+          (account) => account.accountId === reservation.accountId
+        );
+        if (!student) return false;
+
         const resDate = new Date(reservation.Date);
         const vio = starkString(studentCase.ViolationCounter + 1)
           .arabicNumber()
@@ -56,16 +47,23 @@ const getStudentViolationsForScheduleAndGroup = async (
           const punishmentDays =
             (studentCase.ViolationCounter / 2) * punishmentUnit;
           reservation.Date.setDate(reservation.Date.getDate() + punishmentDays);
-          EditedStudentData = {
-            accountId: accountId,
+          const violations = [
+            ...studentCase.violations,
+            "Reservation not used",
+          ];
+          editedList.push({
+            accountId: reservation.accountId,
             ViolationCounter: studentCase.ViolationCounter + 1,
             suspensionCase: true,
             BookingAvailabilityDate: reservation.Date,
-            violations: [...studentCase.violations, "Reservation not used"],
-          };
+            violations,
+          });
 
           const date = formatDateTime(resDate);
           const availability = formatDateTime(reservation.Date);
+
+          const sfRef = doc(firestoreDb, "account", reservation.accountId);
+          batch.update(sfRef, { violations });
 
           await group.sendMessage(
             `بناء على وصول الطالب ${student.name} للمخالفة رقم ${vio} وذلك بتخلفه عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}\n\nوعليه تم تطبيق جزاء بالحرمان من حجز القاعات للمذاكرة حتى يوم ${availability.Day} ${availability.Date} الساعة ${availability.Time}`
@@ -75,13 +73,21 @@ const getStudentViolationsForScheduleAndGroup = async (
             `بوصولك للمخالفة رقم ${vio} وذلك بالتخلف عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}\n\nوعليه تم تطبيق جزاء بالحرمان من حجز القاعات للمذاكرة حتى يوم ${availability.Day} ${availability.Date} الساعة ${availability.Time}`
           );
         } else {
-          EditedStudentData = {
-            accountId: accountId,
+          const violations = [
+            ...studentCase.violations,
+            "Reservation not used",
+          ];
+
+          editedList.push({
+            accountId: reservation.accountId,
             ViolationCounter: studentCase.ViolationCounter + 1,
             suspensionCase: false,
             BookingAvailabilityDate: reservation.Date,
-            violations: [...studentCase.violations, "Reservation not used"],
-          };
+            violations,
+          });
+
+          const sfRef = doc(firestoreDb, "account", reservation.accountId);
+          batch.update(sfRef, { violations });
 
           await group.sendMessage(
             `ارتكب الطالب ${student.name} مخالفة رقم ${vio} وذلك بتخلفه عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}`
@@ -94,16 +100,22 @@ const getStudentViolationsForScheduleAndGroup = async (
       })
     );
 
-    if (EditedStudentData.violations.length) {
-      SuspendedStudent.remove((account) => account.accountId === accountId);
-      SuspendedStudent.save();
-      SuspendedStudent.create(EditedStudentData);
-      SuspendedStudent.save();
-      await updateCloudStudentViolations(
-        accountId,
-        EditedStudentData.violations
-      );
+    if (editedList.length) {
+      editedList.map((stdCase) => {
+        if (stdCase.violations.length) {
+          SuspendedStudent.update((account) => {
+            if (account.accountId === stdCase.accountId) {
+              account.ViolationCounter = stdCase.ViolationCounter;
+              account.suspensionCase = stdCase.suspensionCase;
+              account.suspensionCase = stdCase.suspensionCase;
+              account.BookingAvailabilityDate = stdCase.BookingAvailabilityDate;
+            }
+          });
+        }
+      });
     }
+
+    await batch.commit();
   }
 };
 

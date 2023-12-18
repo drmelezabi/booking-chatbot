@@ -12,6 +12,17 @@ const mySchedule = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
   }
   const accountId = isExist.accountId;
   const reservations = await getStudentWeekBooked(accountId);
+  const account = await RegisteredPhone.fetch(
+    (acc) => acc.accountId === accountId
+  )!;
+
+  if (account.type !== "student") {
+    client.sendMessage(
+      message.from,
+      "❌ الطالب فقط من يمتك إمكانية استخدام هذه الميزة"
+    );
+    return;
+  }
 
   if (reservations.length) {
     const title = `*⏳ مواعيد المذاكرة لهذا الأسبوع*\n`;

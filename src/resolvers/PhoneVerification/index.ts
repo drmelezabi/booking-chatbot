@@ -34,7 +34,9 @@ const phoneVerification = async (
     RegisteredPhone.create({
       accountId: accountData.id,
       name: accountData.data.name,
+      fullName: accountData.data.fullName,
       chatId: chatId,
+      gender: accountData.data.gender,
       permissions: accountData.data.permissions,
       type: accountData.data.type,
       recoveryId: recoveryCode,
@@ -74,6 +76,9 @@ const phoneVerification = async (
     if (account.accountId === accountData.id) {
       account.chatId = chatId;
       account.permissions = accountData.data.permissions;
+      account.gender = accountData.data.gender;
+      account.fullName = accountData.data.fullName;
+      account.name = accountData.data.name;
       account.type = accountData.data.type;
       account.recoveryId = recoveryCode;
       account.contact = contactData;

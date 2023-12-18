@@ -1,7 +1,6 @@
 import db from "../../../database/setup";
 import SuspendedStudent from "../../../database/suspendedStudent";
 import { ISuspendedStudent } from "./getStudentsSuspension";
-import { updateCloudStudentViolations } from "../update/updateCloudStudentViolations";
 import Avail from "../../../database/avail";
 import Reservation from "../../../database/reservation";
 import client from "../../../config/whatsapp";
@@ -9,6 +8,8 @@ import bookingGroup from "../../GroupManager/getGroup";
 import starkString from "starkstring";
 import formatDateTime from "../../date/formateTimestamp";
 import RegisteredPhone from "../../../database/RegisteredPhone";
+import { doc, writeBatch } from "firebase/firestore";
+import { firestoreDb } from "../../../config/firebase";
 
 const deadline = (date: Date) => {
   const deadline = new Date(date);
@@ -29,17 +30,10 @@ const getAvailViolations = async () => {
 
   if (AvailReservations.length) {
     const punishmentUnit = db.get<number>("punishmentUnit");
+    const batch = writeBatch(firestoreDb);
 
     AvailReservations.map((reservation) => {
       if (!reservation.availId) return false;
-
-      let StudentData: ISuspendedStudent = {
-        accountId: reservation.availId,
-        ViolationCounter: 0,
-        suspensionCase: false,
-        BookingAvailabilityDate: new Date(),
-        violations: [],
-      };
 
       const studentCase = SuspendedStudent.fetch(
         (studentCase) => studentCase.accountId === reservation.availId
@@ -64,18 +58,24 @@ const getAvailViolations = async () => {
         studentCase.ViolationCounter >= 2 &&
         studentCase.ViolationCounter % 2 == 0
       ) {
-        StudentData = {
+        const violations = [
+          ...studentCase.violations,
+          "استجابة لتمرير وعدم تنفيذه",
+        ];
+
+        editedList.push({
           accountId: studentCase.accountId,
           ViolationCounter: studentCase.ViolationCounter + 1,
           suspensionCase: true,
           BookingAvailabilityDate: availCreatedDate,
-          violations: [...studentCase.violations, "استجابة لتمرير وعدم تنفيذه"],
-        };
-        editedList.push(StudentData);
+          violations,
+        });
         Avail.remove((avail) => avail.availId === studentCase.accountId);
         Reservation.remove(
           (res) => res.reservationId === reservation.reservationId
         );
+        const sfRef = doc(firestoreDb, "account", studentCase.accountId);
+        batch.update(sfRef, { violations });
         group.sendMessage(
           `بناء على وصول الطالب ${reservation.availName} للمخالفة رقم ${vio} وذلك بتخلفه عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}\n\nوعليه تم تطبيق جزاء بالحرمان من حجز القاعات للمذاكرة حتى يوم ${date2.Day} ${date2.Date} الساعة ${date2.Time}`
         );
@@ -84,18 +84,23 @@ const getAvailViolations = async () => {
           `بوصولك للمخالفة رقم ${vio} وذلك بالتخلف عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}\n\nوعليه تم تطبيق جزاء بالحرمان من حجز القاعات للمذاكرة حتى يوم ${date2.Day} ${date2.Date} الساعة ${date2.Time}`
         );
       } else {
-        StudentData = {
+        const violations = [
+          ...studentCase.violations,
+          "استجابة لتمرير وعدم تنفيذه",
+        ];
+        editedList.push({
           accountId: studentCase.accountId,
           ViolationCounter: studentCase.ViolationCounter + 1,
           suspensionCase: false,
           BookingAvailabilityDate: availCreatedDate,
-          violations: [...studentCase.violations, "استجابة لتمرير وعدم تنفيذه"],
-        };
-        editedList.push(StudentData);
+          violations,
+        });
         Avail.remove((avail) => avail.availId === studentCase.accountId);
         Reservation.remove(
           (res) => res.reservationId === reservation.reservationId
         );
+        const sfRef = doc(firestoreDb, "account", studentCase.accountId);
+        batch.update(sfRef, { violations });
         group.sendMessage(
           `ارتكب الطالب ${reservation.availName} مخالفة رقم ${vio} وذلك بتخلفه عن الحضور في الموعد يوم${date.Day} ${date.Date} الساعة ${date.Time}`
         );
@@ -106,24 +111,20 @@ const getAvailViolations = async () => {
       }
     });
 
-    Promise.all(
-      editedList.map(async (StdCase) => {
-        if (StdCase.violations.length) {
-          SuspendedStudent.update((account) => {
-            if (account.accountId === StdCase.accountId) {
-              account.ViolationCounter = StdCase.ViolationCounter;
-              account.suspensionCase = StdCase.suspensionCase;
-              account.suspensionCase = StdCase.suspensionCase;
-              account.BookingAvailabilityDate = StdCase.BookingAvailabilityDate;
-            }
-          });
-          await updateCloudStudentViolations(
-            StdCase.accountId,
-            StdCase.violations
-          );
-        }
-      })
-    );
+    editedList.map((StdCase) => {
+      if (StdCase.violations.length) {
+        SuspendedStudent.update((account) => {
+          if (account.accountId === StdCase.accountId) {
+            account.ViolationCounter = StdCase.ViolationCounter;
+            account.suspensionCase = StdCase.suspensionCase;
+            account.suspensionCase = StdCase.suspensionCase;
+            account.BookingAvailabilityDate = StdCase.BookingAvailabilityDate;
+          }
+        });
+      }
+    });
+
+    await batch.commit();
   }
 };
 

@@ -10,7 +10,9 @@ import { firestoreDb } from "../../../config/firebase";
 export interface studentData {
   permissions: "user" | "admin" | "superAdmin";
   name: string;
+  fullName: string;
   pass: string;
+  gender: "male" | "female";
   type: "student" | "teacher" | "security" | "manager";
   whatsappId: string;
   violations: string[];

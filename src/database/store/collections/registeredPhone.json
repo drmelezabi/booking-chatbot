@@ -6,6 +6,7 @@
     "permissions": "superAdmin",
     "type": "teacher",
     "recoveryId": "64824638",
+    "gender": "male",
     "contact": {
       "server": "c.us",
       "user": "201013975256",

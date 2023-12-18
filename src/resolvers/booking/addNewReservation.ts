@@ -2,7 +2,7 @@ import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 import prepareBookingMessage from "../../controllers/rules/phraseBookingMessage";
 import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
 import checkBookingAvailability from "../../controllers/reservations/check/checkBookingAvailability";
-import { arabicName, dtOptions } from "../../config/diff";
+import { arabicMinuets, arabicName, dtOptions } from "../../config/diff";
 import { checkRoomAvailability } from "../../controllers/rooms/check/checkRoomIsNotBusy";
 import { getDayRangeWithTime } from "../../controllers/date/getDayRangeWithTime";
 import formatDateTime from "../../controllers/date/formateTimestamp";
@@ -196,23 +196,7 @@ const addNewReservation = async (
   if (now.getMinutes() > 30) dayStarts.setHours(now.getHours(), 30, 0, 0);
   if (now.getMinutes() < 30) dayStarts.setHours(now.getHours(), 0, 0, 0);
 
-  let maxAfterStarts = "";
-
-  switch (maxTimeToBookAfterItsStartInMin) {
-    case 1:
-      maxAfterStarts = "دقيقة";
-      break;
-    case 2:
-      maxAfterStarts = "دقيقتين";
-      break;
-    default:
-      if (maxTimeToBookAfterItsStartInMin <= 10) {
-        maxAfterStarts = `${maxTimeToBookAfterItsStartInMin} دقائق`;
-      } else {
-        maxAfterStarts = `${maxTimeToBookAfterItsStartInMin} دقيقة`;
-      }
-      break;
-  }
+  let maxAfterStarts = arabicMinuets(maxTimeToBookAfterItsStartInMin);
 
   if (
     new Date().getHours() === now.getHours() &&

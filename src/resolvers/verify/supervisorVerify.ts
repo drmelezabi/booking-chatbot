@@ -1,18 +1,33 @@
-import WAWebJS from "whatsapp-web.js";
+import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
 import ActivationPin from "../../database/activationPin";
+import RegisteredPhone from "../../database/RegisteredPhone";
 
 const supervisorVerify = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
+  const account = RegisteredPhone.fetch((acc) => acc.chatId === message.from)!;
   const isExist = ActivationPin.getAll();
+  const { gender } = account;
+  const isMale = gender === "male";
+
+  console.log(gender);
 
   if (!isExist.length) {
     client.sendMessage(
       message.from,
-      "🕒 **حاليا لا يوجد حجز ينتظر التنشيط** 🕒\n\nاستمتع بوقتك 😅"
+      `🕒 **حاليا لا يوجد حجز ينتظر التنشيط** 🕒\n         ${
+        isMale ? "استمتع" : "استمتعي"
+      } بوقتك 😅`
     );
+
+    const sticker = MessageMedia.fromFilePath(
+      `./src/imgs/${isMale ? "relaxM" : "relaxF"}.png`
+    );
+    client.sendMessage(message.from, sticker, {
+      sendMediaAsSticker: true,
+    });
     return;
   }
 

@@ -178,7 +178,7 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         parseInt(`${minutes}`, 10)
       )}`;
     else {
-      db.set("availPeriodEnds", 3);
+      db.set("availPeriodEnds", 5);
       db.save();
       return `◈ *ينتهي نطاق تمرير الحجز بعد بدء الموعد بـ* : ${arabicMinuets(
         3
@@ -193,7 +193,7 @@ const showRules = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
         parseInt(`${minutes}`, 10)
       )}`;
     else {
-      db.set("verifyPickupAvailDeadLine", 3);
+      db.set("verifyPickupAvailDeadLine", 10);
       db.save();
       return `◈ *الحد الأقصي لتفعيل حجز تم تمريره هو* : ${arabicMinuets(3)}`;
     }

@@ -5,6 +5,8 @@ export interface accountData {
   permissions: "user" | "admin" | "superAdmin";
   name: string;
   pass: string;
+  fullName: string;
+  gender: "male" | "female";
   type: "student" | "teacher" | "security" | "employee" | undefined;
   whatsappId: string;
   violations: string[];
