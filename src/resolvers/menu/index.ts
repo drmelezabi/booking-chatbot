@@ -217,7 +217,7 @@ export const mainMenu = async (
         return;
       }
       //
-      else if (/^!حال[ةه] المنظوم[ةه]\s*$/.test(message.body)) {
+      else if (/^حال[ةه] المنظوم[ةه]\s*$/.test(message.body)) {
         if (!["admin", "superAdmin"].includes(permissions)) {
           client.sendMessage(
             message.from,
@@ -230,7 +230,7 @@ export const mainMenu = async (
         return;
       }
       //
-      else if (/^!نسخ[ةه] [إأا]حتياطي[ةه]\s*$/.test(message.body)) {
+      else if (/^نسخ[ةه] [إأا]حتياطي[ةه]\s*$/.test(message.body)) {
         if (!["admin", "superAdmin"].includes(permissions)) {
           client.sendMessage(
             message.from,
@@ -242,7 +242,7 @@ export const mainMenu = async (
         return;
       }
       //
-      else if (/^!استعاد[ةه] نسخ[ةه]\s*$/.test(message.body)) {
+      else if (/^استعاد[ةه] نسخ[ةه]\s*$/.test(message.body)) {
         if (!["admin", "superAdmin"].includes(permissions)) {
           client.sendMessage(
             message.from,
@@ -251,6 +251,20 @@ export const mainMenu = async (
           return;
         }
         client.sendMessage(message.from, menu.Recovery);
+        return;
+      }
+      //
+      else if (/^صلاحي[ةه] بريد/.test(message.body)) {
+        if (!["admin", "superAdmin"].includes(permissions)) {
+          client.sendMessage(
+            message.from,
+            "لا تملك صلاحية الوصول لهذه القائمة"
+          );
+          return;
+        }
+        client.sendMessage(message.from, menu.emailAccess1);
+        client.sendMessage(message.from, menu.emailAccess2);
+        client.sendMessage(message.from, menu.emailAccess3);
         return;
       }
       //
