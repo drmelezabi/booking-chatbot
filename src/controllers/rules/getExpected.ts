@@ -1,4 +1,5 @@
 import { dict } from "../../config/diff";
+import ErrorHandler from "../../config/errorhandler";
 import db from "../../database/setup";
 
 interface IExpected {
@@ -16,9 +17,8 @@ const getDictionary = (): IExpected => {
     }
 
     return dictionary;
-  } catch (error: any) {
-    console.log(error.message);
-    return {};
+  } catch (error) {
+    throw ErrorHandler(error, "getDictionary");
   }
 };
 

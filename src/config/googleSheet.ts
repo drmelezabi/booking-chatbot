@@ -6,7 +6,10 @@ import config from "../config/globalVariables";
 const serviceAccountAuth = new JWT({
   email: config.googleServiceAccountEmail,
   key: config.googlePrivateKey,
-  scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  scopes: [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+  ],
 });
 
 export const accountsLists = new GoogleSpreadsheet(
@@ -16,10 +19,6 @@ export const accountsLists = new GoogleSpreadsheet(
 
 export default serviceAccountAuth;
 
-const doc = new GoogleSpreadsheet(
-  config.accountListsSheets,
-  serviceAccountAuth
-);
 // https://docs.google.com/spreadsheets/d/1nUWAeKmStaNt72iHPfW1D-0EfONJVMRYH6RUGfMM--g
 
 // doc.share("email", {

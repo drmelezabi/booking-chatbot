@@ -7,15 +7,16 @@ import {
 } from "firebase/firestore";
 
 import { caseTypeAR } from "../../../config/diff";
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 import formatTimestamp from "../../date/formateFirebaseTimestamp";
 import { getWeekRange } from "../../date/getWeekRange";
 
 export const getStudentWeekBooked = async (studentId: string) => {
-  const range = getWeekRange();
-  if (!range) return [];
-
   try {
+    const range = getWeekRange();
+    if (!range) return [];
+
     const finalData: DocumentData[] = [];
 
     const q = query(
@@ -42,7 +43,6 @@ export const getStudentWeekBooked = async (studentId: string) => {
         };
       });
   } catch (error) {
-    console.log("get", error);
-    return [];
+    throw ErrorHandler(error, "getStudentWeekBooked");
   }
 };

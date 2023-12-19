@@ -1,3 +1,4 @@
+import ErrorHandler from "../../config/errorhandler";
 import db from "../../database/setup";
 
 const startBookingAvailability = () => {
@@ -6,8 +7,8 @@ const startBookingAvailability = () => {
     db.set("BookingAvailability.SuspendedUntilDate", false);
     db.save();
     return;
-  } catch (error: any) {
-    console.log(error.message);
+  } catch (error) {
+    throw ErrorHandler(error, "startBookingAvailability");
   }
 };
 

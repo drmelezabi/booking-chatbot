@@ -7,15 +7,16 @@ import {
 } from "firebase/firestore";
 
 import { caseTypeAR } from "../../../config/diff";
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 import formatTimestamp from "../../date/formateFirebaseTimestamp";
 import { getRestOfToday } from "../../date/getRestOfToday";
 
 export const getRoomsBookedRestOfToday = async () => {
-  const range = getRestOfToday();
-  if (!range) return [];
-
   try {
+    const range = getRestOfToday();
+    if (!range) return [];
+
     const finalData: DocumentData[] = [];
 
     const q = query(
@@ -40,7 +41,6 @@ export const getRoomsBookedRestOfToday = async () => {
       };
     });
   } catch (error) {
-    console.log("get", error);
-    return [];
+    throw ErrorHandler(error, "getRoomsBookedRestOfToday");
   }
 };

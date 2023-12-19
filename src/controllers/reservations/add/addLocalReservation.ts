@@ -1,3 +1,4 @@
+import ErrorHandler from "../../../config/errorhandler";
 import Reservation from "../../../database/reservation";
 
 interface IReservation {
@@ -11,8 +12,8 @@ const addLocalReservations = async (reservation: IReservation) => {
     Reservation.create(reservation);
     Reservation.save();
     return;
-  } catch (error: any) {
-    console.log(error.message);
+  } catch (error) {
+    throw ErrorHandler(error, "addLocalReservations");
   }
 };
 

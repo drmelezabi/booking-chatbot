@@ -1,20 +1,25 @@
+import ErrorHandler from "../../config/errorhandler";
 import RegisteredPhone from "../../database/RegisteredPhone";
 
 const isSuperAdmin = async (messageFrom: string) => {
-  const existedRegisteredPhones = RegisteredPhone.fetch(
-    (account) => account.chatId === messageFrom
-  );
+  try {
+    const existedRegisteredPhones = RegisteredPhone.fetch(
+      (account) => account.chatId === messageFrom
+    );
 
-  if (!existedRegisteredPhones)
-    return "انت تستخدم هاتف خارج المنظومه" as string;
+    if (!existedRegisteredPhones)
+      return "انت تستخدم هاتف خارج المنظومه" as string;
 
-  const IsSuperAdmin = ["superAdmin"].includes(
-    existedRegisteredPhones.permissions
-  );
+    const IsSuperAdmin = ["superAdmin"].includes(
+      existedRegisteredPhones.permissions
+    );
 
-  if (!IsSuperAdmin) return "❌ لا تملك صلاحية تنفيذ الأمر" as string;
+    if (!IsSuperAdmin) return "❌ لا تملك صلاحية تنفيذ الأمر" as string;
 
-  return true;
+    return true;
+  } catch (error) {
+    throw ErrorHandler(error, "isSuperAdmin");
+  }
 };
 
 export default isSuperAdmin;

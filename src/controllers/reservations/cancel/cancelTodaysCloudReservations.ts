@@ -8,29 +8,30 @@ import {
   where,
 } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 import { getRestOfToday } from "../../date/getRestOfToday";
 
 // Assuming you've initialized Firestore with `firestoreDb`
 
 export async function cancelTodaysCloudReservations() {
-  const RestOfToday = getRestOfToday();
-  if (!RestOfToday) return true;
-
-  const rangeStart = Timestamp.fromDate(RestOfToday.start);
-  const rangeEnd = Timestamp.fromDate(RestOfToday.end);
-
-  const finalData: DocumentData[] = [];
-
-  const q = query(
-    collection(firestoreDb, "reservation"),
-    where("start", ">=", rangeStart),
-    where("start", "<", rangeEnd)
-  );
-
-  const docSnap = await getDocs(q);
-
   try {
+    const RestOfToday = getRestOfToday();
+    if (!RestOfToday) return true;
+
+    const rangeStart = Timestamp.fromDate(RestOfToday.start);
+    const rangeEnd = Timestamp.fromDate(RestOfToday.end);
+
+    const finalData: DocumentData[] = [];
+
+    const q = query(
+      collection(firestoreDb, "reservation"),
+      where("start", ">=", rangeStart),
+      where("start", "<", rangeEnd)
+    );
+
+    const docSnap = await getDocs(q);
+
     // Execute the batched writes
     docSnap.forEach(async (doc) => {
       // Push data to finalData
@@ -43,7 +44,6 @@ export async function cancelTodaysCloudReservations() {
 
     return true;
   } catch (error) {
-    console.error("Error updating documents:", error);
-    return false;
+    throw ErrorHandler(error, "cancelTodaysCloudReservations");
   }
 }

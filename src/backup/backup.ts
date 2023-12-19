@@ -5,10 +5,10 @@ import { MessageMedia } from "whatsapp-web.js";
 
 import Sendmail from "../config/email";
 import { levels } from "../config/enums";
+import ErrorHandler from "../config/errorhandler";
 import client from "../config/whatsapp";
 import addDocument from "../controllers/addCloudDoc";
 import backupMessageTemplate from "../Email/backupTemplate";
-
 
 const backup = async (
   type: "FireBase" | "whatsapp" | "Email",
@@ -153,8 +153,7 @@ const backup = async (
 
     return true;
   } catch (error) {
-    console.log("backup", error);
-    return false;
+    throw ErrorHandler(error, "backup");
   }
 };
 

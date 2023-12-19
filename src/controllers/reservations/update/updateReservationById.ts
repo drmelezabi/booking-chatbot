@@ -1,5 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 // Assuming you've initialized Firestore with `firestoreDb`
@@ -17,14 +18,16 @@ export async function updateCloudReservationById(
   reservationId: string,
   reservation: IReservation
 ) {
-  const reservationRef = doc(firestoreDb, "reservation", reservationId);
-
   try {
+    const reservationRef = doc(firestoreDb, "reservation", reservationId);
+
     if (Object.keys(reservation).length > 0)
-      await updateDoc(reservationRef, reservation as { [key: string]: any });
+      await updateDoc(
+        reservationRef,
+        reservation as { [key: string]: number | string | Date }
+      );
     return true;
   } catch (error) {
-    console.error("Error updating document:", error);
-    return false;
+    throw ErrorHandler(error, "updateCloudReservationById");
   }
 }

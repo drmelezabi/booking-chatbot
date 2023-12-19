@@ -1,5 +1,6 @@
 import { doc, updateDoc } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 export interface accountData {
@@ -15,13 +16,12 @@ export async function updateCloudAccount(
   accountId: string,
   accountData: accountData
 ) {
-  const reservationRef = doc(firestoreDb, "account", accountId);
-
   try {
+    const reservationRef = doc(firestoreDb, "account", accountId);
+
     await updateDoc(reservationRef, accountData as unknown as object);
     return true;
   } catch (error) {
-    console.error("Error updating document:", error);
-    return false;
+    throw ErrorHandler(error, "updateCloudAccount");
   }
 }

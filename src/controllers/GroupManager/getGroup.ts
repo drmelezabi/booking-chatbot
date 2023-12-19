@@ -1,5 +1,6 @@
 import WAWebJS, { GroupChat } from "whatsapp-web.js";
 
+import ErrorHandler from "../../config/errorhandler";
 import db from "../../database/setup";
 
 export default async function bookingGroup(client: WAWebJS.Client) {
@@ -9,6 +10,6 @@ export default async function bookingGroup(client: WAWebJS.Client) {
     const chats = await client.getChatById(groupId);
     return chats as GroupChat;
   } catch (error) {
-    throw new Error("Failed to get group id");
+    throw ErrorHandler(error, "bookingGroup");
   }
 }

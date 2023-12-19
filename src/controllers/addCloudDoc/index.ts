@@ -1,5 +1,6 @@
 import { doc, setDoc } from "firebase/firestore";
 
+import ErrorHandler from "../../config/errorhandler";
 import { firestoreDb } from "../../config/firebase";
 
 const addDocument = async (
@@ -12,8 +13,7 @@ const addDocument = async (
     await setDoc(document, data);
     return true;
   } catch (error) {
-    console.log("add", error);
-    return false;
+    throw ErrorHandler(error, "addDocument");
   }
 };
 

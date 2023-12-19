@@ -67,7 +67,7 @@ export const arabicDays = (d: number) => {
 };
 
 export const enToAr = (inp: string) => {
-  let str = starkString(` ${inp} `).toString();
+  const str = starkString(` ${inp} `).toString();
   const letterBeforeNumberArabic = /(?<=\p{L})(?=\p{N})|(?<=\p{N})(?=\p{L})/gu;
   return str
     .replace(/\d+/g, (match) => starkString(match).arabicNumber().toString())

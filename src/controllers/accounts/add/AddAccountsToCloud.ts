@@ -1,10 +1,11 @@
-import { doc, writeBatch } from "firebase/firestore";
+import fs from "fs";
 
+import { doc, writeBatch } from "firebase/firestore";
+import XLSX from "xlsx";
+
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 import { genId20, recoveryCodeGen } from "../../../config/IDs";
-
-import XLSX from "xlsx";
-import fs from "fs";
 
 type accountName = {
   permissions: "user" | "admin" | "superAdmin";
@@ -37,9 +38,9 @@ const createMultipleCloudAccounts = async (
 
   const ForCsv: csvFileType[] = [];
 
-  const pass = recoveryCodeGen();
-
   accounts.forEach((account) => {
+    const pass = recoveryCodeGen();
+
     const newAccount: accountName = {
       permissions: account.permissions,
       fullName: account.fullName,
@@ -74,8 +75,7 @@ const createMultipleCloudAccounts = async (
 
     return true;
   } catch (error) {
-    console.log(error);
-    return true;
+    throw ErrorHandler(error, "createMultipleCloudAccounts");
   }
 };
 

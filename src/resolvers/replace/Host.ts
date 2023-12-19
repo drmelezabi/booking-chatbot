@@ -1,5 +1,6 @@
 import WAWebJS from "whatsapp-web.js";
 
+import ErrorHandler from "../../config/errorhandler";
 import { activatingPin } from "../../config/IDs";
 import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
 import formatDateTime from "../../controllers/date/formateTimestamp";
@@ -87,7 +88,10 @@ const hostAvail = async (
 
     const student = RegisteredPhone.fetch(
       (account) => account.accountId === getRes.accountId
-    )!;
+    );
+
+    if (!student) throw new Error("student should not be nullable");
+
     const dt = formatDateTime(getRes.Date);
 
     const group = await bookingGroup(client);
@@ -104,9 +108,8 @@ const hostAvail = async (
     );
 
     return;
-  } catch (error: any) {
-    console.log(error.message);
-    return;
+  } catch (error) {
+    throw ErrorHandler(error, "hostAvail");
   }
 };
 

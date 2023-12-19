@@ -6,6 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 export const checkRoomAvailability = async (room: string, start: Date) => {
@@ -33,7 +34,6 @@ export const checkRoomAvailability = async (room: string, start: Date) => {
     if (filtered.length) return false;
     return true;
   } catch (error) {
-    console.log("get", error);
-    return null;
+    throw ErrorHandler(error, "checkRoomAvailability");
   }
 };

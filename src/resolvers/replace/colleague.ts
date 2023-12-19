@@ -1,6 +1,7 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
 import { dtOptions } from "../../config/diff";
+import ErrorHandler from "../../config/errorhandler";
 import { registeredData } from "../../controllers/accounts/add/createRegisteredPhone";
 import getStudentViolations from "../../controllers/accounts/get/getStudentViolations";
 import Avail from "../../database/avail";
@@ -99,15 +100,8 @@ const colleagueAvail = async (
 
     client.sendMessage(message.from, "الموعد جاهز للتفعيل مع المشرف");
     return;
-  } catch (error: any) {
-    client.sendMessage(
-      message.from,
-      `حدث خطأ غير متوقع إذا استمرت المشكلة ${
-        registeredData.gender === "male" ? "تواصل" : "تواصلي"
-      } مع الإدارة`
-    );
-    console.log(error.message);
-    return;
+  } catch (error) {
+    throw ErrorHandler(error, "colleagueAvail");
   }
 };
 

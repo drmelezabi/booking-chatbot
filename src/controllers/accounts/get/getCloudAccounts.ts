@@ -1,5 +1,6 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 export interface accountData {
@@ -32,8 +33,7 @@ const getAccounts = async (
 
     return finalData;
   } catch (error) {
-    console.log("getAccountsString", error);
-    return [];
+    throw ErrorHandler(error, "getAccounts");
   }
 };
 

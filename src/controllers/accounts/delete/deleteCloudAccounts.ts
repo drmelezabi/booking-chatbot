@@ -6,6 +6,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 type type = "teacher" | "student" | "manager" | "security";
@@ -31,8 +32,7 @@ const deleteAccounts = async (
 
     return true;
   } catch (error) {
-    console.log("deleteAccountsString", error);
-    return false;
+    throw ErrorHandler(error, "deleteAccounts");
   }
 };
 

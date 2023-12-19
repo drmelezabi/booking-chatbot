@@ -6,6 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 const getAccountsString = async (): Promise<string> => {
@@ -43,8 +44,7 @@ const getAccountsString = async (): Promise<string> => {
 
     return "*قائمة الصلاحيات*\n\n".concat(array);
   } catch (error) {
-    console.log("getAccountsString", error);
-    return "حدث خطأ";
+    throw ErrorHandler(error, "getAccountsString");
   }
 };
 

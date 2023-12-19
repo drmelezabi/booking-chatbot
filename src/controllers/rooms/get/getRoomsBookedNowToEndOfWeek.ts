@@ -7,15 +7,16 @@ import {
 } from "firebase/firestore";
 
 import { caseTypeAR } from "../../../config/diff";
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 import formatTimestamp from "../../date/formateFirebaseTimestamp";
 import { geRestOfWeek } from "../../date/getRestOfWeek";
 
 export const getRoomsBookedNowToEndOfWeek = async () => {
-  const range = geRestOfWeek();
-  if (!range) return [];
-
   try {
+    const range = geRestOfWeek();
+    if (!range) return [];
+
     const finalData: DocumentData[] = [];
 
     const q = query(
@@ -40,7 +41,6 @@ export const getRoomsBookedNowToEndOfWeek = async () => {
       };
     });
   } catch (error) {
-    console.log("get", error);
-    return [];
+    throw ErrorHandler(error, "getRoomsBookedNowToEndOfWeek");
   }
 };

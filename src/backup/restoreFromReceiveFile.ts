@@ -1,3 +1,5 @@
+import SimplDB from "simpl.db";
+
 import {
   isBlockedDateArray,
   isIAvailArray,
@@ -7,6 +9,7 @@ import {
   isISuspendedStudentArray,
   isReservationArray,
 } from "./validateRestoredData";
+import ErrorHandler from "../config/errorhandler";
 import ActivationPin from "../database/activationPin";
 import Avail from "../database/avail";
 import BlockedDates from "../database/blockedDates";
@@ -140,7 +143,7 @@ const restoreFromReceiveFile = async (file: unknown) => {
     ) {
       db.set(
         "BookingAvailability",
-        RestoredObject.database.BookingAvailability as any
+        RestoredObject.database.BookingAvailability as SimplDB.JSONData
       );
 
       db.set(
@@ -170,8 +173,7 @@ const restoreFromReceiveFile = async (file: unknown) => {
 
     return true;
   } catch (error) {
-    console.log("restore", error);
-    return false;
+    throw ErrorHandler(error, "restoreFromReceiveFile");
   }
 };
 

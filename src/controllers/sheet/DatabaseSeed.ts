@@ -1,5 +1,6 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 
+import ErrorHandler from "../../config/errorhandler";
 import { accountsLists } from "../../config/googleSheet";
 import createMultipleCloudAccounts from "../../controllers/accounts/add/AddAccountsToCloud";
 import deleteAccounts from "../../controllers/accounts/delete/deleteCloudAccounts";
@@ -43,217 +44,317 @@ class StudentDataHandler {
   private noneExitedSecurities: SheetData[] = [];
 
   public async loadInfo() {
-    await this.doc.loadInfo(); // loads document properties and worksheets
+    try {
+      await this.doc.loadInfo(); // loads document properties and worksheets
+    } catch (error) {
+      throw ErrorHandler(error, "loadInfo");
+    }
   }
 
   public async loadAllAccounts(max = 100): Promise<void> {
-    await this.loadStudents(max);
-    await this.loadTeachers(max);
-    await this.loadManagers(max);
-    await this.loadSecurities(max);
+    try {
+      await this.loadStudents(max);
+      await this.loadTeachers(max);
+      await this.loadManagers(max);
+      await this.loadSecurities(max);
 
-    this.allAccounts = [
-      ...this.allStudents,
-      ...this.allTeachers,
-      ...this.allManagers,
-      ...this.allSecurities,
-    ];
+      this.allAccounts = [
+        ...this.allStudents,
+        ...this.allTeachers,
+        ...this.allManagers,
+        ...this.allSecurities,
+      ];
+    } catch (error) {
+      throw ErrorHandler(error, "loadAllAccounts");
+    }
   }
 
   public async loadStudents(max = 100): Promise<void> {
-    const promises = this.gradeSheets.map(async (sheet) => {
-      const gradeSheet = this.doc.sheetsByTitle[sheet];
-      if (gradeSheet) {
-        await gradeSheet.loadCells(`A1:D${max}`);
-        const rows = await gradeSheet.getRows();
-        this.allStudents.push(
-          ...rows.map((row) => {
-            return { ...row.toObject(), type: "student" } as SheetData;
-          })
-        );
-      }
-    });
+    try {
+      const promises = this.gradeSheets.map(async (sheet) => {
+        const gradeSheet = this.doc.sheetsByTitle[sheet];
+        if (gradeSheet) {
+          await gradeSheet.loadCells(`A1:D${max}`);
+          const rows = await gradeSheet.getRows();
+          this.allStudents.push(
+            ...rows.map((row) => {
+              return { ...row.toObject(), type: "student" } as SheetData;
+            })
+          );
+        }
+      });
 
-    await Promise.all(promises);
+      await Promise.all(promises);
+    } catch (error) {
+      throw ErrorHandler(error, "loadStudents");
+    }
   }
   public async loadTeachers(max = 100): Promise<void> {
-    const promises = this.teachers.map(async (sheet) => {
-      const gradeSheet = this.doc.sheetsByTitle[sheet];
-      if (gradeSheet) {
-        await gradeSheet.loadCells(`A1:D${max}`);
-        const rows = await gradeSheet.getRows();
-        this.allTeachers.push(
-          ...rows.map((row) => {
-            return { ...row.toObject(), type: "teacher" } as SheetData;
-          })
-        );
-      }
-    });
-    await Promise.all(promises);
+    try {
+      const promises = this.teachers.map(async (sheet) => {
+        const gradeSheet = this.doc.sheetsByTitle[sheet];
+        if (gradeSheet) {
+          await gradeSheet.loadCells(`A1:D${max}`);
+          const rows = await gradeSheet.getRows();
+          this.allTeachers.push(
+            ...rows.map((row) => {
+              return { ...row.toObject(), type: "teacher" } as SheetData;
+            })
+          );
+        }
+      });
+      await Promise.all(promises);
+    } catch (error) {
+      throw ErrorHandler(error, "loadTeachers");
+    }
   }
 
   public async loadManagers(max = 100): Promise<void> {
-    await this.doc.loadInfo(); // loads document properties and worksheets
-    const promises = this.managers.map(async (sheet) => {
-      const gradeSheet = this.doc.sheetsByTitle[sheet];
-      if (gradeSheet) {
-        await gradeSheet.loadCells(`A1:D${max}`);
-        const rows = await gradeSheet.getRows();
-        this.allTeachers.push(
-          ...rows.map((row) => {
-            return { ...row.toObject(), type: "manager" } as SheetData;
-          })
-        );
-      }
-    });
+    try {
+      await this.doc.loadInfo(); // loads document properties and worksheets
+      const promises = this.managers.map(async (sheet) => {
+        const gradeSheet = this.doc.sheetsByTitle[sheet];
+        if (gradeSheet) {
+          await gradeSheet.loadCells(`A1:D${max}`);
+          const rows = await gradeSheet.getRows();
+          this.allTeachers.push(
+            ...rows.map((row) => {
+              return { ...row.toObject(), type: "manager" } as SheetData;
+            })
+          );
+        }
+      });
 
-    await Promise.all(promises);
+      await Promise.all(promises);
+    } catch (error) {
+      throw ErrorHandler(error, "loadManagers");
+    }
   }
   public async loadSecurities(max = 100): Promise<void> {
-    const promises = this.securities.map(async (sheet) => {
-      const gradeSheet = this.doc.sheetsByTitle[sheet];
-      if (gradeSheet) {
-        await gradeSheet.loadCells(`A1:D${max}`);
-        const rows = await gradeSheet.getRows();
-        this.allTeachers.push(
-          ...rows.map((row) => {
-            return { ...row.toObject(), type: "security" } as SheetData;
-          })
-        );
-      }
-    });
-    await Promise.all(promises);
+    try {
+      const promises = this.securities.map(async (sheet) => {
+        const gradeSheet = this.doc.sheetsByTitle[sheet];
+        if (gradeSheet) {
+          await gradeSheet.loadCells(`A1:D${max}`);
+          const rows = await gradeSheet.getRows();
+          this.allTeachers.push(
+            ...rows.map((row) => {
+              return { ...row.toObject(), type: "security" } as SheetData;
+            })
+          );
+        }
+      });
+      await Promise.all(promises);
+    } catch (error) {
+      throw ErrorHandler(error, "loadSecurities");
+    }
   }
 
   public getAllStudents(): SheetData[] {
-    return this.allStudents;
+    try {
+      return this.allStudents;
+    } catch (error) {
+      throw ErrorHandler(error, "getAllStudents");
+    }
   }
 
   public getTeachers(): SheetData[] {
-    return this.allTeachers;
+    try {
+      return this.allTeachers;
+    } catch (error) {
+      throw ErrorHandler(error, "getTeachers");
+    }
   }
 
   public getAllManagers(): SheetData[] {
-    return this.allManagers;
+    try {
+      return this.allManagers;
+    } catch (error) {
+      throw ErrorHandler(error, "getAllManagers");
+    }
   }
 
   public getSecurities(): SheetData[] {
-    return this.allSecurities;
+    try {
+      return this.allSecurities;
+    } catch (error) {
+      throw ErrorHandler(error, "getSecurities");
+    }
   }
 
   public async uploadStudentsToFirebase(): Promise<boolean> {
-    await this.loadStudents();
-    return await createMultipleCloudAccounts(this.allStudents);
+    try {
+      await this.loadStudents();
+      return await createMultipleCloudAccounts(this.allStudents);
+    } catch (error) {
+      throw ErrorHandler(error, "uploadStudentsToFirebase");
+    }
   }
 
   public async uploadTeachersToFirebase(): Promise<boolean> {
-    await this.loadTeachers();
-    return await createMultipleCloudAccounts(this.allTeachers);
+    try {
+      await this.loadTeachers();
+      return await createMultipleCloudAccounts(this.allTeachers);
+    } catch (error) {
+      throw ErrorHandler(error, "uploadTeachersToFirebase");
+    }
   }
 
   public async uploadManagersToFirebase(): Promise<boolean> {
-    await this.loadManagers();
-    return await createMultipleCloudAccounts(this.allManagers);
+    try {
+      await this.loadManagers();
+      return await createMultipleCloudAccounts(this.allManagers);
+    } catch (error) {
+      throw ErrorHandler(error, "uploadManagersToFirebase");
+    }
   }
 
   public async uploadSecuritiesToFirebase(): Promise<boolean> {
-    await this.loadSecurities();
-    return await createMultipleCloudAccounts(this.allSecurities);
+    try {
+      await this.loadSecurities();
+      return await createMultipleCloudAccounts(this.allSecurities);
+    } catch (error) {
+      throw ErrorHandler(error, "uploadSecuritiesToFirebase");
+    }
   }
 
   public async uploadAllAccounts(): Promise<boolean> {
-    await this.loadAllAccounts();
-    return await createMultipleCloudAccounts(this.allAccounts);
+    try {
+      await this.loadAllAccounts();
+      return await createMultipleCloudAccounts(this.allAccounts);
+    } catch (error) {
+      throw ErrorHandler(error, "uploadAllAccounts");
+    }
   }
 
   public async updateStudentsInFirebase(): Promise<number> {
-    const studentFirebase = await getAccounts("student");
-    await this.loadStudents();
-    this.noneExitedStudents = this.allStudents.filter((gAccount) => {
-      const isExistsAccount = studentFirebase.find(
-        (fAccount) => fAccount.fullName === gAccount.fullName
-      );
-      if (!isExistsAccount) return true;
-    });
-    if (!this.noneExitedStudents.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedStudents);
-    return this.noneExitedStudents.length;
+    try {
+      const studentFirebase = await getAccounts("student");
+      await this.loadStudents();
+      this.noneExitedStudents = this.allStudents.filter((gAccount) => {
+        const isExistsAccount = studentFirebase.find(
+          (fAccount) => fAccount.fullName === gAccount.fullName
+        );
+        if (!isExistsAccount) return true;
+      });
+      if (!this.noneExitedStudents.length) return 0;
+      createMultipleCloudAccounts(this.noneExitedStudents);
+      return this.noneExitedStudents.length;
+    } catch (error) {
+      throw ErrorHandler(error, "updateStudentsInFirebase");
+    }
   }
 
   public async updateTeachersInFirebase(): Promise<number> {
-    const teacherFirebase = await getAccounts("teacher");
-    await this.loadTeachers();
-    this.noneExitedTeachers = this.allTeachers.filter((gAccount) => {
-      const isExistsAccount = teacherFirebase.find(
-        (fAccount) => fAccount.fullName === gAccount.fullName
-      );
-      if (!isExistsAccount) return true;
-    });
-    if (!this.noneExitedTeachers.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedTeachers);
-    return this.noneExitedTeachers.length;
+    try {
+      const teacherFirebase = await getAccounts("teacher");
+      await this.loadTeachers();
+      this.noneExitedTeachers = this.allTeachers.filter((gAccount) => {
+        const isExistsAccount = teacherFirebase.find(
+          (fAccount) => fAccount.fullName === gAccount.fullName
+        );
+        if (!isExistsAccount) return true;
+      });
+      if (!this.noneExitedTeachers.length) return 0;
+      createMultipleCloudAccounts(this.noneExitedTeachers);
+      return this.noneExitedTeachers.length;
+    } catch (error) {
+      throw ErrorHandler(error, "updateTeachersInFirebase");
+    }
   }
 
   public async updateManagersInFirebase(): Promise<number> {
-    const managerFirebase = await getAccounts("manager");
-    await this.loadManagers();
-    this.noneExitedManagers = this.allManagers.filter((gAccount) => {
-      const isExistsAccount = managerFirebase.find(
-        (fAccount) => fAccount.fullName === gAccount.fullName
-      );
-      if (!isExistsAccount) return true;
-    });
-    if (!this.noneExitedManagers.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedManagers);
-    return this.noneExitedManagers.length;
+    try {
+      const managerFirebase = await getAccounts("manager");
+      await this.loadManagers();
+      this.noneExitedManagers = this.allManagers.filter((gAccount) => {
+        const isExistsAccount = managerFirebase.find(
+          (fAccount) => fAccount.fullName === gAccount.fullName
+        );
+        if (!isExistsAccount) return true;
+      });
+      if (!this.noneExitedManagers.length) return 0;
+      createMultipleCloudAccounts(this.noneExitedManagers);
+      return this.noneExitedManagers.length;
+    } catch (error) {
+      throw ErrorHandler(error, "updateManagersInFirebase");
+    }
   }
 
   public async updateSecuritiesInFirebase(): Promise<number> {
-    const securityFirebase = await getAccounts("security");
-    await this.loadSecurities();
-    this.noneExitedSecurities = this.allSecurities.filter((gAccount) => {
-      const isExistsAccount = securityFirebase.find(
-        (fAccount) => fAccount.fullName === gAccount.fullName
-      );
-      if (!isExistsAccount) return true;
-    });
-    if (!this.noneExitedSecurities.length) return 0;
-    createMultipleCloudAccounts(this.noneExitedSecurities);
-    return this.noneExitedSecurities.length;
+    try {
+      const securityFirebase = await getAccounts("security");
+      await this.loadSecurities();
+      this.noneExitedSecurities = this.allSecurities.filter((gAccount) => {
+        const isExistsAccount = securityFirebase.find(
+          (fAccount) => fAccount.fullName === gAccount.fullName
+        );
+        if (!isExistsAccount) return true;
+      });
+      if (!this.noneExitedSecurities.length) return 0;
+      createMultipleCloudAccounts(this.noneExitedSecurities);
+      return this.noneExitedSecurities.length;
+    } catch (error) {
+      throw ErrorHandler(error, "updateSecuritiesInFirebase");
+    }
   }
 
   public async updateAllAccountsInFirebase(): Promise<number> {
-    const securityFirebase = await getAccountsNoFilter();
-    await this.loadAllAccounts();
-    this.noneAllAccounts = this.allAccounts.filter((gAccount) => {
-      const isExistsAccount = securityFirebase.find(
-        (fAccount) => fAccount.fullName === gAccount.fullName
-      );
-      if (!isExistsAccount) return true;
-    });
-    if (!this.noneAllAccounts.length) return 0;
-    createMultipleCloudAccounts(this.noneAllAccounts);
-    return this.noneAllAccounts.length;
+    try {
+      const securityFirebase = await getAccountsNoFilter();
+      await this.loadAllAccounts();
+      this.noneAllAccounts = this.allAccounts.filter((gAccount) => {
+        const isExistsAccount = securityFirebase.find(
+          (fAccount) => fAccount.fullName === gAccount.fullName
+        );
+        if (!isExistsAccount) return true;
+      });
+      if (!this.noneAllAccounts.length) return 0;
+      createMultipleCloudAccounts(this.noneAllAccounts);
+      return this.noneAllAccounts.length;
+    } catch (error) {
+      throw ErrorHandler(error, "updateAllAccountsInFirebase");
+    }
   }
 
   public async deleteAllStudents() {
-    await deleteAccounts(["student"]);
+    try {
+      await deleteAccounts(["student"]);
+    } catch (error) {
+      throw ErrorHandler(error, "deleteAllStudents");
+    }
   }
 
   public async deleteAllTeachers() {
-    await deleteAccounts(["teacher"]);
+    try {
+      await deleteAccounts(["teacher"]);
+    } catch (error) {
+      throw ErrorHandler(error, "deleteAllTeachers");
+    }
   }
 
   public async deleteAllManagers() {
-    await deleteAccounts(["manager"]);
+    try {
+      await deleteAccounts(["manager"]);
+    } catch (error) {
+      throw ErrorHandler(error, "deleteAllManagers");
+    }
   }
 
   public async deleteAllSecurities() {
-    await deleteAccounts(["security"]);
+    try {
+      await deleteAccounts(["security"]);
+    } catch (error) {
+      throw ErrorHandler(error, "deleteAllSecurities");
+    }
   }
 
   public async deleteAllAccounts() {
-    await deleteAccounts();
+    try {
+      await deleteAccounts();
+    } catch (error) {
+      throw ErrorHandler(error, "deleteAllAccounts");
+    }
   }
 }
 

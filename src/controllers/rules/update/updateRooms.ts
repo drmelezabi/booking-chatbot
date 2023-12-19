@@ -1,3 +1,4 @@
+import ErrorHandler from "../../../config/errorhandler";
 import db from "../../../database/setup";
 
 const updateRooms = async (
@@ -30,9 +31,8 @@ const updateRooms = async (
         : "لايوجد قاعات للمذاكرة";
 
     return msg;
-  } catch (error: any) {
-    console.log(error.message);
-    return null;
+  } catch (error) {
+    throw ErrorHandler(error, "updateRooms");
   }
 };
 

@@ -1,5 +1,6 @@
 import { doc, getDoc } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 export interface accountData {
@@ -21,8 +22,7 @@ const getCloudAccount = async (
     const accountData = (await getDoc(reservationRef)).data() ?? null;
     return accountData as accountData | null;
   } catch (error) {
-    console.log("getStudent", error);
-    return null;
+    throw ErrorHandler(error, "getCloudAccount");
   }
 };
 

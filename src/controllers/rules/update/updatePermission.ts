@@ -1,3 +1,4 @@
+import ErrorHandler from "../../../config/errorhandler";
 import RegisteredPhone from "../../../database/RegisteredPhone";
 import getAccountIdByPass from "../../accounts/get/getAccountByPass";
 import { updateCloudAccount } from "../../accounts/update/updateCloudAccount";
@@ -12,7 +13,10 @@ const updateAccountPermissions = async (
         const accountId = await getAccountIdByPass(pass);
         const accountData = RegisteredPhone.fetch(
           (account) => account.accountId === accountId
-        )!;
+        );
+
+        if (!accountData) throw new Error("accountData should not be nullable");
+
         let NewStatus: "user" | "admin" | "superAdmin";
 
         switch (accountData.permissions) {
@@ -38,7 +42,10 @@ const updateAccountPermissions = async (
         const accountId = await getAccountIdByPass(pass);
         const accountData = RegisteredPhone.fetch(
           (account) => account.accountId === accountId
-        )!;
+        );
+
+        if (!accountData) throw new Error("accountData should not be nullable");
+
         let NewStatus: "user" | "admin" | "superAdmin";
 
         switch (accountData.permissions) {
@@ -60,9 +67,8 @@ const updateAccountPermissions = async (
     );
 
     return true;
-  } catch (error: any) {
-    console.log(error.message);
-    return false;
+  } catch (error) {
+    throw ErrorHandler(error, "updateAccountPermissions");
   }
 };
 

@@ -1,4 +1,5 @@
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import SimplDB from "simpl.db";
 
 import {
   isBlockedDateArray,
@@ -9,6 +10,7 @@ import {
   isISuspendedStudentArray,
   isReservationArray,
 } from "./validateRestoredData";
+import ErrorHandler from "../config/errorhandler";
 import { firestoreDb } from "../config/firebase";
 import ActivationPin from "../database/activationPin";
 import Avail from "../database/avail";
@@ -158,7 +160,7 @@ const restore = async () => {
       ) {
         db.set(
           "BookingAvailability",
-          RestoredObject.database.BookingAvailability as any
+          RestoredObject.database.BookingAvailability as SimplDB.JSONData
         );
 
         db.set(
@@ -189,8 +191,7 @@ const restore = async () => {
 
     return true;
   } catch (error) {
-    console.log("restore", error);
-    return false;
+    throw ErrorHandler(error, "restore");
   }
 };
 

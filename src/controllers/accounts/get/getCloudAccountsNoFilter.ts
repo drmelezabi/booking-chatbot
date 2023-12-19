@@ -1,5 +1,6 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 export interface accountData {
@@ -27,8 +28,7 @@ const getAccountsNoFilter = async (): Promise<accountData[]> => {
 
     return finalData;
   } catch (error) {
-    console.log("getAccountsString", error);
-    return [];
+    throw ErrorHandler(error, "getAccountsNoFilter");
   }
 };
 

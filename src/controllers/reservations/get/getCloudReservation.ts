@@ -1,5 +1,6 @@
 import { Timestamp, doc, getDoc } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 type cloudReservation = {
@@ -23,8 +24,7 @@ const getCloudReservationById = async (reservationId: string) => {
 
     return document as cloudReservation;
   } catch (error) {
-    console.log("getCloudReservationById", error);
-    return undefined;
+    throw ErrorHandler(error, "getCloudReservationById");
   }
 };
 

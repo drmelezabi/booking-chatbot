@@ -7,15 +7,16 @@ import {
 } from "firebase/firestore";
 
 import { caseTypeAR } from "../../../config/diff";
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 import formatTimestamp from "../../date/formateFirebaseTimestamp";
 import { getTodayRange } from "../../date/getTodayRange";
 
 export const getStudentTodayBooked = async (studentId: string) => {
-  const range = getTodayRange();
-  if (!range) return [];
-
   try {
+    const range = getTodayRange();
+    if (!range) return [];
+
     const finalData: DocumentData[] = [];
 
     const q = query(
@@ -40,7 +41,6 @@ export const getStudentTodayBooked = async (studentId: string) => {
         };
       });
   } catch (error) {
-    console.log("get", error);
-    return [];
+    throw ErrorHandler(error, "getStudentTodayBooked");
   }
 };

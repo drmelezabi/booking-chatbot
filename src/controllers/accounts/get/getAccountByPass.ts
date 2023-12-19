@@ -6,6 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 const getAccountIdByPass = async (pass: string): Promise<string> => {
@@ -26,8 +27,7 @@ const getAccountIdByPass = async (pass: string): Promise<string> => {
 
     return array;
   } catch (error) {
-    console.log("getAccountIdByPass", error);
-    return "";
+    throw ErrorHandler(error, "getAccountIdByPass");
   }
 };
 

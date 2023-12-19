@@ -1,4 +1,5 @@
 import addLocalReservations from "./addLocalReservation";
+import ErrorHandler from "../../../config/errorhandler";
 import { genId20 } from "../../../config/IDs";
 import addDocument from "../../addCloudDoc";
 
@@ -12,8 +13,8 @@ interface IReservation {
 }
 
 const createNewReservation = async (reservation: IReservation) => {
-  const reservationId = genId20();
   try {
+    const reservationId = genId20();
     await addDocument("reservation", reservationId, reservation);
     await addLocalReservations({
       accountId: reservation.stdId,
@@ -21,7 +22,7 @@ const createNewReservation = async (reservation: IReservation) => {
       Date: reservation.start,
     });
   } catch (error) {
-    console.log("CreateNewReservation", error);
+    throw ErrorHandler(error, "createNewReservation");
   }
 };
 

@@ -1,3 +1,4 @@
+import ErrorHandler from "../../config/errorhandler";
 import db from "../../database/setup";
 
 const stopBookingAvailability = (BookingAvailabilityDate?: Date) => {
@@ -18,8 +19,8 @@ const stopBookingAvailability = (BookingAvailabilityDate?: Date) => {
 
     db.save();
     return;
-  } catch (error: any) {
-    console.log(error.message);
+  } catch (error) {
+    throw ErrorHandler(error, "stopBookingAvailability");
   }
 };
 

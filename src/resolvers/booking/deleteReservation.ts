@@ -1,5 +1,6 @@
 import WAWebJS, { MessageMedia } from "whatsapp-web.js";
 
+import ErrorHandler from "../../config/errorhandler";
 import formatDateTime from "../../controllers/date/formateTimestamp";
 import bookingGroup from "../../controllers/GroupManager/getGroup";
 import checkTimeIsFitToCancelReservation from "../../controllers/reservations/check/checkTimeIsFitToCancelReservation";
@@ -11,64 +12,67 @@ const deleteReservation = async (
   client: WAWebJS.Client,
   message: WAWebJS.Message
 ) => {
-  const isExist = RegisteredPhone.fetch(
-    (account) => account.chatId === message.from
-  );
+  try {
+    const isExist = RegisteredPhone.fetch(
+      (account) => account.chatId === message.from
+    );
 
-  if (!isExist) {
-    client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
-    return;
-  }
+    if (!isExist) {
+      client.sendMessage(message.from, "❌ أنت تستخدم هاتف غير موثق");
+      return;
+    }
 
-  if (isExist.type !== "student") {
-    client.sendMessage(message.from, "❌ الطالب فقط هو من يملك ميزة الحجز");
-    return;
-  }
+    if (isExist.type !== "student") {
+      client.sendMessage(message.from, "❌ الطالب فقط هو من يملك ميزة الحجز");
+      return;
+    }
 
-  const existedRes = Reservation.fetch(
-    (std) => std.accountId === isExist.accountId
-  );
+    const existedRes = Reservation.fetch(
+      (std) => std.accountId === isExist.accountId
+    );
 
-  console.log({ existedRes });
+    console.log({ existedRes });
 
-  if (!existedRes) {
-    client.sendMessage(message.from, "❌ لا يوجد أي حجز");
-    return;
-  }
+    if (!existedRes) {
+      client.sendMessage(message.from, "❌ لا يوجد أي حجز");
+      return;
+    }
 
-  const ableToDelete = await checkTimeIsFitToCancelReservation(
-    existedRes.reservationId
-  );
+    const ableToDelete = await checkTimeIsFitToCancelReservation(
+      existedRes.reservationId
+    );
 
-  if (!ableToDelete) {
-    client.sendMessage(message.from, "❌ لم يعد متاح إلغاء الحجز");
-    return;
-  }
-  const reservation = Reservation.fetch(
-    (reservation) => reservation.reservationId === existedRes.reservationId
-  )!;
+    if (!ableToDelete) {
+      client.sendMessage(message.from, "❌ لم يعد متاح إلغاء الحجز");
+      return;
+    }
+    const reservation = Reservation.fetch(
+      (reservation) => reservation.reservationId === existedRes.reservationId
+    );
 
-  Reservation.remove(
-    (reservation) => reservation.reservationId === existedRes.reservationId
-  );
-  Reservation.save();
+    if (!reservation) throw new Error("accountData should not be nullable");
 
-  await deleteCloudReservation(existedRes.reservationId);
+    Reservation.remove(
+      (reservation) => reservation.reservationId === existedRes.reservationId
+    );
+    Reservation.save();
 
-  const sticker = MessageMedia.fromFilePath("./src/imgs/garbage.png");
-  client.sendMessage(message.from, sticker, {
-    sendMediaAsSticker: true,
-  });
+    await deleteCloudReservation(existedRes.reservationId);
 
-  client.sendMessage(message.from, "🗑 تم إلغاء الحجز");
+    const sticker = MessageMedia.fromFilePath("./src/imgs/garbage.png");
+    client.sendMessage(message.from, sticker, {
+      sendMediaAsSticker: true,
+    });
 
-  const dt = formatDateTime(new Date(reservation.Date));
+    client.sendMessage(message.from, "🗑 تم إلغاء الحجز");
 
-  const group = await bookingGroup(client);
-  group.sendMessage(
-    `🚫 **${isExist.gender === "male" ? "قام الطالب" : "قامت الطالبة"} ${
-      isExist.name
-    } بإلغاء حجز بهذا التوقيت** 🚫
+    const dt = formatDateTime(new Date(reservation.Date));
+
+    const group = await bookingGroup(client);
+    group.sendMessage(
+      `🚫 **${isExist.gender === "male" ? "قام الطالب" : "قامت الطالبة"} ${
+        isExist.name
+      } بإلغاء حجز بهذا التوقيت** 🚫
 
 *يوم:* ${dt.Day}
 *تاريخ:* ${dt.Date}
@@ -76,8 +80,11 @@ const deleteReservation = async (
 
 وعليه، الموعد لم يعد محجوز
   `
-  );
-  return;
+    );
+    return;
+  } catch (error) {
+    throw ErrorHandler(error, "deleteReservation");
+  }
 };
 //
 export default deleteReservation;

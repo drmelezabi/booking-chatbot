@@ -1,4 +1,5 @@
 import { arabicName } from "../../../config/diff";
+import ErrorHandler from "../../../config/errorhandler";
 import db from "../../../database/setup";
 
 type blockedDays = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
@@ -36,9 +37,8 @@ const updateBlockedDays = async (
         : "لايوجد أي يوم محجوبة عن المذاكرة";
 
     return msg;
-  } catch (error: any) {
-    console.log(error.message);
-    return null;
+  } catch (error) {
+    throw ErrorHandler(error, "updateBlockedDays");
   }
 };
 

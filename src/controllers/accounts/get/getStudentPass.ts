@@ -6,6 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 
+import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
 export interface studentData {
@@ -39,8 +40,7 @@ const getCloudStudentIdByPass = async (
 
     return finalData[0] as { id: string; data: studentData };
   } catch (error) {
-    console.log("getCloudStudentIdByPass", error);
-    return null;
+    throw ErrorHandler(error, "getCloudStudentIdByPass");
   }
 };
 

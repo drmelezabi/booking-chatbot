@@ -1,34 +1,39 @@
 import WAWebJS from "whatsapp-web.js";
 
+import ErrorHandler from "../../config/errorhandler";
 import RegisteredPhone from "../../database/RegisteredPhone";
 import db from "../../database/setup";
 
 export default async function groupCreations(client: WAWebJS.Client) {
-  const checkGroupCreated = db.get<string>("groupId");
-  if (checkGroupCreated) return false;
-  else {
-    const contacts: string[] = RegisteredPhone.fetchAll().map(
-      (account) => account.chatId
-    );
+  try {
+    const checkGroupCreated = db.get<string>("groupId");
+    if (checkGroupCreated) return false;
+    else {
+      const contacts: string[] = RegisteredPhone.fetchAll().map(
+        (account) => account.chatId
+      );
 
-    const groupConfig: WAWebJS.CreateGroupOptions = {
-      comment: "روبوت منظومة المذاكرة والمتابعة - من برمجة د.محمد العزبي",
-    };
+      const groupConfig: WAWebJS.CreateGroupOptions = {
+        comment: "روبوت منظومة المذاكرة والمتابعة - من برمجة د.محمد العزبي",
+      };
 
-    const group = await client.createGroup(
-      "Booking Channel",
-      contacts,
-      groupConfig
-    );
+      const group = await client.createGroup(
+        "Booking Channel",
+        contacts,
+        groupConfig
+      );
 
-    if (typeof group === "string") {
-      db.set<string>("groupId", group) as string;
+      if (typeof group === "string") {
+        db.set<string>("groupId", group) as string;
+        db.save();
+        return true;
+      }
+
+      db.set<string>("groupId", group.gid._serialized) as string;
       db.save();
       return true;
     }
-
-    db.set<string>("groupId", group.gid._serialized) as string;
-    db.save();
-    return true;
+  } catch (error) {
+    throw ErrorHandler(error, "groupCreations");
   }
 }
