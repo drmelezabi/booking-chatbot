@@ -17,8 +17,6 @@ const supervisorVerify = async (
     const { gender } = account;
     const isMale = gender === "male";
 
-    console.log(gender);
-
     if (!isExist.length) {
       client.sendMessage(
         message.from,

@@ -79,7 +79,6 @@ const updateRoomsResolve = async (
       }
     }
 
-    console.log({ addRaw, removeRaw });
     const res = await updateRooms(addRaw, removeRaw);
 
     // ------------------------------------------

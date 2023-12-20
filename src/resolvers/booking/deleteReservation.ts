@@ -31,8 +31,6 @@ const deleteReservation = async (
       (std) => std.accountId === isExist.accountId
     );
 
-    console.log({ existedRes });
-
     if (!existedRes) {
       client.sendMessage(message.from, "❌ لا يوجد أي حجز");
       return;

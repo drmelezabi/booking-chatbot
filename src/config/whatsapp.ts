@@ -1,5 +1,5 @@
 import qrcode from "qrcode-terminal";
-import WAWebJS, { Client, LocalAuth, MessageMedia } from "whatsapp-web.js";
+import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
 
 import configGroup from "../controllers/GroupManager/configureGroup";
 import groupCreations from "../controllers/GroupManager/groupCreations";
@@ -7,10 +7,13 @@ import onJoin from "../controllers/GroupManager/newGroupJoin";
 import isSuperAdmin from "../controllers/rules/isSuperAdmin";
 import RegisteredPhone from "../database/RegisteredPhone";
 import router from "../router";
-import fs from "fs";
 
 const client = new Client({
   authStrategy: new LocalAuth(),
+  puppeteer: {
+    // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
+    headless: "chrome",
+  },
 });
 
 client.on("qr", (qr) => {
@@ -79,9 +82,9 @@ client.on(
   "contact_changed",
   async (
     _message: WAWebJS.Message,
-    oldId: string,
-    _newId: string,
-    _isContact: boolean
+    oldId: string
+    // _newId: string,
+    // _isContact: boolean
   ) => {
     RegisteredPhone.remove((account) => account.chatId === oldId);
   }

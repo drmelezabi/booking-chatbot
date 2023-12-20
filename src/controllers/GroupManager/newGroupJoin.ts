@@ -33,7 +33,6 @@ export default async function onJoin(
       }
 
       const contact = await client.getContactById(memberChatId);
-      console.log({ contact, memberChatId });
       const account = RegisteredPhone.fetch(
         (account) => account.chatId === memberChatId
       );

@@ -8,7 +8,8 @@ import appSchedule from "./schedule";
 (async () => {
   try {
     initializeFirebase();
-    client.initialize();
+    await client.initialize();
+    console.log(await client.getWWebVersion());
     appSchedule();
   } catch (error: unknown) {
     let emailContent = `initialize App Error`;

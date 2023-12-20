@@ -96,7 +96,6 @@ const addNewReservation = async (
     }
     const restOfString: string = message.body.substring("!حجز".length);
     const { day, room, time } = await prepareBookingMessage(restOfString);
-    console.log({ time });
     if (!day || !time || !room) {
       const info: string[] = [];
       if (!day) info.push("اليوم");
@@ -171,7 +170,6 @@ const addNewReservation = async (
     dayEnds.setHours(bookingClose, 0, 0, 0); // setHours(hours, minutes, seconds, milliseconds)
 
     if (end > dayEnds) {
-      console.log({ end, dayEnds });
       const sticker = MessageMedia.fromFilePath(
         "./src/imgs/project-status.png"
       );
