@@ -36,6 +36,9 @@
     "@types/node-schedule": "^2.1.5",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
+    "@types/dateformat": "^5.0.2",
+    "@types/nodemailer": "^6.4.14",
+    "@types/qrcode-terminal": "^0.12.2",
     "chalk": "^4.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^8.53.0",
@@ -50,9 +53,7 @@
     "util": "^0.12.5"
   },
   "dependencies": {
-    "@types/dateformat": "^5.0.2",
-    "@types/nodemailer": "^6.4.14",
-    "@types/qrcode-terminal": "^0.12.2",
+    "puppeteer": "^21.6.1",
     "better-sqlite3": "^9.2.2",
     "child_process": "^1.0.2",
     "dateformat": "^5.0.3",
@@ -69,7 +70,7 @@
     "simpl.db": "^2.12.1",
     "starkstring": "^0.4.4",
     "ts-prune": "^0.10.3",
-    "whatsapp-web.js": "^1.23.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "whatsapp-web.js": "^1.23.0"
   }
 }

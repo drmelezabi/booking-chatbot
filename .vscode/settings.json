@@ -28,7 +28,6 @@
     "editor.formatOnSave": true,
     "eslint.codeActionsOnSave.rules": null,
     "editor.codeActionsOnSave": {
-       "source.fixAll.eslint": true,
-       // "source.removeUnusedImports": true
-    },
+      "source.fixAll.eslint": "explicit"
+   },
 }
