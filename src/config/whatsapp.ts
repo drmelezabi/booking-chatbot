@@ -10,10 +10,10 @@ import router from "../router";
 
 const client = new Client({
   authStrategy: new LocalAuth(),
-  puppeteer: {
-    // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
-    headless: "chrome",
-  },
+  // puppeteer: {
+  //   // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
+  //   headless: "chrome",
+  // },
 });
 
 client.on("qr", (qr) => {

@@ -23,6 +23,7 @@ export default function appSchedule() {
     for (let hour = startHour; hour <= endHour; hour++) {
       rule_waste.hour = hour;
       schedule.scheduleJob(rule_waste, async () => {
+        console.log("waste");
         await getAvailViolations();
         await getStudentViolationsForScheduleAndGroup();
       });
@@ -49,6 +50,7 @@ export default function appSchedule() {
     for (let hour = startHour; hour <= endHour; hour++) {
       rule_checkResStart.hour = hour;
       schedule.scheduleJob(rule_checkResStart, () => {
+        console.log("checkResStart");
         const violateReservations = Reservation.fetchMany((reservation) => {
           const deadline = new Date(reservation.Date);
           deadline.setTime(deadline.getTime() + 2 * 60 * 1000);
