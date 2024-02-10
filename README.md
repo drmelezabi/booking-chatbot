@@ -1,5 +1,7 @@
 # Booking chatbot
 
+<img src="/media/demo.gif" alt="demo" width="50%" height="50%"/>
+
 ## Features
 
 - **user UI**
