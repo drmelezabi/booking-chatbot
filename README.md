@@ -1,6 +1,6 @@
 # Booking chatbot
 
-<img src="/media/demo.gif" alt="demo" width="50%" height="50%"/>
+<img src="/media/demo.gif" alt="demo" width="40%" height="40%"/>
 
 ## Features
 
@@ -17,11 +17,11 @@
 - **Book reservations**:
   - Book available time and room.
     - The app can understand any way of reservation asking even slang arabic:
-      - *"عايز احجز ميعاد بكرة الساعة 5 في اوضه 105",*
-      - *"ميعاد يوم 18 فبراير الساعة 7 الصبح في معمل ج",*
-      - *"بعد بكرة 11 ص 106",*
-      - *"حجز موعد غدا في التاسعة صباحاً",*
-      - *"الساعة 12 الضهر في 109 الثلاث الجاي"*
+      *"عايز احجز ميعاد بكرة الساعة 5 في اوضه 105",*
+      *"ميعاد يوم 18 فبراير الساعة 7 الصبح في معمل ج",*
+      *"بعد بكرة 11 ص 106",*
+      *"حجز موعد غدا في التاسعة صباحاً",*
+      *"الساعة 12 الضهر في 109 الثلاث الجاي"*
         *and more ...*
   - One reservation per time *"next reservation available after activate the current one"*.
   - Cancel reservation: with maximum time to be able to cancel.
