@@ -1,6 +1,6 @@
 # Booking chatbot
 
-<img src="/media/demo.gif" alt="demo" width="30%" height="30%"/>
+<img src="/media/demo.gif" alt="demo" width="35%" height="35%"/>
 
 ## Features
 
