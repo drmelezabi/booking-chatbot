@@ -9,7 +9,7 @@ import {
 import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
-export interface studentData {
+interface studentData {
   permissions: "user" | "admin" | "superAdmin";
   name: string;
   fullName: string;

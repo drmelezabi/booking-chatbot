@@ -3,7 +3,7 @@ import { doc, getDoc } from "firebase/firestore";
 import ErrorHandler from "../../../config/errorhandler";
 import { firestoreDb } from "../../../config/firebase";
 
-export interface accountData {
+interface accountData {
   permissions: "user" | "admin" | "superAdmin";
   name: string;
   pass: string;

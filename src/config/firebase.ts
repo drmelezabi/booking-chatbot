@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import Sendmail from "./email";
 import { levels } from "./enums";
 import config from "./globalVariables";
-import bugMessageTemplate from "../Email/bugsMailTemplate";
+import bugMessageTemplate from "../email/bugsMailTemplate";
 
 const {
   apiKey,
@@ -26,7 +26,7 @@ const firebaseConfig = {
   measurementId,
 };
 
-export const firebaseApp = initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 export const firestoreDb = getFirestore();
 
 // Initialize Firebase

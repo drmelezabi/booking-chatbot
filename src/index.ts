@@ -2,14 +2,13 @@ import Sendmail from "./config/email";
 import { levels } from "./config/enums";
 import initializeFirebase from "./config/firebase";
 import client from "./config/whatsapp";
-import bugMessageTemplate from "./Email/bugsMailTemplate";
+import bugMessageTemplate from "./email/bugsMailTemplate";
 import appSchedule from "./schedule";
 
 (async () => {
   try {
     initializeFirebase();
     await client.initialize();
-    console.log(await client.getWWebVersion());
     appSchedule();
   } catch (error: unknown) {
     let emailContent = `initialize App Error`;

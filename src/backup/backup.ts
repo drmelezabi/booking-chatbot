@@ -8,7 +8,7 @@ import { levels } from "../config/enums";
 import ErrorHandler from "../config/errorhandler";
 import client from "../config/whatsapp";
 import addDocument from "../controllers/addCloudDoc";
-import backupMessageTemplate from "../Email/backupTemplate";
+import backupMessageTemplate from "../email/backupTemplate";
 
 const backup = async (
   type: "FireBase" | "whatsapp" | "Email",

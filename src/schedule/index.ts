@@ -8,7 +8,7 @@ import getAvailViolations from "../controllers/accounts/get/getAvailViolations";
 import getStudentViolationsForScheduleAndGroup from "../controllers/accounts/get/getStudentViolationsForScheduleAndGroup";
 import RegisteredPhone from "../database/RegisteredPhone";
 import Reservation from "../database/reservation";
-import bugMessageTemplate from "../Email/bugsMailTemplate";
+import bugMessageTemplate from "../email/bugsMailTemplate";
 
 export default function appSchedule() {
   const tz = "Africa/Cairo";
@@ -43,10 +43,11 @@ export default function appSchedule() {
   // =================================================================
 
   const rule_checkResStart = new schedule.RecurrenceRule();
-  rule_checkResStart.minute = [2, 32];
+  rule_checkResStart.minute = [2, 32]; // every 2 and 32 minutes every hour
   rule_checkResStart.tz = tz;
 
   try {
+    // in range of 6 AM to 7 AM
     for (let hour = startHour; hour <= endHour; hour++) {
       rule_checkResStart.hour = hour;
       schedule.scheduleJob(rule_checkResStart, () => {

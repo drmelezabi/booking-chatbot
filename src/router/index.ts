@@ -6,7 +6,7 @@ import { levels } from "../config/enums";
 import { BookingError } from "../config/errorhandler";
 import chat from "../controllers/chat";
 import RegisteredPhone from "../database/RegisteredPhone";
-import bugMessageTemplate from "../Email/bugsMailTemplate";
+import bugMessageTemplate from "../email/bugsMailTemplate";
 import EditBookingRules from "../resolvers/advanced/EditBookingRules";
 import getRecovery from "../resolvers/advanced/getRecovery";
 import getReservations from "../resolvers/advanced/getReservations";
