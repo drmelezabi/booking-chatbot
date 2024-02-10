@@ -134,3 +134,4 @@ prisma/down.sql
 
 
 .wwebjs*
+.wwebjs_auth*
