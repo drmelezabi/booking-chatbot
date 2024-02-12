@@ -94,10 +94,10 @@
   - You need real phone number 🔒 only for this service" and it should work on some smart phone and ready to scan the QR code from the terminal.
 
 ### install & Run the chatBot app
+
 - you need [pnpm](https://pnpm.io/) to work with this nodejs project **Don't use npm or yarn**
 - i highly recommend using docker if you have deferent node version to avoid app crash.
 - you can run `pnpm new` to install and run the app if you are using `windows` operating system
 - if not you need to run
   - `pnpm i`
-  - `pnpm build`
   - `pnpm start`

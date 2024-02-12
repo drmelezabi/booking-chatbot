@@ -1,23 +1,22 @@
 {
-  "name": "ROOMS",
+  "name": "booking-chatbot",
   "version": "1.0.0",
-  "description": "",
+  "description": "whatsapp chatbot helps student to book reservations to study under supervisions and manage the rooms",
   "main": "index.js",
   "scripts": {
     "new": "pnpm cleanup && pnpm i && rimraf dist && rimraf ./build && swc src --out-dir dist",
-    "iNew": "pnpm cleanup && rimraf prisma/migrations && rimraf prisma/down.sql && prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --script > prisma/down.sql && prisma migrate dev --name start && rimraf ./build && swc src --out-dir dist --ignore 'src/tests/**' ",
     "cleanup": "powershell -File make-It-New.ps1",
     "dev": "nodemon -e js,ts,py",
     "build": "rimraf dist && swc src --out-dir dist",
     "start": "pnpm run build && node ./dist",
-    "------------------------------------------------------------------------------ Formatting scripts -------------------------------------------------------------------------------": "",
+    "---------------------------------- Formatting scripts ------------------------------": "",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint --ext=ts src tests --no-error-on-unmatched-pattern --quiet",
     "lint:fix": "eslint --ext=ts src tests --no-error-on-unmatched-pattern --quiet --fix",
     "find-deadcode": "ts-prune"
   },
   "keywords": [],
-  "author": "Dr Mohamed El-Ezabi",
+  "author": "Mohamed El-Ezabi PHD",
   "license": "ISC",
   "devDependencies": {
     "@swc/cli": "^0.1.62",
