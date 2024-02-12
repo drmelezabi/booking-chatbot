@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 
 import config from "./globalVariables.js";
 
-const { emailService, emailAppServicePass, NODE_ENV } = config;
+const { emailService, emailAppServicePass } = config;
 
 const Sendmail = async (
   userEmail: string = config.administration_Email,
@@ -41,10 +41,7 @@ const Sendmail = async (
         : undefined,
     };
 
-    const info =
-      NODE_ENV !== "test"
-        ? await transporter.sendMail(mailOptions)
-        : { response: "Done" };
+    const info = await transporter.sendMail(mailOptions);
 
     if (attachmentFiles) {
       attachmentFiles.map((file) => {

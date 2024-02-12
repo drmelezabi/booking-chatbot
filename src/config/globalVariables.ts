@@ -6,7 +6,6 @@ config();
 
 //variables destructuring
 const {
-  NODE_ENV,
   apiKey,
   authDomain,
   projectId,
@@ -23,7 +22,6 @@ const {
 } = process.env;
 
 if (
-  !NODE_ENV ||
   !apiKey ||
   !authDomain ||
   !projectId ||
@@ -44,7 +42,6 @@ if (
 //export variables with definitions
 export default {
   // SERVER_PORT: SERVER_PORT as unknown as number,
-  NODE_ENV: NODE_ENV || "development",
   apiKey: apiKey,
   authDomain: authDomain,
   projectId: projectId,
