@@ -1,3 +1,5 @@
+import path from 'path';
+
 import qrcode from "qrcode-terminal";
 import WAWebJS, { Client, LocalAuth } from "whatsapp-web.js";
 
@@ -8,12 +10,14 @@ import isSuperAdmin from "../controllers/rules/isSuperAdmin";
 import RegisteredPhone from "../database/RegisteredPhone";
 import router from "../router";
 
+// Get the root path of the project
+const rootPath = path.resolve(__dirname, '..', '..');
+
+// Add "dirct" to the root path
+const authPath = path.join(rootPath, ".wwebjs_auth");
+
 const client = new Client({
-  authStrategy: new LocalAuth(),
-  // puppeteer: {
-  //   // args: ['--proxy-server=proxy-server-that-requires-authentication.example.com'],
-  //   headless: "chrome",
-  // },
+  authStrategy: new LocalAuth({ dataPath: authPath }),
 });
 
 client.on("qr", (qr) => {
@@ -21,6 +25,7 @@ client.on("qr", (qr) => {
 });
 
 client.on("ready", async () => {
+  console.log("Client is ready!");
   const newGroupCreated = await groupCreations(client);
   if (newGroupCreated) {
     setTimeout(async () => {
@@ -28,13 +33,18 @@ client.on("ready", async () => {
     }, 5000);
     console.log("Group created & configured!");
   }
-
-  console.log("Client is ready!");
 });
 
-// Save session values to the file upon successful auth
 client.on("authenticated", () => {
-  console.log("authenticated succeed");
+  console.log("Authenticated successfully");
+});
+
+client.on("auth_failure", (msg) => {
+  console.error("Authentication failed:", msg);
+});
+
+client.on("disconnected", (reason) => {
+  console.log("Client disconnected:", reason);
 });
 
 client.on("message", async (message) => {
@@ -49,8 +59,7 @@ client.on("message", async (message) => {
 
     await router(client, message);
   } catch (error) {
-    if (error instanceof Error) console.log(error.message);
-    else console.log(error);
+    console.error("Error handling message:", error);
   }
 });
 
@@ -68,14 +77,6 @@ client.on("call", (message) => {
 
 client.on("change_state", () => {
   client.resetState();
-});
-
-client.on("auth_failure", () => {
-  console.log("fail to authenticate");
-});
-
-client.on("disconnected", () => {
-  console.log("connection isn't work");
 });
 
 client.on(

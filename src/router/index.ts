@@ -13,7 +13,7 @@ import getReservations from "../resolvers/advanced/getReservations";
 import permissionsResolvers from "../resolvers/advanced/permissions.ts";
 import reservationAvailabilityControl from "../resolvers/advanced/stopBooking";
 import createBackUp from "../resolvers/backup/backup";
-import restoreLocalDB from "../resolvers/backup/retore";
+import restoreLocalDB from "../resolvers/backup/restore";
 import addNewReservation from "../resolvers/booking/addNewReservation";
 import deleteReservation from "../resolvers/booking/deleteReservation";
 import { mainMenu } from "../resolvers/menu";
@@ -135,7 +135,7 @@ const router = async (client: WAWebJS.Client, message: WAWebJS.Message) => {
     //
     else if (
       /^!استعاد[ةه] نسخ[ةه]/.test(body) ||
-      taskSyntax === "!استعادة نسخة"
+      taskSyntax === "!استعاده نسخة"
     )
       await restoreLocalDB(client, message, counter, data);
     //

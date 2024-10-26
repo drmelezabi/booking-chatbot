@@ -7,32 +7,35 @@ import db from "../../database/setup";
 export default async function groupCreations(client: WAWebJS.Client) {
   try {
     const checkGroupCreated = db.get<string>("groupId");
+    console.log(checkGroupCreated);
     if (checkGroupCreated) return false;
-    else {
-      const contacts: string[] = RegisteredPhone.fetchAll().map(
-        (account) => account.chatId
-      );
 
-      const groupConfig: WAWebJS.CreateGroupOptions = {
-        comment: "روبوت منظومة المذاكرة والمتابعة - من برمجة د.محمد العزبي",
-      };
+    const contacts: string[] = RegisteredPhone.fetchAll().map(
+      (account) => account.chatId
+    );
 
-      const group = await client.createGroup(
-        "Booking Channel",
-        contacts,
-        groupConfig
-      );
+    const groupConfig: WAWebJS.CreateGroupOptions = {
+      comment: "روبوت منظومة المذاكرة والمتابعة - من برمجة د.محمد العزبي",
+    };
 
-      if (typeof group === "string") {
-        db.set<string>("groupId", group) as string;
-        db.save();
-        return true;
-      }
+    const group = await client.createGroup(
+      "Booking Channel",
+      contacts,
+      groupConfig
+    );
 
-      db.set<string>("groupId", group.gid._serialized) as string;
+    if (typeof group === "string") {
+      db.set<string>("groupId", group) as string;
       db.save();
       return true;
     }
+
+    db.set<string>("groupId", group.gid._serialized) as string;
+    db.save();
+
+    console.log(group.gid._serialized);
+    return true;
+  
   } catch (error) {
     throw ErrorHandler(error, "groupCreations");
   }

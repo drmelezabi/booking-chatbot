@@ -12,6 +12,7 @@ import appSchedule from "./schedule";
     appSchedule();
   } catch (error: unknown) {
     let emailContent = `initialize App Error`;
+    console.log(error);
     if (error instanceof Error) {
       emailContent = `initialize App Error\n\n ${error.message}`;
     } else {

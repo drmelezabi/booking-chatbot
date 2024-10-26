@@ -1,27 +1,20 @@
 {
     "bookmarks.saveBookmarksInProject": true,
     "cSpell.language": "en",
-    "cSpell.words": [
-        "Firestore",
-        "qrcode",
-        "الغاء",
-        "الفعل",
-        "تمرير"
-    ],
     "typescript.tsserver.enableTracing": true,
-    "editor.defaultFormatter": null,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[typescript]": {
        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[json]": {
-       "editor.defaultFormatter": "esbenp.prettier-vscode"
+       "editor.defaultFormatter": "esbenp.prettier-vscode",
     },
-    "workbench.colorTheme": "Dracula",
+   //  "workbench.colorTheme": "Dracula",
     "git.autofetch": true,
     "git.enableSmartCommit": true,
     "git.confirmSync": false,
     "workbench.iconTheme": "material-icon-theme",
-    // "window.zoomLevel": -1,
+    "window.zoomLevel": -1,
     "javascript.updateImportsOnFileMove.enabled": "always",
     "typescript.updateImportsOnFileMove.enabled": "always",
     "editor.minimap.size": "fill",

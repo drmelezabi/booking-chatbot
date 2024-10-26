@@ -4,7 +4,10 @@ import ErrorHandler from "../../config/errorhandler";
 import { recoveryCodeGen } from "../../config/IDs";
 import getCloudStudentIdByPass from "../../controllers/accounts/get/getStudentPass";
 import { updateCloudAccount } from "../../controllers/accounts/update/updateCloudAccount";
+import configGroup from "../../controllers/GroupManager/configureGroup";
+import bookingGroup from "../../controllers/GroupManager/getGroup";
 import invitationLink from "../../controllers/GroupManager/getInvitationLink";
+import groupCreations from "../../controllers/GroupManager/groupCreations";
 import RegisteredPhone from "../../database/RegisteredPhone";
 
 const phoneVerification = async (
@@ -58,7 +61,27 @@ const phoneVerification = async (
       await client.sendMessage(chatId, secondMessageBody);
       await client.sendMessage(chatId, recoveryCode);
 
-      const invitationURL = await invitationLink(client);
+      const groupChat = await bookingGroup(client);
+      const invitationCode = await groupChat.getInviteCode();
+      let invitationURL = `https://chat.whatsapp.com/${invitationCode}`;
+
+      if(!invitationCode) {
+        console.log(groupChat);
+        const newGroupCreated = await groupCreations(client);
+        if (newGroupCreated) {
+          setTimeout(async () => {
+            await configGroup(client);
+          }, 5000);
+          console.log("Group created & configured!");
+
+          const groupChat = await bookingGroup(client);
+          const invitationCode = await groupChat.getInviteCode();
+          invitationURL = `https://chat.whatsapp.com/${invitationCode}`;
+        } else {
+          console.log("no group created");
+        }
+      }
+
       const invitationMsg = `تستطيع الأن الانضمام إلى المجموعة لمتابعة كل الإشعارات الهامة\n\n ${invitationURL}`;
       await client.sendMessage(chatId, invitationMsg);
 
